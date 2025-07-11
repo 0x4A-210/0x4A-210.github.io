@@ -314,7 +314,7 @@ body {
   height: 40px;
 }
 #header:before {
-  top: 0;
+  top: 100;
   background: -webkit-linear-gradient(rgba(0,0,0,0.2), transparent);
   background: -moz-linear-gradient(rgba(0,0,0,0.2), transparent);
   background: -ms-linear-gradient(rgba(0,0,0,0.2), transparent);
