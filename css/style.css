@@ -301,7 +301,7 @@ body {
   font-weight: bold;
 }
 #header {
-  height: 600px;
+  height: 500px;
   position: relative;
   border-bottom: 1px solid #ddd;
 }
@@ -340,7 +340,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 200%;
+  height: 100%;
   background: url("images/banner.jpg") center #000;
   background-size: cover;
   z-index: -1;
@@ -486,7 +486,6 @@ body {
   color: #777;
 }
 .article {
-  margin-top: 100px;
   margin: 50px 0;
 }
 .article-inner {
