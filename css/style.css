@@ -301,7 +301,6 @@ body {
   font-weight: bold;
 }
 #header {
-  margin-top: 300px;
   height: 300px;
   position: relative;
   border-bottom: 1px solid #ddd;
@@ -520,6 +519,7 @@ body {
   padding: 20px 20px 0;
 }
 .article-title {
+  margin-top: 700px;
   text-decoration: none;
   font-size: 2em;
   font-weight: bold;
