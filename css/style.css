@@ -311,7 +311,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  height: 40px;
+  height: 200px;
 }
 #header:before {
   top: 0;
@@ -519,7 +519,6 @@ body {
   padding: 20px 20px 0;
 }
 .article-title {
-  margin-top: 700px;
   text-decoration: none;
   font-size: 2em;
   font-weight: bold;
