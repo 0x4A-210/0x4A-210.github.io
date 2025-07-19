@@ -38,7 +38,7 @@
 <meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Hijack-to-Shellcode/ret-breakpoint.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Hijack-to-Shellcode/flag.png">
 <meta property="article:published_time" content="2025-07-19T00:59:21.000Z">
-<meta property="article:modified_time" content="2025-07-19T04:56:51.763Z">
+<meta property="article:modified_time" content="2025-07-19T06:39:30.363Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/stack.png">
 
@@ -189,7 +189,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2025-07-19 08:59:21 / Modified: 12:56:51" itemprop="dateCreated datePublished" datetime="2025-07-19T08:59:21+08:00">2025-07-19</time>
+              <time title="Created: 2025-07-19 08:59:21 / Modified: 14:39:30" itemprop="dateCreated datePublished" datetime="2025-07-19T08:59:21+08:00">2025-07-19</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +222,7 @@
       
         <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。<br></p>
 <span id="more"></span>
-<p>内容会随着博主掌握的内容而更新，目前只到ROP栈迁移部分（基本对应pwn.college上的intro&#x2F;Binary Exploitation的全部以及program security&#x2F;ROP的level1-9），当然博主也是新手，有写错的地方勿怪<br><br>目前还差PIE的爆破部分博主不是很通透，后面再补吧<br><br>（声明：这篇博客所有记录默认是以64位架构为前提）</p>
+<p>内容会随着博主掌握的内容而更新，目前只到ROP栈迁移部分（基本对应pwn.college上的intro&#x2F;Binary Exploitation的全部以及program security&#x2F;ROP的level1-9），当然博主也是新手，有写错的地方勿怪<br><br>（声明：这篇博客所有记录默认是以64位架构为前提）</p>
 <h1 id="基础部分随记"><a href="#基础部分随记" class="headerlink" title="基础部分随记"></a>基础部分随记</h1><h2 id="栈结构与函数调用"><a href="#栈结构与函数调用" class="headerlink" title="栈结构与函数调用"></a>栈结构与函数调用</h2><p>首先个人觉得做二进制的题目，最基本的是需要了解栈结构。<br><br><em><strong>栈的内存空间是从高地址向低地址增长，也就是说，每当有东西进栈，rsp将会-1，每当有东西出栈，rsp将会+1</strong></em><br><br>每个函数在调用的过程中会维护自己的一块在栈上的内存空间，被称为栈帧；<br><br><em><strong>函数在被调用时，首先会进行传参，但是否传入栈上，得看架构和参数个数；比如根据64位系统调用约定，前6个参数依次从rdi、rsi、rdx、rcx、r8、r9中读取，因此当参数个数超过6个，才通过栈传参（当然32位就是全用栈传参）</strong></em><br><em><strong>传参完成后会将下一条指令的地址压栈，即push rip，该地址被称为返回地址，这个动作由call指令自动完成</strong></em><br><br><em><strong>接下来会进入函数的所谓“序言”部分，即执行：压rbp入栈（push rbp）-&gt;把rsp的值赋给rbp（mov rbp,rsp）-&gt;rsp向低地址移动（sub rsp）</strong></em><br><br>（备注：后续回顾时重点理解函数被调用时的进栈流程，和leave ret对应起来理解）<br><br>此时，函数的栈帧已经形成，栈的最高处是调用者的rbp，最低处是rsp，函数运行时的局部变量存在栈帧的靠近低处<br><br>从rbp到局部变量，中间的内容需要具体分析，可能会有canary等数据<br><br>综上，可以画出栈的一个示意图如下：<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/stack.png"><br>函数调用结束后，一般末尾会有leave和ret指令，这两条指令的等价形式如下：<br><br><em><strong>leave&#x3D;mov rsp,rbp;pop rbp，ret &#x3D;pop rip</strong></em><br><em><strong>此时可以发现，这些操作正好对应着函数序言，即可以理解为序言的反操作，这也就是为什么函数在调用过后还能回到原来的地方继续执行（返回地址实现），同时调用者的栈帧也能恢复（rbp的入栈出栈实现）</strong></em></p>
 <h2 id="缓冲区溢出原理"><a href="#缓冲区溢出原理" class="headerlink" title="缓冲区溢出原理"></a>缓冲区溢出原理</h2><p>分析上述栈结构和函数调用过程，可以发现局部变量（用户输入的缓冲区）是在返回地址下方，而用户输入是不可控的，如果没有长度校验，可以通过构造过长的输入去覆盖返回地址，从而劫持函数的执行流<br><br>最后一个问题：返回地址应该覆盖为什么？根据目前做题经验，总结为以下三类：<br><br>1.后门函数的地址（pwn题当中常见为名叫win的函数）<br><br>2.攻击者自己写的shellcode的起始地址<br><br>3.攻击者构造的ROP链的起始地址（即链条中第一条指令碎片的地址）<br><br>接下来以3道pwn.college上的题目具体分析</p>
 <h1 id="pwn-college题解"><a href="#pwn-college题解" class="headerlink" title="pwn.college题解"></a>pwn.college题解</h1><h2 id="1-Control-Hijack-hard"><a href="#1-Control-Hijack-hard" class="headerlink" title="1 Control-Hijack(hard)"></a>1 Control-Hijack(hard)</h2><h3 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h3><p>需要我们劫持函数的控制流，但具体劫持到哪，需要反汇编整个程序来决定</p>
