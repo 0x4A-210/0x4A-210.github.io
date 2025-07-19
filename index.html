@@ -1,558 +1,1134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  
-  
-  <title>0x4A</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0x4a-210.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
   <meta property="og:type" content="website">
 <meta property="og:title" content="0x4A">
 <meta property="og:url" content="http://0x4a-210.github.io/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:locale">
+<meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="0x4A" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+<link rel="canonical" href="http://0x4a-210.github.io/">
 
-  
-  
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">0x4A</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-        
-          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
-        
-        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://0x4A-210.github.io"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main">
+  <title>0x4A</title>
   
-    <article id="post-pwn.college-Wp/TogetherReview/Binary-Exp" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/19/pwn.college-Wp/TogetherReview/Binary-Exp/" class="article-date">
-  <time class="dt-published" datetime="2025-07-19T00:59:21.000Z" itemprop="datePublished">2025-07-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/19/pwn.college-Wp/TogetherReview/Binary-Exp/">Binary-Exp</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。<br></p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/19/pwn.college-Wp/TogetherReview/Binary-Exp/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/19/pwn.college-Wp/TogetherReview/Binary-Exp/" data-id="cmd9kk1d80001gwvfe9tr0666" data-title="Binary-Exp" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
 
 
 
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/" class="article-date">
-  <time class="dt-published" datetime="2025-07-18T01:07:38.000Z" itemprop="datePublished">2025-07-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/">CSRF-5</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>这一关将不允许通过Javascript获取cookie，因为服务端对cookie设置了HTTPonly属性，该设置仅允许通过http请求传送cookie值，因此XSS将无法再获得admin的cookie<br><br>但是依然可以通过CSRF伪造admin用户的请求以泄露flag</p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/" data-id="cmd9kk1db0005gwvf5hraart0" data-title="CSRF-5" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
 
 
 
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-3" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-3/" class="article-date">
-  <time class="dt-published" datetime="2025-07-18T01:00:00.000Z" itemprop="datePublished">2025-07-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-3/">CSRF-3</a>
-    </h1>
-  
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>需要通过CSRF引起XSS，并且提示我们注意javascript标签的闭合问题</p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-3/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-3/" data-id="cmd9kk1db0004gwvfchr1f5ek" data-title="CSRF-3" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
 
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
+</head>
 
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-1/" class="article-date">
-  <time class="dt-published" datetime="2025-07-18T00:50:38.000Z" itemprop="datePublished">2025-07-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-1/">CSRF-1</a>
-    </h1>
-  
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>XSS注入JavaScript以导致受害者发起HTTP请求。 但是如果没有XSS怎么办？ 答案是直接“注入”HTTP请求。<br></p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-1/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-1/" data-id="cmd9kk1da0002gwvf5kqc6tas" data-title="CSRF-1" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/SQLi-5" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/SQLi-5/" class="article-date">
-  <time class="dt-published" datetime="2025-07-17T01:32:33.000Z" itemprop="datePublished">2025-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/SQLi-5/">SQLi-5</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>这一题和一般的SQL注入都不同，服务端将不再回显任何SQL查询的结果，但幸好题目提示我们，即便不显示任何数据，我们也可以一个字符一个字符的恢复，这可以通过查询时页面不同的行为来判断，比如认证成功or认证失败</p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/SQLi-5/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/SQLi-5/" data-id="cmd9kk1dc0006gwvf1au619ye" data-title="SQLi-5" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-7" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-7/" class="article-date">
-  <time class="dt-published" datetime="2025-07-17T01:06:05.000Z" itemprop="datePublished">2025-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-7/">XSS-7</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>一个攻击者的目标可能是完全接管受害者账户，这需要认证信息，该信息常存储在cookie中，如果能够拿到cookie，就可以绕过服务端的身份认证，这一关将登录用户的信息存储在了cookie中</p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-7/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-7/" data-id="cmd9kk1dd0008gwvf9ii772xk" data-title="XSS-7" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-5" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/15/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-5/" class="article-date">
-  <time class="dt-published" datetime="2025-07-15T01:05:21.000Z" itemprop="datePublished">2025-07-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/15/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-5/">XSS-5</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge目录下有两个程序，server脚本开启网络服务，该服务模拟一个论坛功能，存在登录、发布帖子以及存草稿等功能，victim脚本模拟受害者，会去访问论坛网页，如果XSS注入成功，就能得到flag</p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/15/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-5/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/15/pwn.college-Wp/Intro-to-Cybersecurity/Web/XSS-5/" data-id="cmd9kk1dc0007gwvfc8mja7gw" data-title="XSS-5" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/" class="article-date">
-  <time class="dt-published" datetime="2025-07-14T14:09:14.000Z" itemprop="datePublished">2025-07-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/">AuthByPass-2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge&#x2F;server开启一个用户登录的服务，接收POST请求和GET请求，POST请求要求输入用户名和口令，并去数据库校验；<br><br>GET请求读取传入的cookie值，如果session_user字段是admin就会回显flag到网页</p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/AuthByPass-2/" data-id="cmd9kk1da0003gwvfhrob1i2z" data-title="AuthByPass-2" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pwn.college-Wp/Intro-to-Cybersecurity/Web/CMDi-6" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/CMDi-6/" class="article-date">
-  <time class="dt-published" datetime="2025-07-14T13:30:00.000Z" itemprop="datePublished">2025-07-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/CMDi-6/">CMDi-6</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge目录下面有一个python写的server脚本，运行它会在本机的80端口开放一个http服务。这个命令接收GET方法传参，并且以该参数执行ls命令<br><br>我们需要做的就是想办法在ls之后让服务器的shell再执行我们想要的命令，即连续执行</p>
-        
-          <p class="article-more-link">
-            <a href="/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/CMDi-6/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://0x4a-210.github.io/2025/07/14/pwn.college-Wp/Intro-to-Cybersecurity/Web/CMDi-6/" data-id="cmd9kk1d60000gwvf3boz72gy" data-title="CMDi-6" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li></ul>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
+  <div class="site-meta">
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2025/07/19/pwn.college-Wp/TogetherReview/Binary-Exp/">Binary-Exp</a>
-          </li>
-        
-          <li>
-            <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-5/">CSRF-5</a>
-          </li>
-        
-          <li>
-            <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-3/">CSRF-3</a>
-          </li>
-        
-          <li>
-            <a href="/2025/07/18/pwn.college-Wp/Intro-to-Cybersecurity/Web/CSRF-1/">CSRF-1</a>
-          </li>
-        
-          <li>
-            <a href="/2025/07/17/pwn.college-Wp/Intro-to-Cybersecurity/Web/SQLi-5/">SQLi-5</a>
-          </li>
-        
-      </ul>
-    </div>
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">0x4A</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
   </div>
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2025 0x4A<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
     </div>
   </div>
-</footer>
+</div>
 
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
 </nav>
+
+
+
+
+</div>
+    </header>
+
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-<script src="/js/jquery-3.6.4.min.js"></script>
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/19/pwn.college/TogetherReview/Binary-Exp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/19/pwn.college/TogetherReview/Binary-Exp/" class="post-title-link" itemprop="url">Binary-Exp</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2025-07-19 08:59:21 / Modified: 12:56:51" itemprop="dateCreated datePublished" datetime="2025-07-19T08:59:21+08:00">2025-07-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E7%9F%A5%E8%AF%86%E7%82%B9%E4%B8%B2%E8%81%94/" itemprop="url" rel="index"><span itemprop="name">知识点串联</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E7%9F%A5%E8%AF%86%E7%82%B9%E4%B8%B2%E8%81%94/Pwn/" itemprop="url" rel="index"><span itemprop="name">Pwn</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。<br></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/19/pwn.college/TogetherReview/Binary-Exp/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-5/" class="post-title-link" itemprop="url">CSRF-5</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-18 09:07:38" itemprop="dateCreated datePublished" datetime="2025-07-18T09:07:38+08:00">2025-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:31:10" itemprop="dateModified" datetime="2025-07-19T12:31:10+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>这一关将不允许通过Javascript获取cookie，因为服务端对cookie设置了HTTPonly属性，该设置仅允许通过http请求传送cookie值，因此XSS将无法再获得admin的cookie<br><br>但是依然可以通过CSRF伪造admin用户的请求以泄露flag</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-3/" class="post-title-link" itemprop="url">CSRF-3</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-18 09:00:00" itemprop="dateCreated datePublished" datetime="2025-07-18T09:00:00+08:00">2025-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:55:41" itemprop="dateModified" datetime="2025-07-19T12:55:41+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>需要通过CSRF引起XSS，并且提示我们注意javascript标签的闭合问题</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-3/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/" class="post-title-link" itemprop="url">CSRF-1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-18 08:50:38" itemprop="dateCreated datePublished" datetime="2025-07-18T08:50:38+08:00">2025-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:55:27" itemprop="dateModified" datetime="2025-07-19T12:55:27+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>XSS注入JavaScript以导致受害者发起HTTP请求。 但是如果没有XSS怎么办？ 答案是直接“注入”HTTP请求。<br></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/SQLi-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/SQLi-5/" class="post-title-link" itemprop="url">SQLi-5</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-17 09:32:33" itemprop="dateCreated datePublished" datetime="2025-07-17T09:32:33+08:00">2025-07-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:55:54" itemprop="dateModified" datetime="2025-07-19T12:55:54+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>这一题和一般的SQL注入都不同，服务端将不再回显任何SQL查询的结果，但幸好题目提示我们，即便不显示任何数据，我们也可以一个字符一个字符的恢复，这可以通过查询时页面不同的行为来判断，比如认证成功or认证失败</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/SQLi-5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/" class="post-title-link" itemprop="url">XSS-7</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-17 09:06:05" itemprop="dateCreated datePublished" datetime="2025-07-17T09:06:05+08:00">2025-07-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:56:11" itemprop="dateModified" datetime="2025-07-19T12:56:11+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>一个攻击者的目标可能是完全接管受害者账户，这需要认证信息，该信息常存储在cookie中，如果能够拿到cookie，就可以绕过服务端的身份认证，这一关将登录用户的信息存储在了cookie中</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/" class="post-title-link" itemprop="url">XSS-5</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-15 09:05:21" itemprop="dateCreated datePublished" datetime="2025-07-15T09:05:21+08:00">2025-07-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:56:03" itemprop="dateModified" datetime="2025-07-19T12:56:03+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge目录下有两个程序，server脚本开启网络服务，该服务模拟一个论坛功能，存在登录、发布帖子以及存草稿等功能，victim脚本模拟受害者，会去访问论坛网页，如果XSS注入成功，就能得到flag</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/14/pwn.college/Intro-to-Cybersecurity/Web/AuthByPass-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/14/pwn.college/Intro-to-Cybersecurity/Web/AuthByPass-2/" class="post-title-link" itemprop="url">AuthByPass-2</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-14 22:09:14" itemprop="dateCreated datePublished" datetime="2025-07-14T22:09:14+08:00">2025-07-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:29:17" itemprop="dateModified" datetime="2025-07-19T12:29:17+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge&#x2F;server开启一个用户登录的服务，接收POST请求和GET请求，POST请求要求输入用户名和口令，并去数据库校验；<br><br>GET请求读取传入的cookie值，如果session_user字段是admin就会回显flag到网页</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/14/pwn.college/Intro-to-Cybersecurity/Web/AuthByPass-2/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/14/pwn.college/Intro-to-Cybersecurity/Web/CMDi-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/07/14/pwn.college/Intro-to-Cybersecurity/Web/CMDi-6/" class="post-title-link" itemprop="url">CMDi-6</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-14 21:30:00" itemprop="dateCreated datePublished" datetime="2025-07-14T21:30:00+08:00">2025-07-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:55:19" itemprop="dateModified" datetime="2025-07-19T12:55:19+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge目录下面有一个python写的server脚本，运行它会在本机的80端口开放一个http服务。这个命令接收GET方法传参，并且以该参数执行ls命令<br><br>我们需要做的就是想办法在ls之后让服务器的shell再执行我们想要的命令，即连续执行</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/07/14/pwn.college/Intro-to-Cybersecurity/Web/CMDi-6/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
 
 
 
 
 
-  </div>
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
 </body>
 </html>

