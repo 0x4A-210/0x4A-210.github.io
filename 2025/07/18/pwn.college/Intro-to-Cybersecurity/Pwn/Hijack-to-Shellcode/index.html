@@ -22,15 +22,15 @@
     <meta name="description" content="题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hijack-to-Shellcode">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/16/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/index.html">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/index.html">
 <meta property="og:site_name" content="0x4A">
 <meta property="og:description" content="题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/ret-breakpoint.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/flag.png">
-<meta property="article:published_time" content="2025-07-16T01:07:03.000Z">
-<meta property="article:modified_time" content="2025-07-20T01:09:18.705Z">
+<meta property="article:published_time" content="2025-07-18T01:07:03.000Z">
+<meta property="article:modified_time" content="2025-07-20T01:28:57.971Z">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png">
   
@@ -201,8 +201,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-07-16 09:07" pubdate>
-          July 16, 2025 am
+        <time datetime="2025-07-18 09:07" pubdate>
+          July 18, 2025 am
         </time>
       </span>
     
@@ -326,14 +326,14 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Hijack-to-Shellcode</div>
-      <div>http://0x4a-210.github.io/2025/07/16/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/</div>
+      <div>http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/</div>
     </div>
     <div class="license-meta">
       
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>July 16, 2025</div>
+          <div>July 18, 2025</div>
         </div>
       
       
@@ -365,9 +365,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/" title="XSS-7">
+                      <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-5/" title="CSRF-5">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">XSS-7</span>
+                        <span class="hidden-mobile">CSRF-5</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -375,8 +375,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/" title="XSS-5">
-                        <span class="hidden-mobile">XSS-5</span>
+                      <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-3/" title="CSRF-3">
+                        <span class="hidden-mobile">CSRF-3</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
