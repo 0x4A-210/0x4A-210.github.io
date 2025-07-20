@@ -214,13 +214,81 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level4/" target="_self">
-          level4
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-13/" target="_self">
+          level-13
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level4/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-13/" target="_self">
+        <div>
+          题目简介题目提示这道题存在canary保护，因此要想办法绕过canary（爆破或泄露）
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-07-20 10:46" pubdate>
+              2025-07-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/" class="category-chain-item">Program-Security</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/ROP/" class="category-chain-item">ROP</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
+          level-4
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
         <div>
           题目简介需要我们构造ROP链来执行获取shell的代码段，进而拿到flag 漏洞点分析首先还是checksec看到只开了NX，既然如此shellcode执行不了接着拖到IDA里面发现并没有可以用的后门函数，因此只能采用ROP然后找溢出点，发现在challenge函数再通过ROPgadget工具，看看程序本身有没有可用的碎片： 1ROPgadget --binary /challenge/babyr
         </div>
@@ -761,74 +829,6 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2025-07-18 09:07" pubdate>
-              2025-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Web/" class="category-chain-item">Web</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-3/" target="_self">
-          CSRF-3
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-3/" target="_self">
-        <div>
-          题目简介需要通过CSRF引起XSS，并且提示我们注意javascript标签的闭合问题
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-18 09:00" pubdate>
               2025-07-18
             </time>
           </div>
