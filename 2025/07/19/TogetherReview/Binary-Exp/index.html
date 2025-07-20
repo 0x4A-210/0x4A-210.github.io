@@ -29,7 +29,7 @@
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/stack.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/checksec-example.png">
 <meta property="article:published_time" content="2025-07-19T00:59:21.000Z">
-<meta property="article:modified_time" content="2025-07-20T01:35:40.197Z">
+<meta property="article:modified_time" content="2025-07-20T02:36:01.858Z">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/TogetherReview/stack.png">
   
@@ -272,7 +272,7 @@
 <h2 id="缓冲区溢出攻击原理"><a href="#缓冲区溢出攻击原理" class="headerlink" title="缓冲区溢出攻击原理"></a>缓冲区溢出攻击原理</h2><p>分析上述栈结构和函数调用过程，可以发现局部变量（用户输入的缓冲区）是在返回地址下方，而用户输入是不可控的，如果没有长度校验，可以通过构造过长的输入去覆盖返回地址，从而劫持函数的执行流<br><br>最后一个问题：返回地址应该覆盖为什么？根据目前做题经验，总结为以下三类：<br></p>
 <h3 id="后门函数的地址"><a href="#后门函数的地址" class="headerlink" title="后门函数的地址"></a>后门函数的地址</h3><p>后门函数在题目中一般表现为可以读取、输出flag的函数，或者是直接调用system()等可以获得shell的函数<br><br>如果给的二进制文件中存在这类函数（通过逆向等手段发现），可以优先考虑覆盖返回地址为该函数的地址<br></p>
 <h3 id="攻击者自己写的shellcode的起始地址"><a href="#攻击者自己写的shellcode的起始地址" class="headerlink" title="攻击者自己写的shellcode的起始地址"></a>攻击者自己写的shellcode的起始地址</h3><p>shellcode即可以帮助攻击者获取shell的代码，当二进制文件本身不存在后门函数的时候，就需要攻击者自己编写shellcode，并将其溢出到程序内存中（一般是栈上）<br><br>具体实现方法为通过编写汇编语言代码，调用system、execve等函数开启shell。由于python强大的pwn包，现在可以直接使用该模块生成一般的shellcode<br></p>
-<h3 id="攻击者构造的ROP链的起始地址（即链条中第一条指令碎片的地址）"><a href="#攻击者构造的ROP链的起始地址（即链条中第一条指令碎片的地址）" class="headerlink" title="攻击者构造的ROP链的起始地址（即链条中第一条指令碎片的地址）"></a>攻击者构造的ROP链的起始地址（即链条中第一条指令碎片的地址）</h3><p>待补充……</p>
+<h3 id="攻击者构造的ROP链的起始地址"><a href="#攻击者构造的ROP链的起始地址" class="headerlink" title="攻击者构造的ROP链的起始地址"></a>攻击者构造的ROP链的起始地址</h3><p>待补充……</p>
 <h2 id="溢出攻击的防御手段"><a href="#溢出攻击的防御手段" class="headerlink" title="溢出攻击的防御手段"></a>溢出攻击的防御手段</h2><p>目前博主在做题当中遇到的主要会阻碍我们的防御手段就是以下3种（后面遇到了别的再记录）：<br></p>
 <h3 id="NX保护"><a href="#NX保护" class="headerlink" title="NX保护"></a>NX保护</h3><p>NX保护即指定栈不可执行，该保护主要用于防御直接往栈上写shellcode的攻击方式<br><br>为了克制NX保护，需要采取被称为ROP的代码重用攻击（见后）<br></p>
 <h3 id="canary保护"><a href="#canary保护" class="headerlink" title="canary保护"></a>canary保护</h3><p>canary即在rbp的下方放置一个随机数，并在安全位置保存该随机数的副本，退栈时比对副本和读取到的随机数，如果不一样说明发生了溢出攻击<br><br>值得一提的是，canary的第一个字节一定是0x00，这是为了截断字符串读取，防止canary泄露而设计，但这种设计也为canary的爆破提供了方便（爆破方法见后）<br></p>
@@ -377,8 +377,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-5/" title="CSRF-5">
-                        <span class="hidden-mobile">CSRF-5</span>
+                      <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/" title="Hijack-to-Shellcode">
+                        <span class="hidden-mobile">Hijack-to-Shellcode</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

