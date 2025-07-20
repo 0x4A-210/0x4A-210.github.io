@@ -29,7 +29,7 @@
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/stack.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/checksec-example.png">
 <meta property="article:published_time" content="2025-07-19T00:59:21.000Z">
-<meta property="article:modified_time" content="2025-07-20T01:25:25.591Z">
+<meta property="article:modified_time" content="2025-07-20T01:35:40.197Z">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/TogetherReview/stack.png">
   
@@ -277,8 +277,8 @@
 <h3 id="NX保护"><a href="#NX保护" class="headerlink" title="NX保护"></a>NX保护</h3><p>NX保护即指定栈不可执行，该保护主要用于防御直接往栈上写shellcode的攻击方式<br><br>为了克制NX保护，需要采取被称为ROP的代码重用攻击（见后）<br></p>
 <h3 id="canary保护"><a href="#canary保护" class="headerlink" title="canary保护"></a>canary保护</h3><p>canary即在rbp的下方放置一个随机数，并在安全位置保存该随机数的副本，退栈时比对副本和读取到的随机数，如果不一样说明发生了溢出攻击<br><br>值得一提的是，canary的第一个字节一定是0x00，这是为了截断字符串读取，防止canary泄露而设计，但这种设计也为canary的爆破提供了方便（爆破方法见后）<br></p>
 <h3 id="PIE保护"><a href="#PIE保护" class="headerlink" title="PIE保护"></a>PIE保护</h3><p>PIE全称为位置无关可执行文件，开启了这个保护的程序，每次运行时将被加载到不同的基地址，因此程序里所有的指令地址在运行前都无法确定<br><br>换句话说，通过objdump反汇编看到的指令地址、函数起始地址，都是偏移量，不能直接使用<br><br>但是，由于操作系统需要页对齐，即每页大小4096字节，而4096正好&#x3D;0x1000，因此返回地址的最后12位（或者说最后一个半字节是确定的）<br><br>由此，为了克制PIE，可以采取低字节部分覆盖的攻击方法<br><br>综上，当实际做题时，首要步骤应该是使用checksec命令去检查程序的保护措施，如下图：<br><br><img src="/../../../../../../photos/TogetherReview/checksec-example.png" srcset="/img/loading.gif" lazyload><br>这个程序是保护全关，但是看到哪种保护开启了，其实也是变相在提示解题思路<br><br>比如看到NX就知道栈上写shellcode的方法肯定废了，应该要ROP，或者有后门函数？看到canary和PIE，想到要爆破，或者想办法泄露有一个基地址？</p>
-<h1 id="题目实例"><a href="#题目实例" class="headerlink" title="题目实例"></a>题目实例</h1><h2 id="基本题目举例"><a href="#基本题目举例" class="headerlink" title="基本题目举例"></a>基本题目举例</h2><h3 id="劫持到后门函数"><a href="#劫持到后门函数" class="headerlink" title="劫持到后门函数"></a>劫持到后门函数</h3><p>具体的题目实例见<a href="">pwn.college题解：Control-Hijack</a></p>
-<h3 id="劫持到shellcode"><a href="#劫持到shellcode" class="headerlink" title="劫持到shellcode"></a>劫持到shellcode</h3><p>具体的题目实例见<a href="">pwn.college题解：Hijack-to-Shellcode</a></p>
+<h1 id="题目实例"><a href="#题目实例" class="headerlink" title="题目实例"></a>题目实例</h1><h2 id="基本题目举例"><a href="#基本题目举例" class="headerlink" title="基本题目举例"></a>基本题目举例</h2><h3 id="劫持到后门函数"><a href="#劫持到后门函数" class="headerlink" title="劫持到后门函数"></a>劫持到后门函数</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Intro-to-Cybersecurity/Pwn/Control-Hijack/">pwn.college题解：Control-Hijack</a></p>
+<h3 id="劫持到shellcode"><a href="#劫持到shellcode" class="headerlink" title="劫持到shellcode"></a>劫持到shellcode</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/">pwn.college题解：Hijack-to-Shellcode</a></p>
 <h3 id="劫持到ROP链"><a href="#劫持到ROP链" class="headerlink" title="劫持到ROP链"></a>劫持到ROP链</h3><p>待补充……</p>
 <h2 id="一些trick"><a href="#一些trick" class="headerlink" title="一些trick"></a>一些trick</h2><h3 id="克制PIE"><a href="#克制PIE" class="headerlink" title="克制PIE"></a>克制PIE</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/">pwn.college题解：PIEs-hard</a></p>
 <h3 id="消除shellcode的零字节"><a href="#消除shellcode的零字节" class="headerlink" title="消除shellcode的零字节"></a>消除shellcode的零字节</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/NULL-Free-Shellcode/">pwn.college题解：NULL-Free-Shellcode</a></p>
