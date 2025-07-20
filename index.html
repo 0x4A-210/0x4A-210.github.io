@@ -230,7 +230,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-20 11:40" pubdate>
+            <time datetime="2025-07-20 14:40" pubdate>
               2025-07-20
             </time>
           </div>
@@ -298,7 +298,75 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-20 10:46" pubdate>
+            <time datetime="2025-07-20 14:26" pubdate>
+              2025-07-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/" class="category-chain-item">Program-Security</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/ROP/" class="category-chain-item">ROP</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/" target="_self">
+          level-9
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/" target="_self">
+        <div>
+          题目简介需要我们用栈跃迁的方法去执行我们的ROP链 漏洞点分析第一步依然是chekcsec，看到只开启了NX保护，说明要用ROP了再用IDA逆向一下，看到在challenge函数中，会将输入存在0x4140E0的位置，并且只复制输入的前24个字节到缓冲区从这里就可以看出来，想把完整的ROP链布置到栈上是不可能了，因此漏洞点在于将启动ROP链的少部分代码写在最前面，通过启动代码把rsp的指向转移到完
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-07-20 13:05" pubdate>
               2025-07-20
             </time>
           </div>
@@ -790,74 +858,6 @@
     
   <a href="/categories/%E4%B8%B2%E8%81%94%E6%A2%B3%E7%90%86/Pwn/" class="category-chain-item">Pwn</a>
   
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/" target="_self">
-          Hijack-to-Shellcode
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/" target="_self">
-        <div>
-          题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-18 21:17" pubdate>
-              2025-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Pwn/" class="category-chain-item">Pwn</a>
-  
-  
-
   
 
   
