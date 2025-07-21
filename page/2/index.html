@@ -214,15 +214,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/" target="_self">
-          Hijack-to-Shellcode
+        <a href="/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/" target="_self">
+          PIEs-hard
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/" target="_self">
         <div>
-          题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点
+          题目简介程序开启了PIE保护，因此程序每次加载的基地址都是不确定的；我们无法再得知后门函数或者shellcode的真实地址，需要通过爆破的方法拿到shell
         </div>
       </a>
 
@@ -230,8 +230,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-18 21:17" pubdate>
-              2025-07-18
+            <time datetime="2025-07-19 14:46" pubdate>
+              2025-07-19
             </time>
           </div>
         
