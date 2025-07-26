@@ -21,25 +21,27 @@
   
     <meta name="description" content="简介这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Binary-Exp">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/19/TogetherReview/Binary-Exp/index.html">
+<meta property="og:title" content="二进制总结">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/19/TogetherReview/%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="0x4A">
 <meta property="og:description" content="简介这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/stack.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/ROP-example.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/lazy-binding-1.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/lazy-binding-2.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/anti-canary.jpg">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/checksec-example.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/start.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/libc-start-main.png">
 <meta property="article:published_time" content="2025-07-19T00:59:21.000Z">
-<meta property="article:modified_time" content="2025-07-22T07:28:43.554Z">
+<meta property="article:modified_time" content="2025-07-26T03:08:12.181Z">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/stack.png">
   
   
   
-  <title>Binary-Exp - 0x4A</title>
+  <title>二进制总结 - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -193,7 +195,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Binary-Exp"></span>
+            <span id="subtitle" data-typed-text="二进制总结"></span>
           
         </div>
 
@@ -216,7 +218,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.7k words
+          3.2k words
         
       </span>
     
@@ -227,7 +229,7 @@
         
         
         
-          23 mins
+          27 mins
         
       </span>
     
@@ -264,36 +266,37 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Binary-Exp</h1>
+            <h1 id="seo-header">二进制总结</h1>
             
             
               <div class="markdown-body">
                 
                 <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这一篇博客会把二进制利用的知识串起来，同时穿插pwn.college的题解，帮助自己理解和巩固。<br></p>
 <span id="more"></span>
-<p>内容会随着博主掌握的内容而更新，目前只到ROP栈迁移部分（基本对应pwn.college上的intro&#x2F;Binary Exploitation的全部以及program security&#x2F;ROP的level1-9），当然博主也是新手，有写错的地方勿怪<br><br>（声明：这篇博客所有记录默认是以64位架构为前提）</p>
+<p>内容会随着博主掌握的内容而更新，目前只到ROP部分（基本对应pwn.college上的intro&#x2F;Binary Exploitation以及program security 的ROP部分，堆还一点不会，哎哎……）<br><br>当然博主也是新手，有写错的地方勿怪<br><br>（声明：这篇博客所有记录默认是以64位架构为前提）</p>
 <h1 id="基础部分随记"><a href="#基础部分随记" class="headerlink" title="基础部分随记"></a>基础部分随记</h1><h2 id="栈结构与函数调用"><a href="#栈结构与函数调用" class="headerlink" title="栈结构与函数调用"></a>栈结构与函数调用</h2><p>首先个人觉得做二进制的题目，最基本的是需要了解栈结构。<br><br><em><strong>栈的内存空间是从高地址向低地址增长，也就是说，每当有东西进栈，rsp将会-1，每当有东西出栈，rsp将会+1</strong></em><br><br>每个函数在调用的过程中会维护自己的一块在栈上的内存空间，被称为栈帧；<br><br><em><strong>函数在被调用时，首先会进行传参，但是否传入栈上，得看架构和参数个数；比如根据64位系统调用约定，前6个参数依次从rdi、rsi、rdx、rcx、r8、r9中读取，返回值保存在rax中。因此当参数个数超过6个，才通过栈传参（当然32位就是全用栈传参）</strong></em><br><em><strong>传参完成后会将下一条指令的地址压栈，即push rip，该地址被称为返回地址，这个动作由call指令自动完成</strong></em><br><br><em><strong>接下来会进入函数的所谓“序言”部分，即执行：压rbp入栈（push rbp）-&gt;把rsp的值赋给rbp（mov rbp,rsp）-&gt;rsp向低地址移动（sub rsp）</strong></em><br><br>（备注：后续回顾时重点理解函数被调用时的进栈流程，和leave ret对应起来理解）<br><br>此时，函数的栈帧已经形成，栈的最高处是调用者的rbp，最低处是rsp，函数运行时的局部变量存在栈帧的靠近低处<br><br>从rbp到局部变量，中间的内容需要具体分析，可能会有canary等数据<br><br>综上，可以画出栈的一个示意图如下：<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/stack.png" srcset="/img/loading.gif" lazyload><br>函数调用结束后，一般末尾会有leave和ret指令，这两条指令的等价形式如下：<br><br><em><strong>leave&#x3D;mov rsp,rbp;pop rbp，ret &#x3D;pop rip</strong></em><br><em><strong>此时可以发现，这些操作正好对应着函数序言，即可以理解为序言的反操作，这也就是为什么函数在调用过后还能回到原来的地方继续执行（返回地址实现），同时调用者的栈帧也能恢复（rbp的入栈出栈实现）</strong></em></p>
 <h2 id="缓冲区溢出攻击原理"><a href="#缓冲区溢出攻击原理" class="headerlink" title="缓冲区溢出攻击原理"></a>缓冲区溢出攻击原理</h2><p>分析上述栈结构和函数调用过程，可以发现局部变量（用户输入的缓冲区）是在返回地址下方，而用户输入是不可控的，如果没有长度校验，可以通过构造过长的输入去覆盖返回地址，从而劫持函数的执行流<br><br>最后一个问题：返回地址应该覆盖为什么？根据目前做题经验，总结为以下2类：<br></p>
 <h3 id="后门函数的地址"><a href="#后门函数的地址" class="headerlink" title="后门函数的地址"></a>后门函数的地址</h3><p>后门函数在题目中一般表现为可以读取、输出flag的函数，或者是直接调用system()等可以获得shell的函数<br><br>如果给的二进制文件中存在这类函数（通过逆向等手段发现），可以优先考虑覆盖返回地址为该函数的地址<br></p>
-<h3 id="攻击者自己写的shellcode的起始地址"><a href="#攻击者自己写的shellcode的起始地址" class="headerlink" title="攻击者自己写的shellcode的起始地址"></a>攻击者自己写的shellcode的起始地址</h3><p>shellcode即可以帮助攻击者获取shell的代码，当二进制文件本身不存在后门函数的时候，就需要攻击者自己编写shellcode，并将其溢出到程序内存中（一般是栈上）<br><br>具体实现方法为通过编写汇编语言代码，调用system、execve等函数开启shell。由于python强大的pwn包，现在可以直接使用该模块生成一般的shellcode<br></p>
+<h3 id="shellcode的起始地址"><a href="#shellcode的起始地址" class="headerlink" title="shellcode的起始地址"></a>shellcode的起始地址</h3><p>shellcode即可以帮助攻击者获取shell的代码，当二进制文件本身不存在后门函数的时候，就需要攻击者自己编写shellcode（或重用程序已有的代码段），并将其溢出到程序内存中（可以是栈、.bss段、数据段等）<br><br>具体实现方法为通过编写汇编语言代码，调用system、execve等函数开启shell。由于python强大的pwn包，现在可以直接使用该模块生成一般的shellcode<br></p>
 <h2 id="溢出攻击的防御手段与克制方法"><a href="#溢出攻击的防御手段与克制方法" class="headerlink" title="溢出攻击的防御手段与克制方法"></a>溢出攻击的防御手段与克制方法</h2><p>目前博主在做题当中遇到的主要会阻碍我们的防御手段就是以下3种（后面遇到了别的再记录）：<br></p>
 <h3 id="NX保护"><a href="#NX保护" class="headerlink" title="NX保护"></a>NX保护</h3><p>NX保护即指定栈不可执行，该保护主要用于防御直接往栈上写shellcode的攻击方式<br><br>为了克制NX保护，需要采取被称为ROP的代码重用攻击<br></p>
-<h3 id="克制NX保护——ROP攻击"><a href="#克制NX保护——ROP攻击" class="headerlink" title="克制NX保护——ROP攻击"></a>克制NX保护——ROP攻击</h3><p>当开启了NX保护，栈上的数据将不可以被视作代码来执行，因此直接写shellcode行不通<br><br>那该怎么办？很简单，自己写的不让执行，那就用程序本身有的，毕竟一个程序，总是有可以执行的代码块的，不然写出来干啥呢？<br><br>但是，另一个问题，想要getshell用到的代码块可能散布在程序各个地址，不会老老实实连续（指物理上的连续）放在一起，所以只覆盖一个返回地址肯定不行<br><br>此时，注意到ret指令实质是pop rip，因此，只要找的每一块指令碎片都以ret或者pop rip或者其他可以修改rip的指令结尾，那这个片段就可以使用<br><br>因此，可以把ROP看成一种特殊的shellcode，这段shellcode和传统意义上的不同，物理上并不是连续存储在内存中，而是分散开来的指令碎片<br><br>每块碎片就像链表的结点，结点之间通过ret（或其他修改rip的指令）连接，通过这种方式，实现逻辑上好像执行了一段连续的shellcode，而攻击者要做的，就是把第一块指令碎片（表头）的地址覆盖到返回地址<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/ROP-example.png" srcset="/img/loading.gif" lazyload><br>如上图，假设现在返回地址已经被覆盖为了第1块指令碎片的地址，并且函数下一条指令为ret<br><br>那么，一旦函数执行ret（即pop rip），会将rip的地址变成指令碎片的起始地址（即0x123，只是假设的地址，真正应该不会这么低），然后把rsp+1<br><br>因此rsp就会指向指令碎片2的地址，一旦碎片1执行完毕，由于最后一个指令是ret，同样会执行上述操作，从而rsp再指向碎片3的地址<br><br>……………………直到所有的指令碎片执行完毕，拿到shell</p>
+<h3 id="克制NX保护——ROP攻击"><a href="#克制NX保护——ROP攻击" class="headerlink" title="克制NX保护——ROP攻击"></a>克制NX保护——ROP攻击</h3><p>当开启了NX保护，栈上的数据将不可以被视作代码来执行，因此直接写shellcode行不通<br><br>那该怎么办？很简单，自己写的不让执行，那就用程序本身有的，毕竟一个程序，总是有可以执行的代码块的，不然写出来干啥呢？<br><br>但是，另一个问题，想要getshell用到的代码块可能散布在程序各个地址，不会老老实实连续（指物理上的连续）放在一起，所以只覆盖一个返回地址肯定不行<br><br>此时，注意到ret指令实质是pop rip，因此，只要找的每一块指令碎片都以ret或者pop rip或者其他可以修改rip的指令结尾，那这个片段就可以使用<br><br>因此，可以把ROP看成一种特殊的shellcode，这段shellcode和传统意义上的不同，物理上并不是连续存储在内存中，而是分散开来的指令碎片<br><br>每块碎片就像链表的结点，结点之间通过ret（或其他修改rip的指令）连接，通过这种方式，实现逻辑上好像执行了一段连续的shellcode，而攻击者要做的，就是把第一块指令碎片（表头）的地址覆盖到返回地址<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/ROP-example.png" srcset="/img/loading.gif" lazyload><br>如上图，假设现在返回地址已经被覆盖为了第1块指令碎片的地址，并且函数下一条指令为ret<br><br>那么，一旦函数执行ret（即pop rip），会将rip的地址变成指令碎片的起始地址（即0x123，只是假设的地址，真正应该不会这么低），然后把rsp+1<br><br>因此rsp就会指向指令碎片2的地址，一旦碎片1执行完毕，由于最后一个指令是ret，同样会执行上述操作，从而rsp再指向碎片3的地址<br><br>……………………直到所有的指令碎片执行完毕，拿到shell<br><br>目前遇到的ROP题目大致分为两类：<br><br>第一是ret2text，即回到程序本身的代码段，该方法适用于程序自身的指令碎片比较丰富，有着大量可用的指令，如system、&#x2F;bin&#x2F;sh等，通过返回到这些指令的地址获得shell<br><br>第二是ret2libc，即回到libc中；因为一个动态链接程序（为减小可执行文件体积，现在大部分都是动态链接文件，如果遇到静态的，就又回到了第一种类型）在运行时会装载libc.so文件；<br><br>libc.so是一个共享文件（不准确的说，可以看成windows下的dll），这个文件里存储了大量的C库函数，因此这里面必定存在我们想要的system和”&#x2F;bin&#x2F;sh”字符串<br><br>但是，.so文件一定是PIE的，因此在ret2libc时，最关键的步骤是获取libc在装载时的基地址，最基本的思路是通过程序中调用的函数的got表泄露<br><br>再简单说一下got表和plt表以及Linux的延迟绑定机制<br><br>简单来说，程序在调用libc中的函数时，第一次调用时会解析该函数的真实地址并存储在got表里，后续第2次第3次调用时直接去got表拿地址，简单的示意图如下：<br><br>第一次调用时会进行如下流程<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/lazy-binding-1.png" srcset="/img/loading.gif" lazyload><br>之后每次调用则如下图所示<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/lazy-binding-2.png" srcset="/img/loading.gif" lazyload><br>因此，可以看出，只要泄露了某个函数的got表的地址，再减去其在libc里的偏移，即可得到其真实地址（只要给定libc版本，偏移就是确定的，可以通过readelf命令行工具或者python的pwn模块获取）<br><br>同时，从上面讨论可以看出，必须要泄露程序中调用的函数的got表，才能获得libc基址，因此个人常选择__libc_start_main函数，这是一个在启动main时必定会被调用的函数<br></p>
 <h3 id="canary保护"><a href="#canary保护" class="headerlink" title="canary保护"></a>canary保护</h3><p>canary即在rbp的下方放置一个随机数，并在安全位置保存该随机数的副本，退栈时比对副本和读取到的随机数，如果不一样说明发生了溢出攻击<br></p>
 <h3 id="克制canary保护"><a href="#克制canary保护" class="headerlink" title="克制canary保护"></a>克制canary保护</h3><p>第一种方法是直接泄露canary的值，该方法需要程序本身有输出内存中的值的功能，或者攻击者能调用输出函数输出内存值<br><br>另一种方法是爆破：canary的第一个字节一定是0x00，这是为了截断字符串读取，防止canary泄露而设计，但这种设计也为canary的爆破提供了方便<br><br>只需要从第一个字节0x00开始，逐个字节的尝试，如果猜测正确，程序会正常执行，否则会出现异常（如输出”stack smashing detected”），最坏情况尝试256*7次，如下图所示<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/anti-canary.jpg" srcset="/img/loading.gif" lazyload></p>
 <h3 id="PIE保护"><a href="#PIE保护" class="headerlink" title="PIE保护"></a>PIE保护</h3><p>PIE全称为位置无关可执行文件，开启了这个保护的程序，每次运行时将被加载到不同的基地址，因此程序里所有的指令地址在运行前都无法确定<br><br>换句话说，通过objdump反汇编看到的指令地址、函数起始地址，都是偏移量，不能直接使用<br></p>
 <h3 id="克制PIE保护"><a href="#克制PIE保护" class="headerlink" title="克制PIE保护"></a>克制PIE保护</h3><p>尽管存在PIE，但由于操作系统需要页对齐，即每页大小4096字节，而4096正好&#x3D;0x1000，因此返回地址的最后12位（或者说最后一个半字节是确定的）<br><br>由此，为了克制PIE，可以采取低字节部分覆盖的攻击方法，只覆盖最后两个字节，其中只有一个16位数不确定，因此尝试16次即可<br><br>综上，当实际做题时，首要步骤应该是使用checksec命令去检查程序的保护措施，如下图：<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/checksec-example.png" srcset="/img/loading.gif" lazyload><br>这个程序是保护全关，但是看到哪种保护开启了，其实也是变相在提示解题思路<br><br>比如看到NX就知道栈上写shellcode的方法肯定废了，应该要ROP，或者有后门函数？看到canary和PIE，想到要爆破，或者想办法泄露一个基地址？</p>
+<h2 id="一些做题trick"><a href="#一些做题trick" class="headerlink" title="一些做题trick"></a>一些做题trick</h2><h3 id="ROP之栈跃迁"><a href="#ROP之栈跃迁" class="headerlink" title="ROP之栈跃迁"></a>ROP之栈跃迁</h3><p>待补充</p>
 <h2 id="其他琐碎知识点"><a href="#其他琐碎知识点" class="headerlink" title="其他琐碎知识点"></a>其他琐碎知识点</h2><h3 id="C程序启动过程——重新认识main函数"><a href="#C程序启动过程——重新认识main函数" class="headerlink" title="C程序启动过程——重新认识main函数"></a>C程序启动过程——重新认识main函数</h3><p>做题时发现对程序的启动以及main函数的加载退出机制不是很了解，严重影响做题，遂做一下记录<br><br>首先，main并不是程序真正的起点，在main函数之前，需要由_start函数去调用__libc_start_main，_start并不是开发者写在代码里的一个函数，而是编译时生成<br><br>将任意一个ELF文件拖入IDA，可以看到_start函数内部的样子如图所示<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/start.png" srcset="/img/loading.gif" lazyload><br>接下来说一下__libc_start_main，这是一个libc动态连接库(.so文件，即shared object)中的函数，它才是真正完成启动程序，设置寄存器值，调用main这一系列任务的函数<br><br>通过将.so文件拖到IDA里，同样能看到__libc_start_main如图所示<br><br><img src="/../../../../../../photos/TogetherReview/Pwn/libc-start-main.png" srcset="/img/loading.gif" lazyload><br>如上图，从0x2402D处开始，__libc_start_main在为main函数启动做一系列准备，最后，在call rax处真正启动main函数<br><br>接着梳理main函数的退出机制，即return 0;之后究竟做了什么<br><br>还是看到上图逆向libc.so的结果，可以在0x24083处看到这样的指令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">mov     edi, eax<br>call    <span class="hljs-built_in">exit</span><br></code></pre></td></tr></table></figure>
 <p>回想64位系统的调用约定和传参约定，这两条指令实际上说明，当main函数退出时，会把返回值（一般是0）作为exit的参数从rax传递给rdi。紧接着下一条指令调用exit<br></p>
-<h1 id="题目实例"><a href="#题目实例" class="headerlink" title="题目实例"></a>题目实例</h1><h2 id="基本题目举例"><a href="#基本题目举例" class="headerlink" title="基本题目举例"></a>基本题目举例</h2><h3 id="劫持到后门函数"><a href="#劫持到后门函数" class="headerlink" title="劫持到后门函数"></a>劫持到后门函数</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/Control-Hijack/">pwn.college题解：Control-Hijack</a>，可以通过该题目了解最基本的栈溢出该怎么利用，以及各种工具的基本使用</p>
+<h1 id="题目实例"><a href="#题目实例" class="headerlink" title="题目实例"></a>题目实例</h1><h2 id="基本题目举例"><a href="#基本题目举例" class="headerlink" title="基本题目举例"></a>基本题目举例</h2><h3 id="劫持到后门函数"><a href="#劫持到后门函数" class="headerlink" title="劫持到后门函数"></a>劫持到后门函数</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/Control-Hijack/">pwn.college题解：Control-Hijack</a><br><br>（备注：可以通过该题目了解最基本的栈溢出该怎么利用，以及各种工具的基本使用）</p>
 <h3 id="劫持到shellcode"><a href="#劫持到shellcode" class="headerlink" title="劫持到shellcode"></a>劫持到shellcode</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/">pwn.college题解：Hijack-to-Shellcode</a></p>
-<h3 id="基础ROP"><a href="#基础ROP" class="headerlink" title="基础ROP"></a>基础ROP</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/">pwn.college题解：ROP-level4</a></p>
-<h2 id="一些trick"><a href="#一些trick" class="headerlink" title="一些trick"></a>一些trick</h2><h3 id="克制PIE"><a href="#克制PIE" class="headerlink" title="克制PIE"></a>克制PIE</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/">pwn.college题解：PIEs-hard</a></p>
-<h3 id="消除shellcode的零字节"><a href="#消除shellcode的零字节" class="headerlink" title="消除shellcode的零字节"></a>消除shellcode的零字节</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/NULL-Free-Shellcode/">pwn.college题解：NULL-Free-Shellcode</a></p>
-<h3 id="绕过输入长度限制——0x00字节填充"><a href="#绕过输入长度限制——0x00字节填充" class="headerlink" title="绕过输入长度限制——0x00字节填充"></a>绕过输入长度限制——0x00字节填充</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/String-Lengths-hard/">pwn.college题解：String-Lengths-hard</a></p>
+<h3 id="基础ROP"><a href="#基础ROP" class="headerlink" title="基础ROP"></a>基础ROP</h3><p>1 ret2text：<a href="">pwn.college题解：ROP-level3</a><br>2 ret2libc：<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/">pwn.college题解：ROP-level4</a></p>
+<h3 id="克制PIE"><a href="#克制PIE" class="headerlink" title="克制PIE"></a>克制PIE</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/PIEs-hard/">pwn.college题解：PIEs-hard</a></p>
 <h3 id="克制canary"><a href="#克制canary" class="headerlink" title="克制canary"></a>克制canary</h3><p>1 直接泄露方式：<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-13/">pwn.college题解：ROP-level-13</a><br><br>2 爆破方式：<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-14-and-15/">pwn.college题解：ROP-level-14-and-15</a></p>
-<h3 id="ROP之栈跃迁"><a href="#ROP之栈跃迁" class="headerlink" title="ROP之栈跃迁"></a>ROP之栈跃迁</h3><p>原理：待补充……<br><br>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/">pwn.college题解：ROP-level-9</a></p>
+<h2 id="一些trick"><a href="#一些trick" class="headerlink" title="一些trick"></a>一些trick</h2><h3 id="消除shellcode的零字节"><a href="#消除shellcode的零字节" class="headerlink" title="消除shellcode的零字节"></a>消除shellcode的零字节</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/NULL-Free-Shellcode/">pwn.college题解：NULL-Free-Shellcode</a></p>
+<h3 id="绕过strlen长度限制——0x00字节填充"><a href="#绕过strlen长度限制——0x00字节填充" class="headerlink" title="绕过strlen长度限制——0x00字节填充"></a>绕过strlen长度限制——0x00字节填充</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/String-Lengths-hard/">pwn.college题解：String-Lengths-hard</a></p>
+<h3 id="ROP之栈跃迁-1"><a href="#ROP之栈跃迁-1" class="headerlink" title="ROP之栈跃迁"></a>ROP之栈跃迁</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/">pwn.college题解：ROP-level-9</a></p>
 
                 
               </div>
@@ -339,8 +342,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Binary-Exp</div>
-      <div>http://0x4a-210.github.io/2025/07/19/TogetherReview/Binary-Exp/</div>
+      <div>二进制总结</div>
+      <div>http://0x4a-210.github.io/2025/07/19/TogetherReview/二进制总结/</div>
     </div>
     <div class="license-meta">
       
