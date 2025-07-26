@@ -605,15 +605,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-3/" target="_self">
-          level-3
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
+          level-4
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-3/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
         <div>
-          题目简介题面很简单，提示我们了，需要使用ROP去触发一个多阶段的win函数
+          题目简介需要我们构造ROP链来执行获取shell的代码段，进而拿到flag 漏洞点分析首先还是checksec看到只开了NX，既然如此shellcode执行不了接着拖到IDA里面发现并没有可以用的后门函数，因此只能采用ROP然后找溢出点，发现在challenge函数再通过ROPgadget工具，看看程序本身有没有可用的碎片： 1ROPgadget --binary /challenge/babyr
         </div>
       </a>
 
@@ -621,7 +621,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-20 10:16" pubdate>
+            <time datetime="2025-07-20 10:10" pubdate>
               2025-07-20
             </time>
           </div>
@@ -673,15 +673,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
-          level-4
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-3/" target="_self">
+          level-3
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-3/" target="_self">
         <div>
-          题目简介需要我们构造ROP链来执行获取shell的代码段，进而拿到flag 漏洞点分析首先还是checksec看到只开了NX，既然如此shellcode执行不了接着拖到IDA里面发现并没有可以用的后门函数，因此只能采用ROP然后找溢出点，发现在challenge函数再通过ROPgadget工具，看看程序本身有没有可用的碎片： 1ROPgadget --binary /challenge/babyr
+          题目简介题面很简单，提示我们了，需要使用ROP去触发一个多阶段的win函数
         </div>
       </a>
 
@@ -689,7 +689,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-20 10:10" pubdate>
+            <time datetime="2025-07-20 09:36" pubdate>
               2025-07-20
             </time>
           </div>
