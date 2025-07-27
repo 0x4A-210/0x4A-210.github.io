@@ -214,6 +214,278 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/" target="_self">
+          level-9
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/" target="_self">
+        <div>
+          题目简介需要我们用栈跃迁的方法去执行我们的ROP链 漏洞点分析第一步依然是chekcsec，看到只开启了NX保护，说明要用ROP了再用IDA逆向一下，看到在challenge函数中，会将输入存在0x4140E0的位置，并且只复制输入的前24个字节到缓冲区从这里就可以看出来，想把完整的ROP链布置到栈上是不可能了，因此漏洞点在于将启动ROP链的少部分代码写在最前面，通过启动代码把rsp的指向转移到完
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-07-20 13:05" pubdate>
+              2025-07-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/" class="category-chain-item">Program-Security</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/ROP/" class="category-chain-item">ROP</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
+          level-4
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/" target="_self">
+        <div>
+          题目简介需要我们构造ROP链来执行获取shell的代码段，进而拿到flag 漏洞点分析首先还是checksec看到只开了NX，既然如此shellcode执行不了接着拖到IDA里面发现并没有可以用的后门函数，因此只能采用ROP然后找溢出点，发现在challenge函数再通过ROPgadget工具，看看程序本身有没有可用的碎片： 1ROPgadget --binary /challenge/babyr
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-07-20 10:10" pubdate>
+              2025-07-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/" class="category-chain-item">Program-Security</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/ROP/" class="category-chain-item">ROP</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-3/" target="_self">
+          level-3
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-3/" target="_self">
+        <div>
+          题目简介题面很简单，提示我们了，需要使用ROP去触发一个多阶段的win函数
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-07-20 09:36" pubdate>
+              2025-07-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/" class="category-chain-item">Program-Security</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/ROP/" class="category-chain-item">ROP</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/07/20/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/" target="_self">
+          Hijack-to-Shellcode
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/pwn.college/Intro-to-Cybersecurity/Pwn/Hijack-to-Shellcode/" target="_self">
+        <div>
+          题目简介基础的栈溢出，在&#x2F;challenge目录下仅存在一个ELF文件，无源代码，需要我们构造输入劫持返回地址，根据题目名字能猜到是要劫持到shellcode起始地址 漏洞点分析分析一个程序首先要分析有没有溢出点，溢出点在哪里。分析方法和上一题一致，这里省略接下来用checksec看一下开了哪些保护发现保护全关，因此漏洞点就是缓冲区溢出覆写返回地址，劫持到我们的shellcode 漏洞点
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-07-20 08:17" pubdate>
+              2025-07-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Pwn/" class="category-chain-item">Pwn</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/NULL-Free-Shellcode/" target="_self">
           NULL-Free-Shellcode
         </a>
@@ -572,278 +844,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2025-07-18 09:00" pubdate>
               2025-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Web/" class="category-chain-item">Web</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/" target="_self">
-          CSRF-1
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/18/pwn.college/Intro-to-Cybersecurity/Web/CSRF-1/" target="_self">
-        <div>
-          题目简介XSS注入JavaScript以导致受害者发起HTTP请求。 但是如果没有XSS怎么办？ 答案是直接“注入”HTTP请求。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-18 08:50" pubdate>
-              2025-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Web/" class="category-chain-item">Web</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/SQLi-5/" target="_self">
-          SQLi-5
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/SQLi-5/" target="_self">
-        <div>
-          题目简介这一题和一般的SQL注入都不同，服务端将不再回显任何SQL查询的结果，但幸好题目提示我们，即便不显示任何数据，我们也可以一个字符一个字符的恢复，这可以通过查询时页面不同的行为来判断，比如认证成功or认证失败
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-17 09:32" pubdate>
-              2025-07-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Web/" class="category-chain-item">Web</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/" target="_self">
-          XSS-7
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/17/pwn.college/Intro-to-Cybersecurity/Web/XSS-7/" target="_self">
-        <div>
-          题目简介一个攻击者的目标可能是完全接管受害者账户，这需要认证信息，该信息常存储在cookie中，如果能够拿到cookie，就可以绕过服务端的身份认证，这一关将登录用户的信息存储在了cookie中
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-17 09:06" pubdate>
-              2025-07-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/" class="category-chain-item">intro</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/intro/Web/" class="category-chain-item">Web</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/" target="_self">
-          XSS-5
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/15/pwn.college/Intro-to-Cybersecurity/Web/XSS-5/" target="_self">
-        <div>
-          题目简介&#x2F;challenge目录下有两个程序，server脚本开启网络服务，该服务模拟一个论坛功能，存在登录、发布帖子以及存草稿等功能，victim脚本模拟受害者，会去访问论坛网页，如果XSS注入成功，就能得到flag
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-15 09:05" pubdate>
-              2025-07-15
             </time>
           </div>
         

