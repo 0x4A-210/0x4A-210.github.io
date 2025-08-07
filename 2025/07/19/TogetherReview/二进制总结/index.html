@@ -35,7 +35,7 @@
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/start.png">
 <meta property="og:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/libc-start-main.png">
 <meta property="article:published_time" content="2025-07-19T00:59:21.000Z">
-<meta property="article:modified_time" content="2025-08-06T03:38:17.548Z">
+<meta property="article:modified_time" content="2025-08-07T02:46:19.733Z">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://0x4a-210.github.io/photos/TogetherReview/Pwn/stack.png">
   
@@ -218,7 +218,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.8k words
+          3.9k words
         
       </span>
     
@@ -229,7 +229,7 @@
         
         
         
-          32 mins
+          33 mins
         
       </span>
     
@@ -297,12 +297,14 @@
 <h2 id="一些trick"><a href="#一些trick" class="headerlink" title="一些trick"></a>一些trick</h2><h3 id="消除shellcode的零字节"><a href="#消除shellcode的零字节" class="headerlink" title="消除shellcode的零字节"></a>消除shellcode的零字节</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/NULL-Free-Shellcode/">pwn.college题解：NULL-Free-Shellcode</a></p>
 <h3 id="绕过strlen长度限制——0x00字节填充"><a href="#绕过strlen长度限制——0x00字节填充" class="headerlink" title="绕过strlen长度限制——0x00字节填充"></a>绕过strlen长度限制——0x00字节填充</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/19/pwn.college/Intro-to-Cybersecurity/Pwn/String-Lengths-hard/">pwn.college题解：String-Lengths-hard</a></p>
 <h3 id="ROP之栈跃迁-1"><a href="#ROP之栈跃迁-1" class="headerlink" title="ROP之栈跃迁"></a>ROP之栈跃迁</h3><p>具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/20/pwn.college/Program-Securtity/ROP/level-9/">pwn.college题解：ROP-level-9</a></p>
-<h2 id="其他刷题记录"><a href="#其他刷题记录" class="headerlink" title="其他刷题记录"></a>其他刷题记录</h2><h3 id="ret2text技巧"><a href="#ret2text技巧" class="headerlink" title="ret2text技巧"></a>ret2text技巧</h3><p>1 32位程序，本身存在system和&#x2F;bin&#x2F;sh，直接return；具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-jarvisoj-level2/">BUUCTF题解：jarvisoj_level2</a><br><br>2 32位程序，存在多阶段后门函数，但要打包负数；具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-picoctf-2018-rop-chain/">BUUCTF题解：picoctf_2018_rop_chain</a></p>
+<h2 id="其他刷题记录"><a href="#其他刷题记录" class="headerlink" title="其他刷题记录"></a>其他刷题记录</h2><h3 id="ret2text技巧"><a href="#ret2text技巧" class="headerlink" title="ret2text技巧"></a>ret2text技巧</h3><p>1 32位程序，本身存在system和&#x2F;bin&#x2F;sh，直接return；具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-jarvisoj-level2/">BUUCTF题解：jarvisoj_level2</a><br><br>2 32位程序，存在多阶段后门函数，但要打包负数；具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-picoctf-2018-rop-chain/">BUUCTF题解：picoctf_2018_rop_chain</a><br><br>3 64位程序调用execve，需要布置3个参数，gadget里没有控制rdx的碎片，利用__libc_csu_init函数里的指令；具体的题目实例见<a href="https://0x4a-210.github.io/2025/08/05/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2text/BUUCTF-ciscn-2019-s-3/">BUUCTF题解：ciscn_2019_s_3</a></p>
 <h3 id="沙箱及其绕过"><a href="#沙箱及其绕过" class="headerlink" title="沙箱及其绕过"></a>沙箱及其绕过</h3><p>具体的题目实例见分类”pwn刷题记录&#x2F;其他技巧类”下的文章：<a href="https://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E6%B2%99%E7%AE%B1%E9%97%AE%E9%A2%98/">沙箱问题</a></p>
 <h3 id="ret2shellcode技巧"><a href="#ret2shellcode技巧" class="headerlink" title="ret2shellcode技巧"></a>ret2shellcode技巧</h3><p>上述pwn.college的ret2shellcode仅是作为基础，其服务器并没有开启ASLR，导致可以直接硬编码栈地址为返回地址，而真实的CTF题目不会这么顺利，所以用2道题记录一下真正ret2shellcode时该怎么做<br><br>1 泄露栈地址：<a href="https://0x4a-210.github.io/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/Shellcode/pwnable01-start/">pwnable题解：01-start</a><br><br>2 无需（也无法）泄露栈地址，则控制rsp：<a href="https://0x4a-210.github.io/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/Shellcode/BUUCTF-ciscn-2019-s-9/">BUUCTF题解：ciscn_2019_s_9</a></p>
 <h3 id="ret2libc相关"><a href="#ret2libc相关" class="headerlink" title="ret2libc相关"></a>ret2libc相关</h3><p>1 printf泄露libc基址：具体的题目实例见<a href="https://0x4a-210.github.io/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-HarekazeCTF2019-babyrop2/">BUUCTF题解：[HarekazeCTF2019]baby_rop2</a><br><br>2 write泄露libc基址：具体的题目实例见<a href="https://0x4a-210.github.io/2025/08/01/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/ROP/ret2libc/BUUCTF-jarvisoj-level1/">BUUCTF题解：jarvisoj-level1</a><br><br>通过以上两道题，加上最常见的puts函数泄露，目前可以总结出三种泄露方法：即puts、printf和write<br><br>3 无脑ret2libc的方法：具体的题目实例见分类”pwn刷题记录&#x2F;其他技巧类”下的文章：<a href="https://0x4a-210.github.io/2025/07/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AE%E7%9A%84%E9%80%9A%E8%A7%A3%EF%BC%9Aret2libc/">部分题目的通解：ret2libc</a></p>
 <h3 id="非劫持类手法：覆盖关键变量绕过检查"><a href="#非劫持类手法：覆盖关键变量绕过检查" class="headerlink" title="非劫持类手法：覆盖关键变量绕过检查"></a>非劫持类手法：覆盖关键变量绕过检查</h3><p>在溢出中，并不一定是覆盖到返回地址从而劫持控制流，还可以通过覆盖上方变量来绕过校验<br><br>具体的题目实例见分类”pwn刷题记录&#x2F;其他技巧类”下的文章：<a href="https://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/">2025年7月26日shaktictf比赛题解：Amogus</a></p>
+<h3 id="整数溢出"><a href="#整数溢出" class="headerlink" title="整数溢出"></a>整数溢出</h3><p>整数溢出基础例题（由于pwn.college上暂时没找到整数溢出类题目，以一道BUUCTF的题目为例进行记录）：<a href="https://0x4a-210.github.io/2025/08/06/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BA/BUUCTF-bjdctf-2020-babystack2/">BUUCTF题解：bjdctf_2020_babystack2</a></p>
 <h2 id="做题时踩过的一些坑"><a href="#做题时踩过的一些坑" class="headerlink" title="做题时踩过的一些坑"></a>做题时踩过的一些坑</h2><h3 id="堆栈平衡问题"><a href="#堆栈平衡问题" class="headerlink" title="堆栈平衡问题"></a>堆栈平衡问题</h3><p>堆栈平衡问题仅针对64位程序，要求栈16字节对齐（但是实际发现有的劫持到后门函数的题，还需要跳过后门函数开始处的操作rbp的若干条指令，以及需要在后门函数后正确返回）<br><br>16字节对齐是因为Ubuntu18以后引入了对XMM寄存器的操作，但后两者的原因目前还不是很清楚……<br><br>具体的例子见：<a href="https://0x4a-210.github.io/2025/07/19/Questions/%E5%A0%86%E6%A0%88%E5%B9%B3%E8%A1%A1%E9%97%AE%E9%A2%98/">Pwn的坑：堆栈平衡问题</a></p>
+<h3 id="特殊情况下IDA获取偏移导致出错"><a href="#特殊情况下IDA获取偏移导致出错" class="headerlink" title="特殊情况下IDA获取偏移导致出错"></a>特殊情况下IDA获取偏移导致出错</h3><p>具体的例子见：<a href="https://0x4a-210.github.io/2025/08/06/Questions/%E4%B8%8D%E8%83%BD%E5%8F%AA%E5%9C%A8IDA%E9%87%8C%E7%9C%8B%E5%81%8F%E7%A7%BB/">Pwn的坑：不能只在IDA里看偏移</a></p>
 
                 
               </div>
