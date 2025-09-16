@@ -17,7 +17,7 @@
       
       <category>ROP</category>
       
-      <category>ret2csu</category>
+      <category>SROP</category>
       
     </categories>
     
