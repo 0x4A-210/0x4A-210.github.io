@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Pwn常用信息速查</title>
+    <link href="/2025/10/24/Pwn%E5%B8%B8%E7%94%A8%E4%BF%A1%E6%81%AF%E9%80%9F%E6%9F%A5/"/>
+    <url>/2025/10/24/Pwn%E5%B8%B8%E7%94%A8%E4%BF%A1%E6%81%AF%E9%80%9F%E6%9F%A5/</url>
+    
+    <content type="html"><![CDATA[<p>#Pwn题常用到的信息整理，避免一个一个百度</p><span id="more"></span><h1 id="64调用约定"><a href="#64调用约定" class="headerlink" title="64调用约定"></a>64调用约定</h1><ol><li>函数调用：<br> rdi,rsi,rdx,rcd,r8,r9</li><li>系统调用：<br> rdi,rsi,rdx,r10,r8,r9</li></ol><h1 id="IO-FILE结构体成员信息"><a href="#IO-FILE结构体成员信息" class="headerlink" title="IO_FILE结构体成员信息"></a>IO_FILE结构体成员信息</h1><p>‘’’json<br>_IO_FILE_plus_size &#x3D; {<br>    ‘i386’:0x98,<br>    ‘amd64’:0xe0<br>}<br>_IO_FILE_plus &#x3D; {<br>    ‘i386’:{<br>        0x0:’_flags’,<br>        0x4:’_IO_read_ptr’,<br>        0x8:’_IO_read_end’,<br>        0xc:’_IO_read_base’,<br>        0x10:’_IO_write_base’,<br>        0x14:’_IO_write_ptr’,<br>        0x18:’_IO_write_end’,<br>        0x1c:’_IO_buf_base’,<br>        0x20:’_IO_buf_end’,<br>        0x24:’_IO_save_base’,<br>        0x28:’_IO_backup_base’,<br>        0x2c:’_IO_save_end’,<br>        0x30:’_markers’,<br>        0x34:’_chain’,<br>        0x38:’_fileno’,<br>        0x3c:’_flags2’,<br>        0x40:’_old_offset’,<br>        0x44:’_cur_column’,<br>        0x46:’_vtable_offset’,<br>        0x47:’_shortbuf’,<br>        0x48:’_lock’,<br>        0x4c:’_offset’,<br>        0x54:’_codecvt’,<br>        0x58:’_wide_data’,<br>        0x5c:’_freeres_list’,<br>        0x60:’_freeres_buf’,<br>        0x64:’__pad5’,<br>        0x68:’_mode’,<br>        0x6c:’_unused2’,<br>        0x94:’vtable’<br>    },</p><pre><code class="hljs">&#39;amd64&#39;:&#123;    0x0:&#39;_flags&#39;,    0x8:&#39;_IO_read_ptr&#39;,    0x10:&#39;_IO_read_end&#39;,    0x18:&#39;_IO_read_base&#39;,    0x20:&#39;_IO_write_base&#39;,    0x28:&#39;_IO_write_ptr&#39;,    0x30:&#39;_IO_write_end&#39;,    0x38:&#39;_IO_buf_base&#39;,    0x40:&#39;_IO_buf_end&#39;,    0x48:&#39;_IO_save_base&#39;,    0x50:&#39;_IO_backup_base&#39;,    0x58:&#39;_IO_save_end&#39;,    0x60:&#39;_markers&#39;,    0x68:&#39;_chain&#39;,    0x70:&#39;_fileno&#39;,    0x74:&#39;_flags2&#39;,    0x78:&#39;_old_offset&#39;,    0x80:&#39;_cur_column&#39;,    0x82:&#39;_vtable_offset&#39;,    0x83:&#39;_shortbuf&#39;,    0x88:&#39;_lock&#39;,    0x90:&#39;_offset&#39;,    0x98:&#39;_codecvt&#39;,    0xa0:&#39;_wide_data&#39;,    0xa8:&#39;_freeres_list&#39;,    0xb0:&#39;_freeres_buf&#39;,    0xb8:&#39;__pad5&#39;,    0xc0:&#39;_mode&#39;,    0xc4:&#39;_unused2&#39;,    0xd8:&#39;vtable&#39;&#125;</code></pre><p>}<br>‘’’</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>2025-10-02-OPENECSC-avalonia</title>
     <link href="/2025/10/07/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/"/>
     <url>/2025/10/07/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E5%85%B6%E4%BB%96%E6%8A%80%E5%B7%A7%E7%B1%BB/%E8%A6%86%E5%86%99GOT%E8%A1%A8/2025-10-02-OPENECSC-avalonia/</url>
@@ -105,7 +118,7 @@
       
       <category>Program-Security</category>
       
-      <category>ROP</category>
+      <category>Heap</category>
       
     </categories>
     
